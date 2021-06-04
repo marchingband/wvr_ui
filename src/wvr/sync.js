@@ -1,10 +1,10 @@
 import { store } from '../modules/store.js';
 import {toPcm, toPcmFX} from '../helpers/toPcm.js'
 import axios from 'axios'
-import {toJS} from 'mobx'
 
 export const sync = async() => {
-    store.loadingTitle = "syncing to WVR"
+    store.loadProgress = 0
+    store.loadingTitle = "Syncing to WVR"
     store.setLoading(true)
     await uploadWavs()
     await uploadVoiceConfig()
@@ -16,6 +16,8 @@ export const sync = async() => {
 }
 
 const uploadPinConfig = async() => {
+    store.loadingTitle = "syncing pin config to WVR"
+    store.loadProgress = 0
     const pinConfig = store.getPinConfig()
     // console.log(pinConfig)
     const json = JSON.stringify(pinConfig)
@@ -24,7 +26,7 @@ const uploadPinConfig = async() => {
         // "http://192.168.4.1/updatePinConfig",
         json,
         {
-            // onUploadProgress: p=>store.onProgress((p.loaded / p.total * 100).toFixed(0)),
+            onUploadProgress: p=>store.onProgress(p.loaded / p.total),
             headers:{'Content-Type': 'text/plain'}
         }
     )
@@ -32,6 +34,8 @@ const uploadPinConfig = async() => {
 }
 
 const uploadMetadata = async() => {
+    store.loadingTitle = "syncing metadata to WVR"
+    store.loadProgress = 0
     const meta = store.getMetadata()
     // console.log(pinConfig)
     const json = JSON.stringify(meta)
@@ -40,14 +44,17 @@ const uploadMetadata = async() => {
         // "http://192.168.4.1/updatePinConfig",
         json,
         {
-            // onUploadProgress: p=>store.onProgress((p.loaded / p.total * 100).toFixed(0)),
+            onUploadProgress: p=>store.onProgress(p.loaded / p.total ),
             headers:{'Content-Type': 'text/plain'}
         }
     )
     .catch(e=>console.log(e))
+    store.loadingTitle = "complete"
 }
 
 const uploadVoiceConfig = async() => {
+    store.loadingTitle = "syncing voice config to WVR"
+    store.loadProgress = 0
     const voices = store.getVoices()
     const json = JSON.stringify(voices)
     await axios.post(
@@ -55,7 +62,7 @@ const uploadVoiceConfig = async() => {
         // "http://192.168.4.1/updateVoiceConfig",
         json,
         {
-            // onUploadProgress: p=>store.onProgress((p.loaded / p.total * 100).toFixed(0)),
+            onUploadProgress: p=>store.onProgress(p.loaded / p.total ),
             headers:{'Content-Type': 'text/plain'}
         }
     )
@@ -66,6 +73,7 @@ const uploadVoiceConfig = async() => {
 const uploadWavs = async () => {
     const uploads = []
     const voices = store.getVoices()
+    store.loadProgress = 0
     voices.forEach((v,vi)=>{
         v.forEach((n,ni)=>{
             if(n.isRack == -1){
@@ -106,11 +114,14 @@ const uploadWavs = async () => {
             }
         })
     })
-    for(let {fileHandle,voice,note,name,isRack,rackData,pitch,verb,dist,pan,vol} of uploads)
+    for(let [i, {fileHandle,voice,note,name,isRack,rackData,pitch,verb,dist,pan,vol}] of uploads.entries())
     {
         // var pcm = await toPcm(fileHandle)
+        store.loadProgress = 0
+        store.loadingTitle = `rendering to audio ${i+1} of ${uploads.length}`
         var pcm = await toPcmFX({fileHandle,pitch,dist,verb,pan,vol})
         .catch(e=>console.log(e))
+        store.loadingTitle = `syncing to WVR ${i+1} of ${uploads.length}`
         var size = pcm.size
         if(isRack == -1){
             // not a rack
@@ -119,7 +130,7 @@ const uploadWavs = async () => {
                 // "http://192.168.4.1/addwav",
                 pcm,
                 {
-                    onUploadProgress: p=>store.onProgress((p.loaded / p.total * 100).toFixed(0)),
+                    onUploadProgress: p=>store.onProgress(p.loaded / p.total),
                     headers:{
                         'Content-Type': 'text/plain',
                         'size':size,
@@ -141,7 +152,7 @@ const uploadWavs = async () => {
                 // "http://192.168.4.1/addrack",
                 pcm,
                 {
-                    // onUploadProgress: p=>state.setProgress((p.loaded / p.total * 100).toFixed(0)),
+                    onUploadProgress: p=> store.onProgress( p.loaded / p.total ),
                     headers:{
                         'Content-Type': 'text/html',
                         'name' : name,
@@ -155,5 +166,4 @@ const uploadWavs = async () => {
             .catch(e=>console.log(e))        
         }
     }
-    // console.log(uploads)
 }

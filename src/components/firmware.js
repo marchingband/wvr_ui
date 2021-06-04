@@ -33,7 +33,27 @@ export const Firmware = ({num,f}) => {
             />
             <Button
                 title="boot"
-                onClick={()=>bootFromEMMC(num)}
+                onClick={()=>{
+                    bootFromEMMC(num)
+                    store.loadProgress = 0
+                    store.loadingTitle = `booting from slot ${num}`
+                    store.loading = true
+                    let int = setInterval(()=>{
+                        if(store.loadProgress == 100)
+                        {
+                            clearInterval(int)
+                        } else {
+                            store.onProgress(store.loadProgress/100 + 0.1)
+                        }
+                    },2000)
+                    setTimeout(()=>{
+                        store.loading = false
+                        if(window.confirm("boot complete, refresh page?"))
+                        {
+                            location.reload()
+                        }
+                    },20000)
+                }}
                 disabled={f.free}
             />
             <Button

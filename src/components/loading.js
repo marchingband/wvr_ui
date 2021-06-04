@@ -14,7 +14,7 @@ export const Loading = observer(() => {
                     {store.loadingTitle}
                 </Text>
                 <Text medium secondary>
-                    {`${store.loadProgress}%`}
+                    {store.loadProgress > 0 ? `${store.loadProgress}%` : ""}
                 </Text>
             </div>
         </div>

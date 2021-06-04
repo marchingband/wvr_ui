@@ -94,14 +94,7 @@ const onConnect = (self,data) => {
 }
 
 const onProgress = (self,p) => {
-    const percent = (p.loaded / p.total * 100).toFixed(0)
-    // console.log(percent)
-    if(percent==100){
-        self.loading = false
-        self.loadProgress = 0
-        self.loadingTitle = ""
-        return
-    }
+    const percent = (p * 100).toFixed(0)
     self.loadProgress = percent
 }
 

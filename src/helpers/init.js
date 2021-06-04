@@ -10,20 +10,28 @@ export const init = async () => {
     // console.log(window.innerWidth)
     store.handleResize() 
     window.addEventListener('resize', ()=>store.handleResize());
-    await initStore();
     await initWebSockets();
+    await initStore();
 }
 
 export const initStore = async () => {
+    store.loadProgress = 0
+    store.loadingTitle = "Loading from WVR"
     store.loading = true
-    store.loadingTitle = "loading from WVR"
-    console.log("try fetch fsjson")
     const res = await axios({
         method:'get',
         url:'/fsjson',
         responseType: 'json',
-        onDownloadProgress:p=>store.onProgress(p)
-    }).catch(e=>{
+        onDownloadProgress: p=>{
+            let size = p.target.getResponseHeader("size")
+            store.onProgress(p.loaded / size)
+        }
+    })
+    .then(r=>{
+        console.log(r)
+        return r
+    })
+    .catch(e=>{
         console.log("couldnt connect to WVR")
         store.loading = false
     })

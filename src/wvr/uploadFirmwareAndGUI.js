@@ -35,12 +35,15 @@ export const uploadFirmwareAndGUI = async ({index,firmwareFileHandle,GUIFileHand
 }
 
 const uploadFirmware = async ({index,firmwareFileHandle}) => {
+    store.loading = true
+    store.loadProgress = 0
+    store.loadingTitle = "uploading firmware"
     let res = await axios.post(
         "/addfirmware",
         // "http://192.168.4.1/addfirmware",
         firmwareFileHandle,
         {
-            // onUploadProgress: p=>state.setProgress((p.loaded / p.total * 100).toFixed(0)),
+            onUploadProgress: p=>store.onProgress(p.loaded / p.total),
             headers:{
                 'Content-Type': 'text/html',
                 'firmware-size' : firmwareFileHandle.size,
@@ -50,16 +53,19 @@ const uploadFirmware = async ({index,firmwareFileHandle}) => {
         }
     )
     .catch(e=>alert('File Uplaod Failed \n' + e ))
+    store.loading = false
 }
 
 export const uploadRecoveryFirmware = async ({fileHandle}) => {
     store.loading = true
+    store.loadProgress = 0
+    store.loadingTitle = "uploading recovery firmware"
     let res = await axios.post(
         "/updaterecoveryfirmware",
         // "http://192.168.4.1/updaterecoveryfirmware",
         fileHandle,
         {
-            // onUploadProgress: p=>state.setProgress((p.loaded / p.total * 100).toFixed(0)),
+            onUploadProgress: p=>store.onProgress(p.loaded / p.total),
             headers:{
                 'Content-Type': 'text/html',
                 'firmware-size' : fileHandle.size
