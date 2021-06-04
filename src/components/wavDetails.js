@@ -17,6 +17,13 @@ export const WavDetails = observer(() => {
     const [showSettings, setShowSettings] = useState(true)
     const {name,size,filehandle,mode,retrigger,noteOff,responseCurve,priority,dist,verb,pitch,vol,pan} = store.getCurrentNote()
     useEffect(()=>{
+        // hide FX screen when switching to a note with no file upload selected
+        if(!filehandle){
+            setShowSettings(true)
+        }
+    })
+    useEffect(()=>{
+        // draw the wav when a file is selected
         const ctx = canvas.current.getContext('2d')
         filehandle ? 
             drawWave({
@@ -46,7 +53,6 @@ export const WavDetails = observer(() => {
                 />
                 <Stack items={[
                     store.currentVoice,
-                    // noteToName(store.wavBoardSelected) || '',
                     `${noteToName(store.wavBoardSelected)} ${noteToOctave(store.wavBoardSelected)}` || '',
                     store.wavBoardSelected || '',
                     name || 'empty',

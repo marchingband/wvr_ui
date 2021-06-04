@@ -23,7 +23,7 @@ export const Firmware = ({num,f}) => {
             <Button
                 warn
                 title={name?name:firmware?firmware.name:f.name?f.name:"empty"}
-                style={{...titleProps,cursor:firmware?'pointer':'default'}}
+                style={{...titleProps,cursor:firmware?'pointer':'default', width:200}}
                 onClick={()=>{
                     if(firmware){
                         const newName = window.prompt("rename binary?")
@@ -70,10 +70,10 @@ export const Firmware = ({num,f}) => {
                 title={"select binary"}
                 onClick={()=>{firmwareFileInput.current.click()}}
             />
-            <Button
+            {/* <Button
                 title={GUI?GUI.name:store.websites.slice()[num].name?store.websites.slice()[num].name:"select gui"}
                 onClick={()=>{GUIFileInput.current.click()}}
-            />
+            /> */}
 
             {/* INVISIBLE INPUTS */}
             <input 
