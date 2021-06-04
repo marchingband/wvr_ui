@@ -15,7 +15,7 @@ export const WavDetails = observer(() => {
     const filePicker = useRef(null)
     const canvas = useRef(null)
     const [showSettings, setShowSettings] = useState(true)
-    const {name,size,filehandle,mode,retrigger,noteOff,responseCurve,priority,dist,verb,pitch} = store.getCurrentNote()
+    const {name,size,filehandle,mode,retrigger,noteOff,responseCurve,priority,dist,verb,pitch,vol,pan} = store.getCurrentNote()
     useEffect(()=>{
         const ctx = canvas.current.getContext('2d')
         filehandle ? 
@@ -126,6 +126,18 @@ export const WavDetails = observer(() => {
                                 onChange={e=>store.setCurrentNoteProp("pitch",e)}
                                 value={pitch}
                                 label="pitch"
+                            />
+                            <Slider 
+                                min={0} max={100}
+                                onChange={e=>store.setCurrentNoteProp("vol",e)}
+                                value={vol}
+                                label="vol"
+                            />
+                            <Slider 
+                                min={-100} max={100}
+                                onChange={e=>store.setCurrentNoteProp("pan",e)}
+                                value={pan}
+                                label="pan"
                             />
                         </div>
                 }

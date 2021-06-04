@@ -9,6 +9,7 @@ export const sync = async() => {
     await uploadWavs()
     await uploadVoiceConfig()
     await uploadPinConfig()
+    await uploadMetadata()
     store.setLoading(false)
     let reset = confirm("sync complete, refresh page?")
     if(reset) location.reload()
@@ -20,6 +21,22 @@ const uploadPinConfig = async() => {
     const json = JSON.stringify(pinConfig)
     await axios.post(
         "/updatePinConfig",
+        // "http://192.168.4.1/updatePinConfig",
+        json,
+        {
+            // onUploadProgress: p=>store.onProgress((p.loaded / p.total * 100).toFixed(0)),
+            headers:{'Content-Type': 'text/plain'}
+        }
+    )
+    .catch(e=>console.log(e))
+}
+
+const uploadMetadata = async() => {
+    const meta = store.getMetadata()
+    // console.log(pinConfig)
+    const json = JSON.stringify(meta)
+    await axios.post(
+        "/updateMetadata",
         // "http://192.168.4.1/updatePinConfig",
         json,
         {
@@ -62,7 +79,9 @@ const uploadWavs = async () => {
                         isRack: -1,
                         dist: n.dist,
                         verb: n.verb,
-                        pitch:n.pitch
+                        pitch:n.pitch,
+                        vol:n.vol,
+                        pan:n.pan    
                     })
                 }
             } else if(n.rack.layers) {
@@ -78,17 +97,19 @@ const uploadWavs = async () => {
                             rackData: n,
                             dist: n.dist,
                             verb: n.verb,
-                            pitch:n.pitch    
+                            pitch:n.pitch,
+                            vol:n.vol,
+                            pan:n.pan    
                         })
                     }
                 })
             }
         })
     })
-    for(let {fileHandle,voice,note,name,isRack,rackData,pitch,verb,dist} of uploads)
+    for(let {fileHandle,voice,note,name,isRack,rackData,pitch,verb,dist,pan,vol} of uploads)
     {
         // var pcm = await toPcm(fileHandle)
-        var pcm = await toPcmFX({fileHandle,pitch,dist,verb})
+        var pcm = await toPcmFX({fileHandle,pitch,dist,verb,pan,vol})
         .catch(e=>console.log(e))
         var size = pcm.size
         if(isRack == -1){

@@ -1,3 +1,6 @@
+
+export const WVR_IP = "192.168.5.18"
+
 // view constants
 export const WAV_ITEM_SIZE = 100
 

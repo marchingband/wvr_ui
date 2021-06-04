@@ -17,7 +17,9 @@ export const defaultVoices = () => {
                 priority:0,
                 dist:0,
                 verb:0,
-                pitch:0
+                pitch:0,
+                vol:100,
+                pan:0
             })
         }
         voices[i]=observable(voice)
@@ -167,3 +169,11 @@ export const defaultPinConfig = [
         name:'AUDIO L',
     },
 ]
+
+export const defaultMetadata = {
+    globalVolume : 127,
+    shouldCheckStrappingPin : 1,
+    recoveryModeStrappingPin : 1,
+    wLogVerbosity : 3,
+    wifiStartsOn : 1,
+}

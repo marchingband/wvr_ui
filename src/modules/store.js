@@ -3,7 +3,7 @@ import {themes} from './themes.js'
 import {WAV_ITEM_SIZE} from './constants'
 import {clamp} from '../helpers/clamp.js'
 import {makeName} from '../helpers/makeName'
-import {defaultVoices, defaultPinConfig} from '../helpers/makeDefaultStores'
+import {defaultVoices, defaultPinConfig, defaultMetadata} from '../helpers/makeDefaultStores'
 
 configure({
     enforceActions: "never",
@@ -36,9 +36,13 @@ export const store = observable(
         firmwares:observable([]),
         websites:observable([]),
         pinConfig:observable(defaultPinConfig),
+        metadata:observable(defaultMetadata),
 
         getVoices:function(){
             return toJS(this.voices)
+        },
+        getMetadata:function(){
+            return toJS(this.metadata)
         },
 
         onConnect:function(data){onConnect(this,data)},
@@ -63,15 +67,15 @@ export const store = observable(
         getPinConfig:function(){return getPinConfig(this)},
         setCurrentPinProp:function(prop,val){setCurrentPinProp(this,prop,val)},
         setCurrentNoteProp:function(prop,val){setCurrentNoteProp(this,prop,val)},
-
+        setMetadataField:function(prop,val){setMetadataField(this,prop,val)},
         noteOn:function(voice, note){noteOn(this,voice,note)},
         noteOff:function(voice, note){noteOff(this,voice,note)},
     }
 )
 
 const onConnect = (self,data) => {
-    // keep the fx vars by merging the objects
     const voices = toJS(self.voices)
+    // keep the fx vars by merging the objects
     const newVoices = voices.map((v,i)=>
         v.map((n,ni)=>(
             {
@@ -81,10 +85,10 @@ const onConnect = (self,data) => {
         ))
     )
     self.voices.replace(newVoices)
-    // self.voices.replace(data.voices)
     self.firmwares.replace(data.firmwares)
     self.websites.replace(data.websites)
     self.pinConfig.replace(data.pinConfig)
+    self.metadata = data.metadata
     self.currentFirmwareIndex = data.currentFirmwareIndex
     self.currentWebsiteIndex = data.currentWebsiteIndex
 }
@@ -251,18 +255,24 @@ const setCurrentPinProp = (self,prop,val) => {
 }
 
 const setCurrentNoteProp = (self,prop,val) => {
-    const voices = self.voices.slice()
-    voices[self.currentVoice][self.wavBoardSelected][prop] = val
-    self.voices.replace(voices)
+    // const voices = self.voices.slice()
+    // voices[self.currentVoice][self.wavBoardSelected][prop] = val
+    // self.voices.replace(voices)
+    self.voices[self.currentVoice][self.wavBoardSelected][prop] = val
     self.configNeedsUpdate = true
 }
 const noteOn = (self, voice, note) => {
-    const voices = toJS(self.voices)
-    voices[voice][note].playing = true
-    self.voices.replace(voices)
+    // const voices = toJS(self.voices)
+    self.voices[voice][note].playing = true
+    // self.voices.replace(voices)
 }
 const noteOff = (self, voice, note) => {
-    const voices = toJS(self.voices)
-    voices[voice][note].playing = false
-    self.voices.replace(voices)
+    // const voices = toJS(self.voices)
+    self.voices[voice][note].playing = false
+    // self.voices.replace(voices)
+}
+
+const setMetadataField = (self, prop, val) => {
+    self.metadata[prop] = val
+    self.configNeedsUpdate = true
 }

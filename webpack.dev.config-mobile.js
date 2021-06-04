@@ -23,52 +23,57 @@ module.exports = {
             "/fsjson": {
                 "changeOrigin": true,
                 "cookieDomainRewrite": "localhost",
-                "target": "http://192.168.4.1/fsjson"
+                "target": "http://192.168.5.18/fsjson"
             },
             "/addwav": {
                 "changeOrigin": true,
                 "cookieDomainRewrite": "localhost",
-                "target": "http://192.168.4.1/addwav"
+                "target": "http://192.168.5.18/addwav"
             },
             "/addrack": {
                 "changeOrigin": true,
                 "cookieDomainRewrite": "localhost",
-                "target": "http://192.168.4.1/addrack"
+                "target": "http://192.168.5.18/addrack"
             },
             "/updateVoiceConfig": {
                 "changeOrigin": true,
                 "cookieDomainRewrite": "localhost",
-                "target": "http://192.168.4.1/updateVoiceConfig"
+                "target": "http://192.168.5.18/updateVoiceConfig"
             },
             "/updatePinConfig": {
                 "changeOrigin": true,
                 "cookieDomainRewrite": "localhost",
-                "target": "http://192.168.4.1/updatePinConfig"
+                "target": "http://192.168.5.18/updatePinConfig"
             },
             "/addfirmware": {
                 "changeOrigin": true,
                 "cookieDomainRewrite": "localhost",
-                "target": "http://192.168.4.1/addfirmware"
+                "target": "http://192.168.5.18/addfirmware"
             },
             "/addgui": {
                 "changeOrigin": true,
                 "cookieDomainRewrite": "localhost",
-                "target": "http://192.168.4.1/addgui"
+                "target": "http://192.168.5.18/addgui"
             },
             "/bootFromEmmc": {
                 "changeOrigin": true,
                 "cookieDomainRewrite": "localhost",
-                "target": "http://192.168.4.1/bootFromEmmc"
+                "target": "http://192.168.5.18/bootFromEmmc"
             },
             "/rpc": {
                 "changeOrigin": true,
                 "cookieDomainRewrite": "localhost",
-                "target": "http://192.168.4.1/rpc"
+                "target": "http://192.168.5.18/rpc"
             },
             "/updaterecoveryfirmware": {
                 "changeOrigin": true,
                 "cookieDomainRewrite": "localhost",
-                "target": "http://192.168.4.1/updaterecoveryfirmware"
+                "target": "http://192.168.5.18/updaterecoveryfirmware"
+            },
+            "/updateMetadata": {
+                "changeOrigin": true,
+                "cookieDomainRewrite": "localhost",
+                "target": "http://192.168.5.18/updateMetadata"
             },
         }
     },

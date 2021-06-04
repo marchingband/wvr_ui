@@ -87,7 +87,7 @@ var semitones_to_float = semitones => {
     return Math.pow(semitone_ratio, semitones)
 }
 
-export const toPcmFX = async({fileHandle:f,pitch,dist,verb}) => new Promise(async(res,rej)=>{
+export const toPcmFX = async({fileHandle:f,pitch,dist,verb,pan,vol}) => new Promise(async(res,rej)=>{
     // var data = state.uploads.find(x=>x.note==state.selectedNote.note.note && x.bank==state.selectedNote.bank)
     // if(data == undefined || data.fileHandle == undefined){
     //     return res(null)
@@ -122,15 +122,22 @@ export const toPcmFX = async({fileHandle:f,pitch,dist,verb}) => new Promise(asyn
         var reverb_data_buffer = make_verb_array_buffer({ctx})
         reverb.buffer = reverb_data_buffer
 
-
         var reverb_gain = off_ctx.createGain()
         reverb_gain.gain.value = verb / 100
+
+        var masterVolume = off_ctx.createGain()
+        masterVolume.gain.value = vol / 100
+
+        var panning = off_ctx.createStereoPanner()
+        panning.pan.value = pan / 100
 
         off_source.connect(reverb)
         off_source.connect(distortion)
         reverb.connect(reverb_gain)
-        reverb_gain.connect(off_ctx.destination)
-        distortion.connect(off_ctx.destination)
+        reverb_gain.connect(masterVolume)
+        distortion.connect(masterVolume)
+        masterVolume.connect(panning)
+        panning.connect(off_ctx.destination)
 
         off_source.start(0)
         off_ctx.oncomplete = e => {

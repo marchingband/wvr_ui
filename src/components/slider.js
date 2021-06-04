@@ -17,7 +17,7 @@ const container = {
     display:'flex',
     flexDirection:'row',
     alignItems:'center',
-    margin:10,
+    margin:4,
     color:store.theme.primary
 }
 

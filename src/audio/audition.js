@@ -28,7 +28,7 @@ export const auditionLocal = async(f) => new Promise(async(res)=>{
     console.log(f)
     const voice = store.currentVoice
     const note = store.wavBoardSelected
-    const {dist,verb,pitch} = store.getVoices()[voice][note]
+    const {dist,verb,pitch,vol,pan} = store.getVoices()[voice][note]
     var playbackRate = semitones_to_float(pitch)
     var input_reader = new FileReader();
     input_reader.onload = async(e) => {
@@ -42,14 +42,21 @@ export const auditionLocal = async(f) => new Promise(async(res)=>{
         var reverb = ctx.createConvolver()
         var reverb_data_buffer = make_verb_array_buffer({ctx})
         reverb.buffer = reverb_data_buffer
-        var reverb_gain = ctx.createGain()
-        reverb_gain.gain.value = verb / 100
+        var reverbGain = ctx.createGain()
+        reverbGain.gain.value = verb / 100
+        var masterVolume = ctx.createGain()
+        masterVolume.gain.value = vol / 100
+        var panning = ctx.createStereoPanner()
+        panning.pan.value = pan / 100
+
         src.buffer = await ctx.decodeAudioData(e.target.result);
         src.connect(reverb)
         src.connect(distortion)
-        reverb.connect(reverb_gain)
-        reverb_gain.connect(ctx.destination)
-        distortion.connect(ctx.destination)
+        reverb.connect(reverbGain)
+        reverbGain.connect(masterVolume)
+        distortion.connect(masterVolume)
+        masterVolume.connect(panning)
+        panning.connect(ctx.destination)
         src.playbackRate.value = playbackRate
         src.onended=()=>{
             // console.log('done')
