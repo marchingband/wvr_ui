@@ -119,8 +119,11 @@ const uploadWavs = async () => {
         // var pcm = await toPcm(fileHandle)
         store.loadProgress = 0
         store.loadingTitle = `rendering to audio ${i+1} of ${uploads.length}`
+        // var pcm2 = await toPcm(fileHandle)
+        // .catch(e=>console.log(e))
         var pcm = await toPcmFX({fileHandle,pitch,dist,verb,pan,vol})
         .catch(e=>console.log(e))
+        // console.log(pcm.size, pcm2.size)
         store.loadingTitle = `syncing to WVR ${i+1} of ${uploads.length}`
         var size = pcm.size
         if(isRack == -1){
