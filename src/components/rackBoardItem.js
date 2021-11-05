@@ -6,8 +6,23 @@ import {WAV_ITEM_SIZE} from '../modules/constants'
 
 export const RackBoardItem = observer(({i}) => 
     <div 
-        style={container(store.rackBoardSelected == i)}
-        onClick={()=>store.rackBoardSelected = i}
+        style={
+            container(
+                store.rackBoardSelected == i,
+                store.rackBoardRange.includes(i)
+            )
+        }
+        onClick={({shiftKey, altKey})=>{
+            // store.rackBoardSelected = i
+        if(shiftKey){
+            store.rackBoardRangeSelect(i)
+        }else if(altKey){
+            store.rackBoardAddToSelection(i)
+        }else{
+            store.rackBoardClearRange()
+            store.rackBoardSelected = i
+        }
+    }}
     >
         <Text medium primary style={{margin:2}}>
             {` layer ${i}`}
@@ -21,7 +36,7 @@ export const RackBoardItem = observer(({i}) =>
     </div>
 )
 
-const container = selected => ({
+const container = (selected, range) => ({
     flex:1,
     height:WAV_ITEM_SIZE,
     display:'flex',
@@ -29,8 +44,8 @@ const container = selected => ({
     alignItems:'center',
     justifyContent:'center',
     margin:2,
-    border:`1px solid ${selected ? 'white' : store.theme.primary}`,
+    border:`1px solid ${range ? 'gold' : selected ? 'gold' : store.theme.primary}`,
     cursor:'pointer',
     borderRadius:4,
-    boxShadow:`0px 0px ${selected ? 10 : 3}px white`
+    boxShadow:`0px 0px ${selected ? 10 : 3}px ${selected ? 'gold' : range ? "gold" : 'white'}`
 })

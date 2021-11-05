@@ -7,8 +7,27 @@ import {WAV_ITEM_SIZE} from '../modules/constants'
 
 export const WavBoardItem = observer(({voiceIndex,noteIndex}) => 
     <div 
-        style={container(store.wavBoardSelected == noteIndex, store.getNote(voiceIndex,noteIndex).playing)}
-        onClick={()=>store.wavBoardSelected = noteIndex}
+        style={
+            container(
+                store.wavBoardSelected == noteIndex, // selected
+                store.getNote(voiceIndex,noteIndex).playing, // playing
+                store.wavBoardRange.includes(noteIndex), // range
+                store.wavBoardInterpolationTarget == noteIndex // interp target
+            )
+        }
+        // onClick={()=>store.wavBoardSelected = noteIndex}
+        onClick={({shiftKey,altKey,metaKey})=>{
+            if(shiftKey && altKey){
+                store.wavBoardsetInterpolationTarget(noteIndex)
+            }else if(shiftKey){
+                store.wavBoardRangeSelect(noteIndex)
+            }else if(altKey){
+                store.wavBoardAddToSelection(noteIndex)
+            }else{
+                store.wavBoardClearRange()
+                store.wavBoardSelected = noteIndex
+            }
+        }}
     >
         <Text medium primary style={{margin:2}}>
             {`${noteToName(noteIndex)} ${noteToOctave(noteIndex)}`}
@@ -28,7 +47,7 @@ export const WavBoardItem = observer(({voiceIndex,noteIndex}) =>
     </div>
 )
 
-const container = (selected,playing) => ({
+const container = (selected,playing,range,interp) => ({
     flex:1,
     height:WAV_ITEM_SIZE,
     display:'flex',
@@ -36,9 +55,9 @@ const container = (selected,playing) => ({
     alignItems:'center',
     justifyContent:'center',
     margin:2,
-    border:`1px solid ${selected ? 'white' : store.theme.primary}`,
+    border:`1px solid ${interp?'red':range?'gold':selected?'gold':store.theme.primary}`,
     cursor:'pointer',
     borderRadius:4,
-    boxShadow:`0px 0px ${selected ? 10 : 3}px white`,
+    boxShadow:`0px 0px ${selected ? 10 : 3}px ${interp?'red':range?'gold':selected?'gold':'white'}`,
     backgroundColor:playing?'gold':store.theme.backgroundColor
 })

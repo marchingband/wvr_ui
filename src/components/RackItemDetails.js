@@ -13,11 +13,12 @@ export const RackItemDetails = observer(() => {
     const canvas = useRef(null)
     const rackFileData = store.getRackLayer(store.rackBoardSelected)
     const self = store.getRackBreakPoint(store.rackBoardSelected + 1)
-    const next = store.getRackBreakPoint(store.rackBoardSelected + 2) || 128
+    const next = store.getRackBreakPoint(store.rackBoardSelected + 2) || 129
     const prev = store.getRackBreakPoint(store.rackBoardSelected)
     const max = clamp( (next -1) || 127, 0, 127 )
     const min = clamp( (prev +1) || 0  , 0, 127 )
-
+    const range = store.rackBoardRange.length > 0
+    const allowMultiple = store.rackBoardRange.length > 1
     useEffect(()=>{
         const filehandle = rackFileData.filehandle
         const ctx = canvas.current.getContext('2d')
@@ -35,8 +36,9 @@ export const RackItemDetails = observer(() => {
             <input 
                 ref={filePicker}
                 type="file" 
-                onChange={e=>store.setCurrentRackFile(e.target.files[0])}
+                onChange={e=>store.setCurrentRackFile(e.target.files)}
                 style={{display:'none'}}
+                multiple = { allowMultiple }
             />
             <div style={row}>
                 <Stack items={[
@@ -45,24 +47,26 @@ export const RackItemDetails = observer(() => {
                         "file size"
                 ]}/>
                 <Stack items={[
-                        store.rackBoardSelected,
-                        rackFileData.name || 'empty',
-                        rackFileData.size.toLocaleString() + ' bytes' || ''
+                        range ? "range" : store.rackBoardSelected,
+                        range ? "range" : rackFileData.name || 'empty',
+                        range ? "range" : rackFileData.size.toLocaleString() + ' bytes' || ''
                 ]}/>
                 <div style={{...column,marginLeft:'auto'}}>
-                    <SelectNum
-                        label='break point'
-                        value={self}
-                        onChange={e=>store.setBreakPoint(store.rackBoardSelected,e)}
-                    >
-                        {Array(max-min+1).fill().map((_,i)=>
-                            <option key={i} value={i+min}>{i+min}</option>
-                        )}                    
-                    </SelectNum>
+                    {!range &&
+                        <SelectNum
+                            label='break point'
+                            value={self}
+                            onChange={e=>store.setBreakPoint(store.rackBoardSelected,e)}
+                        >
+                            {Array(max-min+1).fill().map((_,i)=>
+                                <option key={i} value={i+min}>{i+min}</option>
+                            )}                    
+                        </SelectNum>
+                    }
                 </div>
                 <div style={{...column,marginLeft:'auto'}}>
                     <Button
-                        title="select file"
+                        title={allowMultiple ? "select files": "select file"}
                         onClick={()=>filePicker.current.click()}
                     />
                     <Button
