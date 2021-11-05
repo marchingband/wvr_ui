@@ -5,7 +5,7 @@ import {store} from '../modules/store.js'
 export const Button = ({onClick,title="",style={},disabled=false,warn=false}) =>
     <div 
         style={{...button(disabled),...style}}
-        onClick={()=>!disabled && onClick()}
+        onClick={e=>!disabled && onClick(e)}
     >
         <Text secondary={!disabled && !warn} primary={disabled && !warn} warn={warn}>
             {title}

@@ -10,7 +10,7 @@ import {SelectNum} from '../components/select'
 import {Slider} from './slider'
 
 export const RackDetails = observer(() => {
-    const {mode,retrigger,noteOff,responseCurve,priority,rack,dist,verb,pitch} = store.getCurrentNote()
+    const {mode,retrigger,noteOff,responseCurve,priority,rack,dist,verb,pitch,vol,pan} = store.getCurrentNote()
     const {name,num_layers} = rack
     const [showSettings, setShowSettings] = useState(true)
     return(
@@ -78,7 +78,7 @@ export const RackDetails = observer(() => {
                             <SelectNum
                                 label='number of layers'
                                 value={num_layers}
-                                onChange={e=>store.setRackNumLayers(e)}
+                                onChange={e=>store.setCurrentRackNumLayers(e)}
                             >
                                 {
                                     NUM_LAYERS.map(x=>
@@ -95,21 +95,33 @@ export const RackDetails = observer(() => {
                         <div style={{...column,marginLeft:'auto'}}>
                             <Slider 
                                 min={0} max={100}
-                                onChange={e=>store.setCurrentNoteProp("dist",e.target.value)}
+                                onChange={e=>store.setCurrentNoteProp("dist",e)}
                                 value={dist}
                                 label="dist"
                             />
                             <Slider 
                                 min={0} max={100}
-                                onChange={e=>store.setCurrentNoteProp("verb",e.target.value)}
+                                onChange={e=>store.setCurrentNoteProp("verb",e)}
                                 value={verb}
                                 label="verb"
                             />
                             <Slider 
                                 min={-50} max={50}
-                                onChange={e=>store.setCurrentNoteProp("pitch",e.target.value)}
+                                onChange={e=>store.setCurrentNoteProp("pitch",e)}
                                 value={pitch}
                                 label="pitch"
+                            />
+                            <Slider 
+                                min={0} max={100}
+                                onChange={e=>store.setCurrentNoteProp("vol",e)}
+                                value={vol}
+                                label="vol"
+                            />
+                            <Slider 
+                                min={-100} max={100}
+                                onChange={e=>store.setCurrentNoteProp("pan",e)}
+                                value={pan}
+                                label="pan"
                             />
                         </div>
                 }
@@ -121,7 +133,7 @@ export const RackDetails = observer(() => {
                     <Button
                         onClick={()=>{
                             const name = window.prompt("name")
-                            name && store.setRackName(name)
+                            name && store.setCurrentRackName(name)
                         }}
                         title="set rack name"
                     />

@@ -13,9 +13,12 @@ import {SelectNum} from '../components/select'
 
 export const WavDetails = observer(() => {
     const filePicker = useRef(null)
+    const directoryPicker = useRef(null)
     const canvas = useRef(null)
     const [showSettings, setShowSettings] = useState(true)
     const {name,size,filehandle,mode,retrigger,noteOff,responseCurve,priority,dist,verb,pitch,vol,pan} = store.getCurrentNote()
+    const range = store.wavBoardRange.length > 0
+    const allowMultiple = store.wavBoardRange.length > 1 && store.wavBoardInterpolationTarget == undefined
     useEffect(()=>{
         // hide FX screen when switching to a note with no file upload selected
         if(!filehandle){
@@ -38,9 +41,23 @@ export const WavDetails = observer(() => {
         <div style={container}>
             <input 
                 ref={filePicker}
+                multiple = { allowMultiple }
                 type="file" 
-                onChange={e=>store.setCurrentWavFile(e.target.files[0])}
+                onChange={e=>{
+                    console.log(e)
+                    e && store.setCurrentWavFile(e.target.files)
+                }}
                 style={{display:'none'}}
+                />
+            <input 
+                ref={directoryPicker}
+                multiple
+                type="file" 
+                // onChange={e=>console.log(e.target.files)}
+                onChange={e=>e && store.bulkUploadRacks(e)}
+                style={{display:'none'}}
+                directory="" 
+                webkitdirectory=""
             />
             <div style={row}>
                 <Stack items={[
@@ -53,10 +70,10 @@ export const WavDetails = observer(() => {
                 />
                 <Stack items={[
                     store.currentVoice,
-                    `${noteToName(store.wavBoardSelected)} ${noteToOctave(store.wavBoardSelected)}` || '',
-                    store.wavBoardSelected || '',
-                    name || 'empty',
-                    size.toLocaleString() + ' bytes' || ''
+                    range ? "range" : `${noteToName(store.wavBoardSelected)} ${noteToOctave(store.wavBoardSelected)}` || '',
+                    range ? "range" : store.wavBoardSelected || '',
+                    range ? "range" : name || 'empty',
+                    range ? "range" : size.toLocaleString() + ' bytes' || ''
                 ]}/>
                 {
                     showSettings &&
@@ -149,8 +166,19 @@ export const WavDetails = observer(() => {
                 }
                 <div style={{...column,marginLeft:'auto'}}>
                     <Button
-                        title="select file"
-                        onClick={()=>filePicker.current.click()}
+                        title={allowMultiple ? "select files": "select file"}
+                        // onClick={()=>filePicker.current.click()}
+                        onClick={({shiftKey,altKey,metaKey})=>{
+                            if(shiftKey){
+                                if(store.wavBoardRange.length < 2){
+                                    window.alert("Please select range of notes to enable bulk rack upload")
+                                    return
+                                }
+                                directoryPicker.current.click()
+                            } else {
+                                filePicker.current.click()
+                            } 
+                        }}
                     />
                     <Button
                         title="create rack"
