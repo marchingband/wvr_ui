@@ -118,7 +118,7 @@ const scrollWavBoard = (self,right) =>
         Math.max(0,self.wavBoardIndex - self.numWavPerPage)
 
 const scrollRackBoard = (self,right) => {
-    const { num_layers } = self.voices.slice()[self.currentVoice][self.wavBoardIndex].rack
+    const { num_layers } = self.voices[self.currentVoice][self.wavBoardSelected].rack
     self.rackBoardIndex = right ?
         clamp(self.rackBoardIndex + self.numWavPerPage, 0, num_layers - self.numWavPerPage) :
         clamp(self.rackBoardIndex - self.numWavPerPage, 0, num_layers - self.numWavPerPage)
@@ -277,6 +277,7 @@ const setCurrentWavFile = (self,files) => {
         // there is a range
         if(files.length > 1){
             // multiple files selected
+            files = files.sort((a,b)=>a.name < b.name ? -1 : 1)
             let len = Math.min(files.length, self.wavBoardRange.length)
             if(!window.confirm(`${files.length} files, ${self.wavBoardRange.length} notes, will allocate ${len} files.`))return
             for(let i=0;i<len;i++){
@@ -329,7 +330,6 @@ const setCurrentPinProp = (self,prop,val) => {
 const setCurrentNoteProp = (self,prop,val) => {
     let range = toJS(self.wavBoardRange)
     if(range.length > 0){
-        console.log("range")
         for(let note of range){
             setNoteProp(self,note,prop,val)
         }
@@ -360,7 +360,7 @@ const wavBoardRangeSelect = (self,note) => {
     let len = Math.abs(note - self.wavBoardSelected)
     let first = Math.min(note, self.wavBoardSelected)
     let selected = Array(len + 1).fill().map((_,i)=>i + first)
-    self.wavBoardRange.replace(selected.sort())
+    self.wavBoardRange.replace(selected.sort((a,b)=>a-b))
     // console.log(toJS(self.wavBoardRange))
 }
 
@@ -377,7 +377,7 @@ const wavBoardAddToSelection = (self,note) => {
     if(!selected.includes(self.wavBoardSelected)){
         selected.push(self.wavBoardSelected)
     }
-    self.wavBoardRange.replace(selected.sort())
+    self.wavBoardRange.replace(selected.sort((a,b)=>a-b))
     // console.log(toJS(self.wavBoardRange))
 }
 
@@ -393,7 +393,7 @@ const rackBoardRangeSelect = (self,note) => {
     let len = Math.abs(note - self.rackBoardSelected)
     let first = Math.min(note, self.rackBoardSelected)
     let selected = Array(len + 1).fill().map((_,i)=>i + first)
-    self.rackBoardRange.replace(selected.sort())
+    self.rackBoardRange.replace(selected.sort((a,b)=>a-b))
     // console.log(toJS(self.rackBoardRange))
 }
 
@@ -410,7 +410,7 @@ const rackBoardAddToSelection = (self,note) => {
     if(!selected.includes(self.rackBoardSelected)){
         selected.push(self.rackBoardSelected)
     }
-    self.rackBoardRange.replace(selected.sort())
+    self.rackBoardRange.replace(selected.sort((a,b)=>a-b))
     // console.log(toJS(self.rackBoardRange))
 }
 

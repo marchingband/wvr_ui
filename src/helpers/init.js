@@ -28,7 +28,7 @@ export const initStore = async () => {
         }
     })
     .then(r=>{
-        console.log(r)
+        // console.log(r)
         return r
     })
     .catch(e=>{
@@ -41,8 +41,8 @@ export const initStore = async () => {
     }
     console.log("found wvr")
     console.log(res.data)
-    console.log('40:')
-    console.log(res.data.voices[0][40])
+    // console.log('40:')
+    // console.log(res.data.voices[0][40])
     store.onConnect(res.data)
     store.loading=false
     console.log("done fsjson")

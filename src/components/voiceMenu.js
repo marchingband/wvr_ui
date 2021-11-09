@@ -19,7 +19,7 @@ const VoiceButton = observer(({i}) =>
         onClick={()=>store.currentVoice = i}    
     >
         <Text primary small>
-            {i}
+            {i+1}
         </Text>
     </div>
 )
