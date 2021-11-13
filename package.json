@@ -4,11 +4,11 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "dev": "webpack-dev-server --config webpack.dev.config.js",
+    "dev": "webpack-dev-server --env.MKR=0 --config webpack.dev.config.js",
+    "dev-mkr": "webpack-dev-server --env.MKR=1 --config webpack.dev.config.js",
     "devMobile": "webpack-dev-server --config webpack.dev.config-mobile.js",
-    "build": "webpack && node build_index",
-    "buildHtml": "webpack && node build_html",
-    "buildOnly": "webpack"
+    "build": "webpack --env.MKR=0 && node build_index",
+    "build-mkr": "webpack --env.MKR=1 && node build_index"
   },
   "author": "",
   "license": "ISC",

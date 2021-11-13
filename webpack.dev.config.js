@@ -1,6 +1,7 @@
+const webpack = require('webpack');
 var path = require('path');
 
-module.exports = {
+module.exports = env => ({
     entry: './src/index.js',
     devtool: 'inline-source-map',
     output: {
@@ -9,7 +10,11 @@ module.exports = {
         libraryTarget: 'umd',
         // publicPath: 'http://192.168.0.13:9000/'
     },
-
+    plugins: [
+        new webpack.DefinePlugin({
+            "process.env.MKR": env.MKR 
+        })
+    ],
     devServer: {
         // host: '192.168.0.13',
         host:'localhost',
@@ -101,4 +106,4 @@ module.exports = {
             }
         ]
     }
-}
+})

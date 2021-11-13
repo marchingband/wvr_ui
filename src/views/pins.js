@@ -7,8 +7,7 @@ import {MKR} from '../components/mkr'
 export const Pins = () => 
     <div style={container}>
         <PinConfigView/>
-        <MCU/>
-        {/* <MKR/> */}
+        {process.env.MKR ? <MKR/> : <MCU/>}
     </div>
 
 const container = {
