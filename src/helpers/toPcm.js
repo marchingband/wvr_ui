@@ -137,7 +137,13 @@ export const toPcmFX = async({fileHandle:f,pitch,dist,verb,pan,vol}) => new Prom
         off_source.connect(distortion)
         reverb.connect(reverb_gain)
         reverb_gain.connect(masterVolume)
-        distortion.connect(masterVolume)
+        // distortion.connect(masterVolume)
+        // distortion effects attack so dont use it unless its actually turned up
+        if(dist > 0){
+            distortion.connect(masterVolume)
+        } else {
+            off_source.connect(masterVolume)
+        }
         masterVolume.connect(panning)
         panning.connect(off_ctx.destination)
 

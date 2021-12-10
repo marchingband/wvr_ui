@@ -7,10 +7,16 @@ fs.readFile('index_top.html',(err1, index_top)=>{
         if (err2) throw err2;
         fs.readFile('./output/bundle.min.js',(err3, bundle)=>{
             if (err3) throw err3;
-            let html = header + index_top + bundle + index_bottom + footer;
-            fs.writeFile('./output/wvr_ui.h', html, (err) => {
+            // let html = header + index_top + bundle + index_bottom + footer;
+            let h = header + index_top + bundle + index_bottom + footer;
+            let html = index_top + bundle + index_bottom;
+            fs.writeFile('./output/wvr_ui.h', h, (err) => {
                 if (err) throw err;
                 console.log('Successfully wrote wvr_ui.h to ./output');
+            })
+            fs.writeFile('./output/wvr_ui.html', html, (err) => {
+                if (err) throw err;
+                console.log('Successfully wrote wvr_ui.html to ./output');
             })
         })
     })

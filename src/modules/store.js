@@ -5,6 +5,7 @@ import {clamp} from '../helpers/clamp.js'
 import {makeName} from '../helpers/makeName'
 import {defaultVoices, defaultPinConfig, defaultMetadata} from '../helpers/makeDefaultStores'
 import { parseDirectories } from '../helpers/parseDirectories.js'
+import {numberSort} from '../helpers/numberSort'
 
 configure({
     enforceActions: "never",
@@ -420,7 +421,8 @@ const bulkUploadRacks = (self,e) => {
         window.alert("error in drectory parse")
         return
     }
-    let dirs = Object.keys(tree).sort()
+    // let dirs = Object.keys(tree).sort()
+    let dirs = Object.keys(tree).sort(numberSort)
 
     let numNotes = Math.min(self.wavBoardRange.length, dirs.length)
     if(!window.confirm(`${dirs.length} racks, ${self.wavBoardRange.length} notes, will allocate ${numNotes} racks.`))return
@@ -428,7 +430,8 @@ const bulkUploadRacks = (self,e) => {
         let files = tree[dirs[i]]
             // remove hidden files like .DSstore
             .filter(x=>!x.webkitRelativePath.split("/")[2].startsWith("."))
-            .sort((a,b)=>a.name < b.name ? -1 : 1)
+            // .sort((a,b)=>a.name < b.name ? -1 : 1)
+            .sort((a,b)=>numberSort(a.name,b.name))
         let note = self.wavBoardRange[i]
         convertToRack(self, note)
         setRackNumLayers(self, note, files.length)

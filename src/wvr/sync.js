@@ -7,8 +7,8 @@ export const sync = async() => {
     store.loadingTitle = "Syncing to WVR"
     store.setLoading(true)
     await uploadWavs()
-    await uploadVoiceConfig()
     await uploadPinConfig()
+    await uploadVoiceConfig()
     await uploadMetadata()
     store.setLoading(false)
     let reset = confirm("sync complete, refresh page?")
@@ -44,7 +44,14 @@ const uploadMetadata = async() => {
         // "http://192.168.4.1/updatePinConfig",
         json,
         {
-            onUploadProgress: p=>store.onProgress(p.loaded / p.total ),
+            // onUploadProgress: p=>store.onProgress(p.loaded / p.total ),
+            onUploadProgress: p=>{
+                store.onProgress(p.loaded / p.total )
+                if(p.loaded == p.total){
+                    store.loadingTitle = "data sent, waiting for WVR to save"
+                    store.loadProgress = 0
+                }
+            },
             headers:{'Content-Type': 'text/plain'}
         }
     )
