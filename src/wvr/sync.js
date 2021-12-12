@@ -19,11 +19,9 @@ const uploadPinConfig = async() => {
     store.loadingTitle = "syncing pin config to WVR"
     store.loadProgress = 0
     const pinConfig = store.getPinConfig()
-    // console.log(pinConfig)
     const json = JSON.stringify(pinConfig)
     await axios.post(
         "/updatePinConfig",
-        // "http://192.168.4.1/updatePinConfig",
         json,
         {
             onUploadProgress: p=>store.onProgress(p.loaded / p.total),
@@ -37,14 +35,11 @@ const uploadMetadata = async() => {
     store.loadingTitle = "syncing metadata to WVR"
     store.loadProgress = 0
     const meta = store.getMetadata()
-    // console.log(pinConfig)
     const json = JSON.stringify(meta)
     await axios.post(
         "/updateMetadata",
-        // "http://192.168.4.1/updatePinConfig",
         json,
         {
-            // onUploadProgress: p=>store.onProgress(p.loaded / p.total ),
             onUploadProgress: p=>{
                 store.onProgress(p.loaded / p.total )
                 if(p.loaded == p.total){
@@ -66,7 +61,6 @@ const uploadVoiceConfig = async() => {
     const json = JSON.stringify(voices)
     await axios.post(
         "/updateVoiceConfig",
-        // "http://192.168.4.1/updateVoiceConfig",
         json,
         {
             onUploadProgress: p=>store.onProgress(p.loaded / p.total ),
@@ -137,7 +131,6 @@ const uploadWavs = async () => {
             // not a rack
             await axios.post(
                 "/addwav",
-                // "http://192.168.4.1/addwav",
                 pcm,
                 {
                     onUploadProgress: p=>store.onProgress(p.loaded / p.total),

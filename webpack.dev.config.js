@@ -80,6 +80,16 @@ module.exports = env => ({
                 "cookieDomainRewrite": "localhost",
                 "target": "http://192.168.5.18/updateMetadata"
             },
+            "/voicejson": {
+                "changeOrigin": true,
+                "cookieDomainRewrite": "localhost",
+                "target": "http://192.168.5.18/voicejson"
+            },
+            "/configjson": {
+                "changeOrigin": true,
+                "cookieDomainRewrite": "localhost",
+                "target": "http://192.168.5.18/configjson"
+            },
 
         }
     },

@@ -197,6 +197,20 @@ export const WavDetails = observer(() => {
                             }
                         }}
                     />
+                    <Button
+                        warn
+                        // style={{border:"1px solid red"}}
+                        title="delete"
+                        onClick={()=>{
+                            if(allowMultiple ? window.confirm(`clear ${store.wavBoardRange.length} selected notes?`) : window.confirm("clear this note?")){
+                                if(allowMultiple){
+                                    store.clearSelectedNotes()
+                                }else{
+                                    store.clearCurrentNote()
+                                }
+                            }
+                        }}
+                    />
                     {store.getCurrentNote().filehandle &&
                         <Button
                             title={showSettings ? "show effects" :"show settings"}

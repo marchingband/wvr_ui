@@ -7,7 +7,6 @@ export var ws;
 var res; 
 
 export const init = async () => {
-    // console.log(window.innerWidth)
     store.handleResize() 
     window.addEventListener('resize', ()=>store.handleResize());
     await initWebSockets();
@@ -15,6 +14,56 @@ export const init = async () => {
 }
 
 export const initStore = async () => {
+    store.loading = true
+    let voices = []
+    store.loadProgress = 0
+    for(let i=0; i<16; i++){
+        store.loadingTitle = `Loading voices ${i+1}`
+        let retry = false
+        let res = await axios({
+            method:'get',
+            url:'/voicejson',
+            responseType: 'json',
+            headers:{
+                "voice": i
+            },
+            timeout:5000,
+        })    
+        .catch(e=>{
+            retry = true
+        })
+        if(retry){
+            i--;
+            continue
+        }
+        voices.push(res.data)
+        store.loadProgress = store.loadProgress + 5
+    }
+    store.loadingTitle = `Loading config`
+    store.loadProgress = 90
+    let res = await axios({
+        method:'get',
+        url:'/configjson',
+        responseType: 'json',
+        // onDownloadProgress: p=>{
+        //     let size = p.target.getResponseHeader("size")
+        //     store.onProgress(p.loaded / size)
+        // }
+    })
+    .catch(e=>{
+        console.log(e)
+        store.loading = false
+    })
+
+    store.onConnect({
+        voices,
+        ...res.data
+    })
+    // console.log(voices[0])
+    store.loading = false
+}
+
+export const _initStore = async () => {
     store.loadProgress = 0
     store.loadingTitle = "Loading from WVR"
     store.loading = true

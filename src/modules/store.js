@@ -65,6 +65,8 @@ export const store = observable(
         setCurrentRackName:function(x){setCurrentRackName(this,x)},
         getNote:function(voice,note){return getNote(this,voice,note)},
         getCurrentNote:function(){return getCurrentNote(this)},
+        clearCurrentNote:function(){return clearCurrentNote(this)},
+        clearSelectedNotes:function(){return clearSelectedNotes(this)},
         getRackBreakPoint:function(i){return getRackBreakPoint(this,i)},
         getRackLayer:function(i){return getRackLayer(this,i)},
         getCurrentRackLayer:function(){return getCurrentRackLayer(this)},
@@ -84,7 +86,7 @@ export const store = observable(
         rackBoardRangeSelect:function(note){rackBoardRangeSelect(this,note)},
         rackBoardAddToSelection:function(note){rackBoardAddToSelection(this,note)},
         rackBoardClearRange:function(){this.rackBoardRange.replace([])},
-        bulkUploadRacks:function(e){bulkUploadRacks(this,e)}
+        bulkUploadRacks:function(e){bulkUploadRacks(this,e)},
     }
 )
 
@@ -202,6 +204,38 @@ const getNote = (self,voice,note) => self.voices.slice()[voice][note]
 
 const getCurrentNote = self => self.voices.slice()[self.currentVoice][self.wavBoardSelected]
 
+const clearCurrentNote = self => {
+    self.voices[self.currentVoice][self.wavBoardSelected] = {
+        empty: 1,
+        isRack: -1,
+        mode: 0,
+        name: "",
+        noteOff: 0,
+        priority: 0,
+        responseCurve: 1,
+        retrigger: 0,
+        size: 0,
+        start_block: 0
+    }
+}
+
+const clearSelectedNotes = self => {
+    store.wavBoardRange.forEach(note => {
+        self.voices[self.currentVoice][note] = {
+            empty: 1,
+            isRack: -1,
+            mode: 0,
+            name: "",
+            noteOff: 0,
+            priority: 0,
+            responseCurve: 1,
+            retrigger: 0,
+            size: 0,
+            start_block: 0
+        }
+    })
+}
+
 const getRackBreakPoint = (self,i) => {
     const voices = self.voices.slice()
     if(
@@ -278,13 +312,14 @@ const setCurrentWavFile = (self,files) => {
         // there is a range
         if(files.length > 1){
             // multiple files selected
-            files = files.sort((a,b)=>a.name < b.name ? -1 : 1)
+            files = Array.from(files).sort((a,b)=>a.name < b.name ? -1 : 1)
             let len = Math.min(files.length, self.wavBoardRange.length)
             if(!window.confirm(`${files.length} files, ${self.wavBoardRange.length} notes, will allocate ${len} files.`))return
             for(let i=0;i<len;i++){
                 self.voices[self.currentVoice][self.wavBoardRange[i]].filehandle = files[i]
                 self.voices[self.currentVoice][self.wavBoardRange[i]].name = makeName(files[i].name)
                 self.voices[self.currentVoice][self.wavBoardRange[i]].size = files[i].size
+                self.voices[self.currentVoice][self.wavBoardRange[i]].empty = 0
             }
         } else {
             // only one file selected
@@ -296,6 +331,7 @@ const setCurrentWavFile = (self,files) => {
                     self.voices[self.currentVoice][self.wavBoardRange[i]].filehandle = files[0]
                     self.voices[self.currentVoice][self.wavBoardRange[i]].name = makeName(files[0].name)
                     self.voices[self.currentVoice][self.wavBoardRange[i]].size = files[0].size
+                    self.voices[self.currentVoice][self.wavBoardRange[i]].empty = 0
                     setNoteProp(self, self.wavBoardRange[i], "pitch", pitch)
                 }
             } else {
@@ -305,6 +341,7 @@ const setCurrentWavFile = (self,files) => {
                     self.voices[self.currentVoice][self.wavBoardRange[i]].filehandle = files[0]
                     self.voices[self.currentVoice][self.wavBoardRange[i]].name = makeName(files[0].name)
                     self.voices[self.currentVoice][self.wavBoardRange[i]].size = files[0].size
+                    self.voices[self.currentVoice][self.wavBoardRange[i]].empty = 0
                 }
             }
         }
@@ -313,6 +350,7 @@ const setCurrentWavFile = (self,files) => {
         self.voices[self.currentVoice][self.wavBoardSelected].filehandle = files[0]
         self.voices[self.currentVoice][self.wavBoardSelected].name = makeName(files[0].name)
         self.voices[self.currentVoice][self.wavBoardSelected].size = files[0].size
+        self.voices[self.currentVoice][self.wavBoardSelected].empty = 0
     }
     self.configNeedsUpdate = true
 }

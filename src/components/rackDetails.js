@@ -142,6 +142,15 @@ export const RackDetails = observer(() => {
                         title={showSettings ? "show effects" :"show settings"}
                         onClick={()=>setShowSettings(!showSettings)}
                     />
+                    <Button
+                        warn
+                        title="delete"
+                        onClick={()=>{
+                            if(window.confirm("clear this note?")){
+                                store.clearCurrentNote()
+                            }
+                        }}
+                    />
                 </div>
             </div>
         </div>
