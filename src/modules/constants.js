@@ -59,8 +59,8 @@ export const EDGE_RISING       = 2
 
 export const pinNames = [
     'D0','D1','D2','D3','D4','D5',
-    'D6 A0* T3','D7 A1*','D8 A2*','D9 A3*',
-    'D10 A4*','D11 A5 T0','D12 A6 T1','D13 A7 T2'
+    'D6 A0* T0','D7 A1*','D8 A2*','D9 A3*',
+    'D10 A4*','D11 A5 T1','D12 A6 T2','D13 A7 T3'
 ]
 
 

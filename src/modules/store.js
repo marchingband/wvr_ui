@@ -39,7 +39,6 @@ export const store = observable(
         currentWebsiteIndex:-1,
 
         voices:defaultVoices(),
-        // config:defaultConfig(),
         firmwares:observable([]),
         websites:observable([]),
         pinConfig:observable(defaultPinConfig),
@@ -144,6 +143,7 @@ const convertCurrentToRack = self => {
 const convertToRack = (self, note) => {
     const voices = self.voices.slice()
     voices[self.currentVoice][note].isRack = -2 
+    voices[self.currentVoice][note].empty = 0 
     voices[self.currentVoice][note].rack = {
         num_layers : 2,
         break_points : observable([0,50,127]),
@@ -473,11 +473,12 @@ const bulkUploadRacks = (self,e) => {
         let note = self.wavBoardRange[i]
         convertToRack(self, note)
         setRackNumLayers(self, note, files.length)
-        setRackName(self, note, dirs[i])
+        setRackName(self, note, dirs[i].substring(0,22))
         for(let j=0;j<files.length;j++){
             self.voices[self.currentVoice][note].rack.layers[j].filehandle = files[j]
             self.voices[self.currentVoice][note].rack.layers[j].name = makeName(files[j].name)
             self.voices[self.currentVoice][note].rack.layers[j].size = files[j].size
+            self.voices[self.currentVoice][note].rack.layers[j].empty = 0
         }
     }
     self.configNeedsUpdate = true

@@ -49,7 +49,7 @@ export const initStore = async () => {
         console.log(e)
         store.loading = false
     })
-
+    console.log(voices[0])
     store.onConnect({voices,...res.data})
     store.loading = false
 }

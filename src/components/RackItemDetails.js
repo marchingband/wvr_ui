@@ -6,7 +6,7 @@ import {Button} from './button'
 import {Stack} from './stack'
 import { clamp } from '../helpers/clamp';
 import {auditionDisk, auditionLocal} from '../audio/audition'
-import {SelectNum} from '../components/select'
+import {SelectNum} from './select'
 
 export const RackItemDetails = observer(() => {
     const filePicker = useRef(null)

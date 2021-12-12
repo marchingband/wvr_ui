@@ -1,5 +1,11 @@
 var path = require('path');
 var webpack = require('webpack');
+var WebpackBundleAnalyzer = require('webpack-bundle-analyzer')
+var CompressionPlugin = require("compression-webpack-plugin");
+var BrotliPlugin = require('brotli-webpack-plugin');
+
+// new WebpackBundleAnalyzer.BundleAnalyzerPlugin()
+// new CompressionPlugin()
 
 module.exports = env => ({
     entry: './src/index.js',
@@ -30,8 +36,7 @@ module.exports = env => ({
             }
         ]
     },
-
-     plugins: [
+    plugins: [
         new webpack.DefinePlugin({
             "process.env": { 
                 NODE_ENV: JSON.stringify("production"),
@@ -45,6 +50,12 @@ module.exports = env => ({
             output: {
                 comments: false,
             },
+        }),
+        new BrotliPlugin({
+            asset: '[path].br[query]',
+            test: /\.(js|css|html|svg)$/,
+            threshold: 10240,
+            minRatio: 0.8
         })
     ]
 })

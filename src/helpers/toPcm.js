@@ -133,27 +133,6 @@ export const toPcmFX = async({fileHandle:f,pitch,dist,verb,pan,vol}) => new Prom
     input_reader.readAsArrayBuffer(f);
 })
 
-export const toPcm = f => new Promise((res,rej)=>{
-    var input_reader = new FileReader();
-    input_reader.onload = async(e) => {
-        var ctx = new AudioContext({sampleRate:44100});
-        var audio_buffer = await ctx.decodeAudioData(e.target.result);
-        console.log("audio_buffer is " + audio_buffer.length + " samples")
-        console.log("and " + audio_buffer.numberOfChannels + " channels")
-        var audio_blob;
-        if(audio_buffer.numberOfChannels == 1){
-            audio_blob = bufferToPcmMono(audio_buffer, 0, audio_buffer.length);
-        } else if(audio_buffer.numberOfChannels == 2){
-            audio_blob = bufferToPcmStereo(audio_buffer, 0, audio_buffer.length);
-        } else {
-            rej("file has " + audio_buffer.numberOfChannels + " channels, must be mono or stereo")
-        }
-        var file = new File([audio_blob],'noName')
-        res(file);
-    }
-    input_reader.readAsArrayBuffer(f);
-})
-
 var bufferToPcmStereo = (abuffer, offset, len) => {
     var numOfChan = abuffer.numberOfChannels,
         length = len * numOfChan * 2,
@@ -171,27 +150,6 @@ var bufferToPcmStereo = (abuffer, offset, len) => {
         view.setInt16(pos, sample, true);          // update data chunk
         pos += 2;
         }
-        offset++                                     // next source sample
-    }
-    return new Blob([buffer], {type: "audio/wav"});
-}
-
-var bufferToPcmMono = (abuffer, offset, len) => {
-    var length = len * 2 * 2,
-        buffer = new ArrayBuffer(length),
-        view = new DataView(buffer),
-        sample,
-        pos = 0;
-
-    var channel = abuffer.getChannelData(0);
-
-    while(pos < length) {
-        sample = Math.max(-1, Math.min(1, channel[offset])); // clamp
-        sample = (0.5 + sample < 0 ? sample * 32768 : sample * 32767)|0; // scale to 16-bit signed int
-        view.setInt16(pos, sample, true);          // update data chunk
-        pos += 2;
-        view.setInt16(pos, sample, true);          // update data chunk
-        pos += 2;
         offset++                                     // next source sample
     }
     return new Blob([buffer], {type: "audio/wav"});
