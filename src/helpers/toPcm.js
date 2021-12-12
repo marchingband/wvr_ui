@@ -1,5 +1,3 @@
-// import verb_url from '../verb.wav'
-
 export function makeDistortionCurve(amount) {
     var k = typeof amount === 'number' ? amount : 50,
       n_samples = 44100,
@@ -13,11 +11,6 @@ export function makeDistortionCurve(amount) {
     }
     return curve;
 };
-
-const get_verb_array_buffer = async() =>{
-    const res = await fetch(verb_url)
-    return await res.arrayBuffer()
-}
 
 export const make_verb_array_buffer = ( {ctx, duration=1.5, decay=2.0, reverse=false} ) => {
     var sampleRate = ctx.sampleRate;
@@ -57,14 +50,7 @@ export const play = async({state,setPlaying}) => new Promise(async(res,rej)=>{
         dist.curve = makeDistortionCurve(distLevel/10)
         dist.oversample=('4x')
         var verb = ctx.createConvolver()
-        // var verb_array = Uint8Array.from(atob(verb_data), c => c.charCodeAt(0))
-        // var verb_data_buffer = await ctx.decodeAudioData(verb_array.buffer)
-
-        // var verb_array_buffer = await get_verb_array_buffer()
-        // var verb_data_buffer = await ctx.decodeAudioData(verb_array_buffer)
-        
         var verb_data_buffer = make_verb_array_buffer({ctx})
-
         verb.buffer = verb_data_buffer
         var verb_gain = ctx.createGain()
         src.buffer = await ctx.decodeAudioData(e.target.result);
@@ -88,13 +74,6 @@ var semitones_to_float = semitones => {
 }
 
 export const toPcmFX = async({fileHandle:f,pitch,dist,verb,pan,vol}) => new Promise(async(res,rej)=>{
-    // var data = state.uploads.find(x=>x.note==state.selectedNote.note.note && x.bank==state.selectedNote.bank)
-    // if(data == undefined || data.fileHandle == undefined){
-    //     return res(null)
-    // }
-    // var f = data.fileHandle
-    // var distLevel = parseInt(data.dist) || 0
-    // var verb_gain_value = parseFloat(data.verb_gain) || 0
     var playbackRate = semitones_to_float(pitch)
     var reverb_length = 1
     var input_reader = new FileReader();
@@ -118,9 +97,6 @@ export const toPcmFX = async({fileHandle:f,pitch,dist,verb,pan,vol}) => new Prom
         distortion.oversample=('4x')
 
         var reverb = off_ctx.createConvolver()
-        // var verb_array = Uint8Array.from(atob(verb_data), c => c.charCodeAt(0))
-        // var verb_data_buffer = await ctx.decodeAudioData(verb_array.buffer)
-
         var reverb_data_buffer = make_verb_array_buffer({ctx})
         reverb.buffer = reverb_data_buffer
 
@@ -137,8 +113,6 @@ export const toPcmFX = async({fileHandle:f,pitch,dist,verb,pan,vol}) => new Prom
         off_source.connect(distortion)
         reverb.connect(reverb_gain)
         reverb_gain.connect(masterVolume)
-        // distortion.connect(masterVolume)
-        // distortion effects attack so dont use it unless its actually turned up
         if(dist > 0){
             distortion.connect(masterVolume)
         } else {
