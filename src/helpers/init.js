@@ -29,6 +29,7 @@ export const initStore = async () => {
             timeout:5000,
         })    
         .catch(e=>{
+            console.log(e)
             retry = true
         })
         if(retry){
@@ -77,4 +78,9 @@ const initWebSockets = async() => {
             }
         }
     }
+    window.onbeforeunload = function() {
+        ws.onclose = function () {}; // disable onclose handler first
+        ws.close();
+        console.log("unload")
+    };
 }
