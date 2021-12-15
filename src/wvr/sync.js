@@ -57,7 +57,6 @@ const uploadMetadata = async() => {
 const uploadSingleVoiceConfig = async(numVoice) => {
     store.loadProgress = 0
     const voices = store.getVoices()
-    console.log(voices)
     const json = JSON.stringify(voices[numVoice])
     await axios.post(
         "/updateSingleVoiceConfig",

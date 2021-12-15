@@ -37,6 +37,8 @@ export const initStore = async () => {
         }
         voices.push(res.data)
         store.loadProgress = store.loadProgress + 5
+        // throttle requests a little
+        await new Promise(res=>setTimeout(()=>res(),100))
     }
     store.loadingTitle = `Loading config`
     store.loadProgress = 90
