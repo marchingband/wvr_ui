@@ -182,7 +182,13 @@ export const WavDetails = observer(() => {
                     />
                     <Button
                         title="create rack"
-                        onClick={()=>store.convertCurrentToRack()}
+                        onClick={()=>{
+                            if(store.getNumRackSlotsOpen() > 0){
+                                store.convertCurrentToRack()
+                            } else {
+                                window.alert("You are all out of rack slots!")
+                            }
+                        }}
                     />
                     <Button
                         title="audition"

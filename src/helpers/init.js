@@ -17,7 +17,7 @@ export const initStore = async () => {
     let voices = []
     store.loadProgress = 0
     for(let i=0; i<16; i++){
-        store.loadingTitle = `Loading voices ${i+1}`
+        store.loadingTitle = `Loading voice ${i+1}`
         let retry = false
         let res = await axios({
             method:'get',

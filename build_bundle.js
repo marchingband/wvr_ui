@@ -10,7 +10,7 @@ fs.readFile('./output/bundle.min.js',(err, bundle)=>{
         out += "0x" + char + ", "
     })
     out += "};"
-    fs.writeFile('./output/bundle2.h', out, (err2) => {
+    fs.writeFile('./output/bundle.h', out, (err2) => {
         if (err2) throw err2;
         console.log('Successfully wrote bundle.h to ./output');
     })

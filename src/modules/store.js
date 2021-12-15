@@ -86,6 +86,7 @@ export const store = observable(
         rackBoardAddToSelection:function(note){rackBoardAddToSelection(this,note)},
         rackBoardClearRange:function(){this.rackBoardRange.replace([])},
         bulkUploadRacks:function(e){bulkUploadRacks(this,e)},
+        getNumRackSlotsOpen:function(){return getNumRackSlotsOpen(this)},
     }
 )
 
@@ -215,7 +216,6 @@ const clearCurrentNote = self => {
         responseCurve: 1,
         retrigger: 0,
         size: 0,
-        start_block: 0
     }
 }
 
@@ -231,7 +231,6 @@ const clearSelectedNotes = self => {
             responseCurve: 1,
             retrigger: 0,
             size: 0,
-            start_block: 0
         }
     })
 }
@@ -462,8 +461,9 @@ const bulkUploadRacks = (self,e) => {
     // let dirs = Object.keys(tree).sort()
     let dirs = Object.keys(tree).sort(numberSort)
 
-    let numNotes = Math.min(self.wavBoardRange.length, dirs.length)
-    if(!window.confirm(`${dirs.length} racks, ${self.wavBoardRange.length} notes, will allocate ${numNotes} racks.`))return
+    let openSlots = self.getNumRackSlotsOpen()
+    let numNotes = Math.min(self.wavBoardRange.length, dirs.length, openSlots)
+    if(!window.confirm(`${dirs.length} racks selected, ${self.wavBoardRange.length} notes selected, ${openSlots} rack slots available in memory, will allocate ${numNotes} racks.`))return
     for(let i=0;i<numNotes;i++){
         let files = tree[dirs[i]]
             // remove hidden files like .DSstore
@@ -482,4 +482,17 @@ const bulkUploadRacks = (self,e) => {
         }
     }
     self.configNeedsUpdate = true
+}
+
+const getNumRackSlotsOpen = self => {
+    const voices = self.getVoices()
+    let cnt = 0
+    voices.forEach(voice=>{
+        voice.forEach(note=>{
+            if(note.isRack != -1){
+                cnt++
+            }
+        })
+    })
+    return 128 - cnt
 }

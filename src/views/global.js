@@ -107,6 +107,14 @@ export const Global = observer(() => {
                     }}
                 />
             </div>
+            <div style={{display:'flex',flexDirection:'row',alignItems:'center', marginLeft:20, width:400, marginTop:20}}>
+                <Text primary>
+                    Rack Slots Remaining:
+                </Text>
+                <Text warn style={{marginLeft:20}}>
+                    {store.getNumRackSlotsOpen()} / 128
+                </Text>
+            </div>
             <input 
                 ref={firmwareFileInput}
                 type="file" 

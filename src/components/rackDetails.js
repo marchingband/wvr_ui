@@ -13,6 +13,7 @@ export const RackDetails = observer(() => {
     const {mode,retrigger,noteOff,responseCurve,priority,rack,dist,verb,pitch,vol,pan} = store.getCurrentNote()
     const {name,num_layers} = rack
     const [showSettings, setShowSettings] = useState(true)
+    const allowMultiple = store.wavBoardRange.length > 1 && store.wavBoardInterpolationTarget == undefined
     return(
         <div style={container}>
             <div style={row}>
@@ -150,6 +151,16 @@ export const RackDetails = observer(() => {
                                 store.clearCurrentNote()
                             }
                         }}
+                        onClick={()=>{
+                            if(allowMultiple ? window.confirm(`clear ${store.wavBoardRange.length} selected notes?`) : window.confirm("clear this note?")){
+                                if(allowMultiple){
+                                    store.clearSelectedNotes()
+                                }else{
+                                    store.clearCurrentNote()
+                                }
+                            }
+                        }}
+
                     />
                 </div>
             </div>

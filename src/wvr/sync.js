@@ -54,22 +54,35 @@ const uploadMetadata = async() => {
     store.loadingTitle = "complete"
 }
 
-const uploadVoiceConfig = async() => {
-    store.loadingTitle = "syncing voice config to WVR"
+const uploadSingleVoiceConfig = async(numVoice) => {
     store.loadProgress = 0
     const voices = store.getVoices()
-    const json = JSON.stringify(voices)
+    console.log(voices)
+    const json = JSON.stringify(voices[numVoice])
     await axios.post(
-        "/updateVoiceConfig",
+        "/updateSingleVoiceConfig",
         json,
         {
-            onUploadProgress: p=>store.onProgress(p.loaded / p.total ),
-            headers:{'Content-Type': 'text/plain'}
+            // onUploadProgress: p=>{
+            //     store.onProgress(p.loaded / p.total)
+            // },
+            headers:{
+                'Content-Type': 'text/plain',
+                'numVoice' : numVoice
+            }
         }
     )
     .catch(e=>console.log(e))
-
 }
+
+const uploadVoiceConfig = async() => {
+    for(let i=0; i<16; i++){
+        await uploadSingleVoiceConfig(i)
+        store.loadingTitle = `waiting for WVR to save voice ${i + 1} config`
+        store.loadProgress = 0
+    }
+}
+
 
 const uploadWavs = async () => {
     const uploads = []

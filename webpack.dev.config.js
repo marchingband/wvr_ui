@@ -45,6 +45,11 @@ module.exports = env => ({
                 "cookieDomainRewrite": "localhost",
                 "target": "http://192.168.5.18/updateVoiceConfig"
             },
+            "/updateSingleVoiceConfig": {
+                "changeOrigin": true,
+                "cookieDomainRewrite": "localhost",
+                "target": "http://192.168.5.18/updateSingleVoiceConfig"
+            },
             "/updatePinConfig": {
                 "changeOrigin": true,
                 "cookieDomainRewrite": "localhost",

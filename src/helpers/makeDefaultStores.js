@@ -1,5 +1,6 @@
 import {observable} from 'mobx'
 import {IGNORE, NOTE_ON, ONE_SHOT, RETRIGGER, EDGE_FALLING, EDGE_NONE, ROOT_SQUARE} from '../modules/constants'
+import { store } from '../modules/store'
 
 export const defaultVoices = () => {
     const voices = []
@@ -26,6 +27,43 @@ export const defaultVoices = () => {
     }
     return observable(voices)
 }
+
+export const fillVoices = () => {
+    let voice = []
+    for(let i=0;i<128;i++){
+        let note = {
+            name:'1234567890123456789012',
+            size:0,
+            isRack:-1,
+            mode:ONE_SHOT,
+            retrigger:RETRIGGER,
+            noteOff:IGNORE,
+            responseCurve:ROOT_SQUARE,
+            priority:0,
+            empty:0,
+            isRack:i,
+            rack:{
+                breakPoints:Array(33).fill().map((x,i)=>i),
+                free:0,
+                name: "1234567890123456789012",
+                num_layers: 32,
+                layers:[]
+            },
+        }
+        for(let j=0; j<32; j++){
+            note.rack.layers[j] = {
+                name:"1234567890123456789012",
+                empty: 0,
+                size: 1234567
+            }
+        }
+        voice.push(note)
+    }
+    console.log(voice)
+    const voices = [voice,[],[],[],[],[],[],[],[],[],[],[],[],[],[],[]]
+    store.voices.replace(voices)
+}
+
 
 export const defaultPinConfig = [
     {

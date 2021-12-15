@@ -8,15 +8,21 @@ import {Home} from './views/home'
 import {Pins} from './views/pins'
 import {Firmwares} from './views/firmwares'
 import {Global} from './views/global'
+import { fillVoices } from './helpers/makeDefaultStores.js';
 
 const INIT = 1
 
 const App = () => {
-    if(INIT){
-        useEffect(()=>{
+    useEffect(()=>{
+        if(INIT){
             init()
-        },[])
-    }
+        } else {
+            (async () => {
+                // await init()
+                // fillVoices()
+            })()
+        }
+    },[])
     return(
         <div style={container}>
             <Loading/>
