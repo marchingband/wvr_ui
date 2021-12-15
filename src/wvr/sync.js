@@ -1,5 +1,5 @@
 import { store } from '../modules/store.js';
-import {toPcm, toPcmFX} from '../helpers/toPcm.js'
+import {toPcmFX} from '../helpers/toPcm.js'
 import axios from 'axios'
 
 export const sync = async() => {
@@ -55,7 +55,6 @@ const uploadMetadata = async() => {
 }
 
 const uploadSingleVoiceConfig = async(numVoice) => {
-    store.loadProgress = 0
     const voices = store.getVoices()
     const json = JSON.stringify(voices[numVoice])
     await axios.post(
@@ -76,9 +75,9 @@ const uploadSingleVoiceConfig = async(numVoice) => {
 
 const uploadVoiceConfig = async() => {
     for(let i=0; i<16; i++){
-        await uploadSingleVoiceConfig(i)
-        store.loadingTitle = `waiting for WVR to save voice ${i + 1} config`
+        store.loadingTitle = `syncing voice ${i + 1} config`
         store.loadProgress = 0
+        await uploadSingleVoiceConfig(i)
     }
 }
 
