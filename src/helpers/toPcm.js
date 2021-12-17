@@ -80,6 +80,7 @@ export const toPcmFX = async({fileHandle:f,pitch,dist,verb,pan,vol}) => new Prom
     input_reader.onload = async(e) => {
         var ctx = new AudioContext({sampleRate:44100});
         var buf1 = await ctx.decodeAudioData(e.target.result);
+        ctx.close()
         // if there is reverb, add space for the tail
         var reverb_tail_length = verb > 0 ? (44100 * reverb_length) : 0
         var off_ctx = new OfflineAudioContext(

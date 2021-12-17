@@ -28,6 +28,14 @@ export const defaultVoices = () => {
     return observable(voices)
 }
 
+export const default_fx = {
+    dist:0,
+    verb:0,
+    pitch:0,
+    vol:100,
+    pan:0
+}
+
 export const fillVoices = () => {
     let voice = []
     for(let i=0;i<128;i++){

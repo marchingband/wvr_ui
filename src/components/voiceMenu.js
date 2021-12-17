@@ -16,7 +16,10 @@ export const VoiceMenu = () =>
 const VoiceButton = observer(({i}) => 
     <div 
         style={voiceButton(i)}
-        onClick={()=>store.currentVoice = i}    
+        onClick={()=>{
+            store.currentVoice = i
+            store.resetSelected()
+        }}
     >
         <Text primary small>
             {i+1}

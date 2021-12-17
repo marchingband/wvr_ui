@@ -31,7 +31,8 @@ export const uploadFirmwareAndGUI = async ({index,firmwareFileHandle,GUIFileHand
         await uploadGUI({index,GUIFileHandle})
         console.log("done uploading GUI slot " + index)
     }
-    await initStore()
+    // firmwareFileHandle = undefined
+    // await initStore()
 }
 
 const uploadFirmware = async ({index,firmwareFileHandle}) => {

@@ -35,7 +35,12 @@ export const WavBoardItem = observer(({voiceIndex,noteIndex}) =>
         <Text medium primary style={{margin:2}}>
             {noteIndex}
         </Text>
-        <Text medium primary style={{margin:2}}>
+        <Text 
+            medium 
+            primary = {store.getNote(voiceIndex,noteIndex).isRack == -1}
+            secondary = {store.getNote(voiceIndex,noteIndex).isRack != -1}
+            style={{margin:2}}
+        >
             {
                 store.getNote(voiceIndex,noteIndex).rack?
                     store.getNote(voiceIndex,noteIndex).rack.name ? 

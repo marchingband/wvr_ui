@@ -85,6 +85,7 @@ export const Global = observer(() => {
                         const name = window.prompt("enter new WIFI name")
                         if(name){
                             store.metadata.wifiNetworkName = name
+                            store.configNeedsUpdate = true
                         }
                     }}
                 />
@@ -103,6 +104,7 @@ export const Global = observer(() => {
                         }
                         if(name){
                             store.metadata.wifiNetworkPassword = name
+                            store.configNeedsUpdate = true
                         }
                     }}
                 />

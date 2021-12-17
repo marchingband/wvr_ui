@@ -19,8 +19,8 @@ export const Menu = observer(() =>
             FIRMWARE
         </MenuButton>
         <MenuButton 
-            onClick={()=>sync()} 
-            highlight={store.configNeedsUpdate}
+            onClick={()=>(store.getVoicesNeedUpdate().some(x=>x) || store.configNeedsUpdate) ? sync() : window.alert("nothing to sync")} 
+            highlight={store.getVoicesNeedUpdate().some(x=>x) || store.configNeedsUpdate}
         >
             SYNC
         </MenuButton>
@@ -32,7 +32,7 @@ const MenuButton = observer(props =>
         style={menuButton} 
         onClick={props.onClick}
     >
-        <Text medium primary underline={props.highlight}>
+        <Text medium primary={!props.highlight} warn={props.highlight}>
             {props.children}
         </Text>
     </div>

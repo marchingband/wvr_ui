@@ -24,8 +24,8 @@ export const auditionLocal = async(f) => new Promise(async(res)=>{
         res()
         return
     }
-    console.log("file to audition")
-    console.log(f)
+    // console.log("file to audition")
+    // console.log(f)
     const voice = store.currentVoice
     const note = store.wavBoardSelected
     const {dist,verb,pitch,vol,pan} = store.getVoices()[voice][note]

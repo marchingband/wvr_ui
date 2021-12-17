@@ -44,7 +44,6 @@ export const WavDetails = observer(() => {
                 multiple = { allowMultiple }
                 type="file" 
                 onChange={e=>{
-                    console.log(e)
                     e && store.setCurrentWavFile(e.target.files)
                 }}
                 style={{display:'none'}}

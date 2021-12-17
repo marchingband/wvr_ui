@@ -3,7 +3,7 @@ import {themes} from './themes.js'
 import {WAV_ITEM_SIZE} from './constants'
 import {clamp} from '../helpers/clamp.js'
 import {makeName} from '../helpers/makeName'
-import {defaultVoices, defaultPinConfig, defaultMetadata} from '../helpers/makeDefaultStores'
+import {defaultVoices, defaultPinConfig, defaultMetadata, default_fx} from '../helpers/makeDefaultStores'
 import { parseDirectories } from '../helpers/parseDirectories.js'
 import {numberSort} from '../helpers/numberSort'
 
@@ -13,36 +13,38 @@ configure({
 
 export const store = observable(
     {
-        view:'home',
-        theme:themes.dark,
+        view: 'home',
+        theme: themes.dark,
 
-        loading:false,
-        setLoading:function(x){this.loading=x},
-        loadProgress:0,
-        loadingTitle:"",
-        configNeedsUpdate:false,
+        loading: false,
+        setLoading: function(x){this.loading=x},
+        loadProgress: 0,
+        loadingTitle: "",
+        configNeedsUpdate: false,
+        voicesNeedUpdate: observable(Array(16).fill(false)),
+        fileHandleKey: 0,
 
-        numWavPerPage:6,
-        currentVoice:0,
+        numWavPerPage: 6,
+        currentVoice: 0,
 
-        wavBoardIndex:40,
-        wavBoardSelected:40,
-        wavBoardRange:observable([]),
-        wavBoardInterpolationTarget:undefined,
+        wavBoardIndex: 40,
+        wavBoardSelected: 40,
+        wavBoardRange: observable([]),
+        wavBoardInterpolationTarget: undefined,
 
-        rackBoardIndex:0,
-        rackBoardSelected:0,
+        rackBoardIndex: 0,
+        rackBoardSelected: 0,
         rackBoardRange:[],
 
-        pinConfigSelected:0,
-        currentFirmwareIndex:-1,
-        currentWebsiteIndex:-1,
+        pinConfigSelected: 0,
+        currentFirmwareIndex: -1,
+        currentWebsiteIndex: -1,
 
-        voices:defaultVoices(),
-        firmwares:observable([]),
-        websites:observable([]),
-        pinConfig:observable(defaultPinConfig),
-        metadata:observable(defaultMetadata),
+        voices: defaultVoices(),
+        firmwares: observable([]),
+        websites: observable([]),
+        pinConfig: observable(defaultPinConfig),
+        metadata: observable(defaultMetadata),
 
         getVoices:function(){
             return toJS(this.voices)
@@ -87,6 +89,15 @@ export const store = observable(
         rackBoardClearRange:function(){this.rackBoardRange.replace([])},
         bulkUploadRacks:function(e){bulkUploadRacks(this,e)},
         getNumRackSlotsOpen:function(){return getNumRackSlotsOpen(this)},
+        voiceNeedsUpdate:function(){voiceNeedsUpdate(this)},
+        getVoicesNeedUpdate:function(){return toJS(this.voicesNeedUpdate)},
+        resetSelected:function(){resetSelected(this)},
+        logData:function(){console.log({
+            metadata: toJS(this.metadata),
+            voices: toJS(this.voices),
+            pinConfig: toJS(this.pinConfig),
+            firmwares: toJS(this.firmwares)
+        })}
     }
 )
 
@@ -134,15 +145,15 @@ const setCurrentVoiceProp = (self,prop,val) => {
     const voices = self.voices.slice()
     voices[self.currentVoice][self.wavBoardSelected][prop] = val
     self.voices.replace(voices)
-    self.configNeedsUpdate = true
+    self.voiceNeedsUpdate()
 }
 
 const convertCurrentToRack = self => {
-    convertToRack(self,self.wavBoardSelected)
+    convertToRack(self, self.wavBoardSelected)
 }
 
 const convertToRack = (self, note) => {
-    const voices = self.voices.slice()
+    const voices = self.getVoices()
     voices[self.currentVoice][note].isRack = -2 
     voices[self.currentVoice][note].empty = 0 
     voices[self.currentVoice][note].rack = {
@@ -151,14 +162,17 @@ const convertToRack = (self, note) => {
         layers : observable([{name:'',size:0},{name:'',size:0}])
     }
     self.voices.replace(voices)
-    self.configNeedsUpdate = true
+    self.voiceNeedsUpdate()
 }
 
 const convertCurrentToNonRack = self => {
-    const voices = self.voices.slice()
+    const voices = self.getVoices()
+    voices[self.currentVoice][self.wavBoardSelected].name = ""
     voices[self.currentVoice][self.wavBoardSelected].isRack = -1
+    delete voices[self.currentVoice][self.wavBoardSelected].rack
+
     self.voices.replace(voices)
-    self.configNeedsUpdate = true
+    self.voiceNeedsUpdate()
 }
 
 const setBreakPoint = (self,i,val) => {
@@ -166,7 +180,7 @@ const setBreakPoint = (self,i,val) => {
     var break_points = voices[self.currentVoice][self.wavBoardSelected].rack.break_points.slice()
     break_points[i+1] = val
     voices[self.currentVoice][self.wavBoardSelected].rack.break_points.replace(break_points)
-    self.configNeedsUpdate = true
+    self.voiceNeedsUpdate()
 }
 
 const setCurrentRackNumLayers = (self,numLayers) => {
@@ -187,7 +201,7 @@ const setRackNumLayers = (self,note,numLayers) => {
     voices[self.currentVoice][note].rack.break_points.replace(break_points)
     voices[self.currentVoice][note].rack.num_layers = numLayers
     self.voices.replace(voices)
-    self.configNeedsUpdate = true
+    self.voiceNeedsUpdate()
 }
 
 const setCurrentRackName = (self, name) =>{
@@ -198,7 +212,7 @@ const setRackName = (self,note,name) =>{
     const voices = self.voices.slice()
     voices[self.currentVoice][note].rack.name = name
     self.voices.replace(voices)
-    self.configNeedsUpdate = true
+    self.voiceNeedsUpdate()
 }
 
 const getNote = (self,voice,note) => self.voices.slice()[voice][note]
@@ -216,7 +230,9 @@ const clearCurrentNote = self => {
         responseCurve: 1,
         retrigger: 0,
         size: 0,
+        ...default_fx
     }
+    self.voiceNeedsUpdate()
 }
 
 const clearSelectedNotes = self => {
@@ -231,8 +247,10 @@ const clearSelectedNotes = self => {
             responseCurve: 1,
             retrigger: 0,
             size: 0,
+            ...default_fx
         }
     })
+    self.voiceNeedsUpdate()
 }
 
 const getRackBreakPoint = (self,i) => {
@@ -290,7 +308,7 @@ const setCurrentRackFile = (self,files) => {
             }
         } else {
             // only one file selected, copy to all
-            if(!window.confirm(`copy to ${self.wavBoardRange.length} notes selected?`))return
+            if(!window.confirm(`copy to ${self.rackBoardRange.length} notes selected?`))return
             for(let i=0;i<self.rackBoardRange.length;i++){
                 self.voices[self.currentVoice][self.wavBoardSelected].rack.layers[self.rackBoardRange[i]].filehandle = files[0]
                 self.voices[self.currentVoice][self.wavBoardSelected].rack.layers[self.rackBoardRange[i]].name = makeName(files[0].name)
@@ -303,7 +321,7 @@ const setCurrentRackFile = (self,files) => {
         self.voices[self.currentVoice][self.wavBoardSelected].rack.layers[self.rackBoardSelected].name = makeName(files[0].name)
         self.voices[self.currentVoice][self.wavBoardSelected].rack.layers[self.rackBoardSelected].size = files[0].size
     }
-    self.configNeedsUpdate = true
+    self.voiceNeedsUpdate()
 }
 
 const setCurrentWavFile = (self,files) => {
@@ -311,7 +329,8 @@ const setCurrentWavFile = (self,files) => {
         // there is a range
         if(files.length > 1){
             // multiple files selected
-            files = Array.from(files).sort((a,b)=>a.name < b.name ? -1 : 1)
+            files = Array.from(files).sort((a,b)=>numberSort(a.name,b.name))
+            // files = Array.from(files).sort((a,b)=>a.name < b.name ? -1 : 1)
             let len = Math.min(files.length, self.wavBoardRange.length)
             if(!window.confirm(`${files.length} files, ${self.wavBoardRange.length} notes, will allocate ${len} files.`))return
             for(let i=0;i<len;i++){
@@ -319,6 +338,8 @@ const setCurrentWavFile = (self,files) => {
                 self.voices[self.currentVoice][self.wavBoardRange[i]].name = makeName(files[i].name)
                 self.voices[self.currentVoice][self.wavBoardRange[i]].size = files[i].size
                 self.voices[self.currentVoice][self.wavBoardRange[i]].empty = 0
+                self.voices[self.currentVoice][self.wavBoardRange[i]].isRack = -1
+                delete self.voices[self.currentVoice][self.wavBoardRange[i]].rack
             }
         } else {
             // only one file selected
@@ -331,6 +352,8 @@ const setCurrentWavFile = (self,files) => {
                     self.voices[self.currentVoice][self.wavBoardRange[i]].name = makeName(files[0].name)
                     self.voices[self.currentVoice][self.wavBoardRange[i]].size = files[0].size
                     self.voices[self.currentVoice][self.wavBoardRange[i]].empty = 0
+                    self.voices[self.currentVoice][self.wavBoardRange[i]].isRack = -1
+                    delete self.voices[self.currentVoice][self.wavBoardRange[i]].rack    
                     setNoteProp(self, self.wavBoardRange[i], "pitch", pitch)
                 }
             } else {
@@ -341,6 +364,8 @@ const setCurrentWavFile = (self,files) => {
                     self.voices[self.currentVoice][self.wavBoardRange[i]].name = makeName(files[0].name)
                     self.voices[self.currentVoice][self.wavBoardRange[i]].size = files[0].size
                     self.voices[self.currentVoice][self.wavBoardRange[i]].empty = 0
+                    self.voices[self.currentVoice][self.wavBoardRange[i]].isRack = -1
+                    delete self.voices[self.currentVoice][self.wavBoardRange[i]].rack    
                 }
             }
         }
@@ -351,7 +376,7 @@ const setCurrentWavFile = (self,files) => {
         self.voices[self.currentVoice][self.wavBoardSelected].size = files[0].size
         self.voices[self.currentVoice][self.wavBoardSelected].empty = 0
     }
-    self.configNeedsUpdate = true
+    self.voiceNeedsUpdate()
 }
 
 const getCurrentPin = self => self.pinConfig.slice()[self.pinConfigSelected]
@@ -378,7 +403,7 @@ const setCurrentNoteProp = (self,prop,val) => {
 
 const setNoteProp = (self,note,prop,val) => {
     self.voices[self.currentVoice][note][prop] = val
-    self.configNeedsUpdate = true
+    self.voiceNeedsUpdate()
 }
 
 const noteOn = (self, voice, note) => {
@@ -391,7 +416,7 @@ const noteOff = (self, voice, note) => {
 
 const setMetadataField = (self, prop, val) => {
     self.metadata[prop] = val
-    self.configNeedsUpdate = true
+    self.configNeedsUpdate= true
 }
 
 const wavBoardRangeSelect = (self,note) => {
@@ -481,7 +506,7 @@ const bulkUploadRacks = (self,e) => {
             self.voices[self.currentVoice][note].rack.layers[j].empty = 0
         }
     }
-    self.configNeedsUpdate = true
+    self.voiceNeedsUpdate()
 }
 
 const getNumRackSlotsOpen = self => {
@@ -495,4 +520,15 @@ const getNumRackSlotsOpen = self => {
         })
     })
     return 128 - cnt
+}
+
+const voiceNeedsUpdate = self => {
+    self.voicesNeedUpdate[self.currentVoice] = true
+}
+
+const resetSelected = self => {
+    self.wavBoardSelected = 40
+    self.rackBoardSelected = 0
+    self.wavBoardRange.replace([])
+    self.rackBoardRange.replace([])
 }

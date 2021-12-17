@@ -17,33 +17,12 @@ export const initStore = async () => {
     let voices = []
     store.loadProgress = 0
     for(let i=0; i<16; i++){
-        store.loadingTitle = `Loading voice ${i+1}`
-        let retry = false
-        let res = await axios({
-            method:'get',
-            url:'/voicejson',
-            responseType: 'json',
-            headers:{
-                "voice": i
-            },
-            timeout:5000,
-        })    
-        .catch(e=>{
-            console.log(e)
-            retry = true
-        })
-        if(retry){
-            i--;
-            continue
-        }
-        voices.push(res.data)
-        store.loadProgress = store.loadProgress + 5
-        // throttle requests a little
-        await new Promise(res=>setTimeout(()=>res(),100))
+        let voice = await loadVoice(i)
+        voices.push(voice)
     }
     store.loadingTitle = `Loading config`
     store.loadProgress = 90
-    let res = await axios({
+    let {data:config} = await axios({
         method:'get',
         url:'/configjson',
         responseType: 'json',
@@ -52,9 +31,39 @@ export const initStore = async () => {
         console.log(e)
         store.loading = false
     })
-    console.log(voices[0])
-    store.onConnect({voices,...res.data})
+    console.log({voices,...config})
+    store.onConnect({
+        voices,
+        ...config
+    })
+    // store.logData()
     store.loading = false
+}
+
+export const loadVoice = async i => {
+    store.loadingTitle = `Loading voice ${i+1}`
+    let retry = false
+    let res = await axios({
+        method:'get',
+        url:'/voicejson',
+        responseType: 'json',
+        headers:{
+            "voice": i
+        },
+        timeout:5000,
+    })    
+    .catch(e=>{
+        console.log(e)
+        retry = true
+    })
+    if(retry){
+        console.log("retry load voice " + i)
+        return await loadVoice(i)
+    }
+    // throttle requests a little
+    // await new Promise(res=>setTimeout(()=>res(),100))
+    store.loadProgress = store.loadProgress + 5
+    return res.data
 }
 
 const initWebSockets = async() => {

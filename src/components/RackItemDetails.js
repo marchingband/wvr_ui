@@ -33,7 +33,7 @@ export const RackItemDetails = observer(() => {
     })
     return(
         <div style={container}>
-            <input 
+            <input
                 ref={filePicker}
                 type="file" 
                 onChange={e=>store.setCurrentRackFile(e.target.files)}
