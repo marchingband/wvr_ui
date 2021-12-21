@@ -54,6 +54,13 @@ const uploadFirmware = async ({index,firmwareFileHandle}) => {
         }
     )
     .catch(e=>alert('File Uplaod Failed \n' + e ))
+    console.log(res)
+    if(res.status == 204){
+        let firmwares = store.firmwares.slice()
+        firmwares[index].free = 0
+        firmwares[index].corrupt = 0
+        store.firmwares.replace(firmwares)
+    }
     store.loading = false
 }
 

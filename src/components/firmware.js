@@ -75,12 +75,6 @@ export const Firmware = ({num,f}) => {
                     {"<- current"}
                 </Text>
             }
-            {/* <Button
-                title={GUI?GUI.name:store.websites.slice()[num].name?store.websites.slice()[num].name:"select gui"}
-                onClick={()=>{GUIFileInput.current.click()}}
-            /> */}
-
-            {/* INVISIBLE INPUTS */}
             <input 
                 ref={firmwareFileInput}
                 type="file" 
