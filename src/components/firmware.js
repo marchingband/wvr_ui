@@ -7,7 +7,7 @@ import {bootFromEMMC} from '../wvr/bootFromEMMC'
 
 
 export const Firmware = ({num,f}) => {
-    const selected = num == store.currentFirmwareIndex
+    const isCurrent = num == store.metadata.currentFirmwareIndex
     const [firmware,setFirmware] = useState(null)
     const [GUI,setGUI] = useState(null)
     const [name,setName] = useState(null)
@@ -70,6 +70,11 @@ export const Firmware = ({num,f}) => {
                 title={"select binary"}
                 onClick={()=>{firmwareFileInput.current.click()}}
             />
+            {isCurrent &&
+                <Text style={{marginLeft:20}}>
+                    {"<- current"}
+                </Text>
+            }
             {/* <Button
                 title={GUI?GUI.name:store.websites.slice()[num].name?store.websites.slice()[num].name:"select gui"}
                 onClick={()=>{GUIFileInput.current.click()}}
