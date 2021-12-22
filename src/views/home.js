@@ -3,20 +3,18 @@ import {observer} from 'mobx-react-lite'
 import {WavBoard} from '../components/wavBoard'
 import {FileDetails} from '../components/fileDetails'
 import {VoiceMenu} from '../components/voiceMenu'
-import {ws} from '../helpers/init'
+import { store } from '../modules/store';
+import {RecoveryModeHome} from '../components/recoveryMode'
 
 export const Home = observer(() =>
     <div style={container}>
-        {/* <div 
-            style={{width:50,height:50,backgroundColor:'red'}}
-            onClick={()=>{
-                ws.send(JSON.stringify({procedure:1}))
-            }}
-        /> */}
         <VoiceMenu/>
         <WavBoard/>
         <FileDetails/>
         <div style={{width:'100%',height:20,marginBottom:'auto'}}/>
+        {store.isRecoveryMode &&
+            <RecoveryModeHome/>
+        }
     </div>
 )
 
@@ -25,4 +23,5 @@ const container = {
     height:'100%',
     display:'flex',
     flexDirection:'column',
+    position:'relative'
 }

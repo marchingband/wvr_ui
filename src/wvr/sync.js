@@ -30,6 +30,18 @@ export const sync = async() => {
     // if(reset) location.reload()
 }
 
+export const syncRecoveryMode = async() => {
+    store.loadProgress = 0
+    store.loadingTitle = "Syncing to WVR"
+    store.setLoading(true)
+    await uploadPinConfig()
+    await uploadVoiceConfig()
+    await uploadMetadata()
+    store.setLoading(false)
+    window.alert("sync completed")
+    store.logData()
+}
+
 const uploadPinConfig = async() => {
     store.loadingTitle = "syncing pin config to WVR"
     store.loadProgress = 0

@@ -1,6 +1,6 @@
 import React from 'react'
 import { Text } from '../components/text.js'
-import { sync } from '../wvr/sync'
+import { sync, syncRecoveryMode } from '../wvr/sync'
 import { store } from '../modules/store'
 import {observer} from 'mobx-react-lite'
 
@@ -19,7 +19,21 @@ export const Menu = observer(() =>
             FIRMWARE
         </MenuButton>
         <MenuButton 
-            onClick={()=>(store.getVoicesNeedUpdate().some(x=>x) || store.configNeedsUpdate) ? sync() : window.alert("nothing to sync")} 
+            onClick={()=>{
+                if(store.isRecoveryMode){
+                    if(store.configNeedsUpdate){
+                        syncRecoveryMode()
+                    } else {
+                        window.alert("nothing to sync")
+                    }
+                } else {
+                    if(store.getVoicesNeedUpdate().some(x=>x) || store.configNeedsUpdate){
+                        sync()
+                    } else {
+                        window.alert("nothing to sync")} 
+                    }
+                }
+            }
             highlight={store.getVoicesNeedUpdate().some(x=>x) || store.configNeedsUpdate}
         >
             SYNC

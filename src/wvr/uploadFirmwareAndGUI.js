@@ -101,3 +101,23 @@ const uploadGUI = async ({index,GUIFileHandle}) => {
     )
     .catch(e=>alert('File Uplaod Failed \n' + e ))
 }
+
+export const forceUploadFirmware = async({fileHandle}) => {
+    store.loading = true
+    store.loadProgress = 0
+    store.loadingTitle = "uploading firmware"
+    let res = await axios.post(
+        "/update",
+        // "http://192.168.4.1/updaterecoveryfirmware",
+        fileHandle,
+        {
+            onUploadProgress: p=>store.onProgress(p.loaded / p.total),
+            headers:{
+                'Content-Type': 'text/html',
+            }
+        }
+    )
+    .catch(e=>alert('File Uplaod Failed \n' + e ))
+    store.loading=false
+    window.alert("Upload complete, please refresh browser")
+}

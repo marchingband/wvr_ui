@@ -1,13 +1,16 @@
 import React, { useState, useRef } from 'react';
 import {Text} from '../components/text'
 import {observer} from 'mobx-react-lite'
-import {uploadRecoveryFirmware} from '../wvr/uploadFirmwareAndGUI'
+import {uploadRecoveryFirmware, forceUploadFirmware} from '../wvr/uploadFirmwareAndGUI'
 import {Button} from '../components/button'
 import {SelectNum} from '../components/select'
 import {store} from '../modules/store'
+import {resetEMMC} from '../helpers/resetEMMC'
 
 export const Global = observer(() => {
+    const [recoveryfirmware,setRecoveryFirmware] = useState(null)
     const [firmware,setFirmware] = useState(null)
+    const recoveryFirmwareFileInput = useRef(null)
     const firmwareFileInput = useRef(null)
     const metadata = store.getMetadata()
     return(
@@ -15,21 +18,39 @@ export const Global = observer(() => {
             <Text>
                 GLOBAL SETTINGS
             </Text>
-            <div style={{display:'flex',flexDirection:'row',margin:20}}>
+            <div style={{display:'flex',flexDirection:'row',margin:20, marginBottom:5}}>
                 <Button
                     warn
-                    title="update recovery firmware"
+                    title="update recovery recoveryfirmware"
+                    style={{cursor:recoveryfirmware?'pointer':'default',width:300}}
+                    onClick={()=>{
+                        if(!recoveryfirmware) return
+                        if(!window.confirm("update recovery recoveryfirmware!?")) return
+                        uploadRecoveryFirmware({fileHandle:recoveryfirmware})
+                    }}
+                    disabled={!recoveryfirmware}
+                />
+                <Button
+                    style={{width:300}}
+                    title={recoveryfirmware ? recoveryfirmware.name : "select recovery recoveryfirmware"}
+                    onClick={()=>{recoveryFirmwareFileInput.current.click()}}
+                />
+            </div>
+            <div style={{display:'flex',flexDirection:'row',margin:20, marginTop:0}}>
+                <Button
+                    warn
+                    title="force firmware upload"
                     style={{cursor:firmware?'pointer':'default',width:300}}
                     onClick={()=>{
                         if(!firmware) return
-                        if(!window.confirm("update recovery firmware!?")) return
-                        uploadRecoveryFirmware({fileHandle:firmware})
+                        if(!window.confirm("upload this firmware to WVR and boot it?")) return
+                        forceUploadFirmware({fileHandle:firmware})
                     }}
                     disabled={!firmware}
                 />
                 <Button
                     style={{width:300}}
-                    title={firmware ? firmware.name : "select recovery firmware"}
+                    title={firmware ? firmware.name : "select firmware to force upload"}
                     onClick={()=>{firmwareFileInput.current.click()}}
                 />
             </div>
@@ -117,6 +138,26 @@ export const Global = observer(() => {
                     {store.getNumRackSlotsOpen()} / 128
                 </Text>
             </div>
+            <div style={{display:'flex',flexDirection:'row',alignItems:'center', marginLeft:20, width:400}}>
+                <Button
+                    style={{marginRight:'auto', marginTop:20}}
+                    title="reset eMMC"
+                    onClick={()=>{
+                        const res = window.confirm("this will permanently delete all data on the WVR, are you absolutely sure?")
+                        if(res){
+                            resetEMMC()
+                        }
+                    }}
+                    warn
+                />
+            </div>
+            <input 
+                ref={recoveryFirmwareFileInput}
+                type="file" 
+                onChange={e=>setRecoveryFirmware(e.target.files[0])}
+                style={{display:'none'}}
+                accept=".bin"
+            />
             <input 
                 ref={firmwareFileInput}
                 type="file" 
@@ -124,7 +165,6 @@ export const Global = observer(() => {
                 style={{display:'none'}}
                 accept=".bin"
             />
-
         </div>
     )
 })
