@@ -53,7 +53,7 @@ export const Global = observer(() => {
                 value={metadata.recoveryModeStrappingPin}
                 onChange={e=>window.confirm("this is dangerous are you sure?") && store.setMetadataField('recoveryModeStrappingPin',e)}
             >
-                {Array(14).fill().map((_,i)=><option key ={i} value={i}>{"D"+i}</option>)}
+                {[0,1,2,3,4,5,11,12,13].map(x=><option key ={x} value={x}>{"D"+x}</option>)}
             </SelectNum>
             <SelectNum
                 label="wifi log verbosity"
