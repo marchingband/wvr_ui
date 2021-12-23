@@ -19,12 +19,10 @@ export const initStore = async () => {
     store.loadProgress = 0
     for(let i=0; i<16; i++){
         let voice = await loadVoice(i)
-        console.log(voice)
         voices.push(voice)
     }
     let voicesEmpty = voices.every(x=>x.length == 0)
     if(voicesEmpty){
-        console.log("no voice data")
         store.isRecoveryMode = true
     }
     store.loadingTitle = `Loading config`
