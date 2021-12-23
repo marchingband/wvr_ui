@@ -207,7 +207,13 @@ const uploadWavs = async () => {
                     }
                 }
             )
-            .catch(e=>console.log(e))
+            .catch(e=>{
+                if(e.response.status == 507){
+                    window.alert(`Insufficient Storage in eMMC memory to upload ${name}`)
+                } else {
+                    console.log(e)
+                }
+            })
         } else {
             // a rack
             const json = JSON.stringify({
@@ -216,7 +222,6 @@ const uploadWavs = async () => {
             })
             await axios.post(
                 "/addrack",
-                // "http://192.168.4.1/addrack",
                 pcm,
                 {
                     onUploadProgress: p=> store.onProgress( p.loaded / p.total ),
@@ -230,7 +235,13 @@ const uploadWavs = async () => {
                     }
                 }
             )
-            .catch(e=>console.log(e))        
+            .catch(e=>{
+                if(e.response.status == 507){
+                    window.alert(`Insufficient Storage in eMMC memory to upload ${name}`)
+                } else {
+                    console.log(e)
+                }
+            })
         }
     }
 }
