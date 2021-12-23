@@ -8,9 +8,7 @@ import {store} from '../modules/store'
 import {resetEMMC} from '../helpers/resetEMMC'
 
 export const Global = observer(() => {
-    const [recoveryfirmware,setRecoveryFirmware] = useState(null)
     const [firmware,setFirmware] = useState(null)
-    const recoveryFirmwareFileInput = useRef(null)
     const firmwareFileInput = useRef(null)
     const metadata = store.getMetadata()
     return(
@@ -18,24 +16,6 @@ export const Global = observer(() => {
             <Text>
                 GLOBAL SETTINGS
             </Text>
-            <div style={{display:'flex',flexDirection:'row',margin:20, marginBottom:5}}>
-                <Button
-                    warn
-                    title="update recovery recoveryfirmware"
-                    style={{cursor:recoveryfirmware?'pointer':'default',width:300}}
-                    onClick={()=>{
-                        if(!recoveryfirmware) return
-                        if(!window.confirm("update recovery recoveryfirmware!?")) return
-                        uploadRecoveryFirmware({fileHandle:recoveryfirmware})
-                    }}
-                    disabled={!recoveryfirmware}
-                />
-                <Button
-                    style={{width:300}}
-                    title={recoveryfirmware ? recoveryfirmware.name : "select recovery recoveryfirmware"}
-                    onClick={()=>{recoveryFirmwareFileInput.current.click()}}
-                />
-            </div>
             <div style={{display:'flex',flexDirection:'row',margin:20, marginTop:0}}>
                 <Button
                     warn
@@ -151,13 +131,6 @@ export const Global = observer(() => {
                     warn
                 />
             </div>
-            <input 
-                ref={recoveryFirmwareFileInput}
-                type="file" 
-                onChange={e=>setRecoveryFirmware(e.target.files[0])}
-                style={{display:'none'}}
-                accept=".bin"
-            />
             <input 
                 ref={firmwareFileInput}
                 type="file" 

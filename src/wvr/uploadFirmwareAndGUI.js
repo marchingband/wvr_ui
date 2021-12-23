@@ -21,10 +21,6 @@ export const uploadFirmwareAndGUI = async ({index,firmwareFileHandle,GUIFileHand
             await uploadFirmware({index,firmwareFileHandle})
         }
         console.log("done uploading firmware slot " + index)
-        // formdata.entries(x=>console.log(x))
-        // for (var [key, value] of formdata.entries()) {
-        //     console.log(key,value);
-        //  }
     }
     if(GUIFileHandle){
         console.log("uploading GUI")
@@ -64,26 +60,6 @@ const uploadFirmware = async ({index,firmwareFileHandle}) => {
     store.loading = false
 }
 
-export const uploadRecoveryFirmware = async ({fileHandle}) => {
-    store.loading = true
-    store.loadProgress = 0
-    store.loadingTitle = "uploading recovery firmware"
-    let res = await axios.post(
-        "/updaterecoveryfirmware",
-        // "http://192.168.4.1/updaterecoveryfirmware",
-        fileHandle,
-        {
-            onUploadProgress: p=>store.onProgress(p.loaded / p.total),
-            headers:{
-                'Content-Type': 'text/html',
-                'firmware-size' : fileHandle.size
-            }
-        }
-    )
-    .catch(e=>alert('File Uplaod Failed \n' + e ))
-    store.loading=false
-}
-
 const uploadGUI = async ({index,GUIFileHandle}) => {
     const res = await axios.post(
         "/addgui",
@@ -108,7 +84,6 @@ export const forceUploadFirmware = async({fileHandle}) => {
     store.loadingTitle = "uploading firmware"
     let res = await axios.post(
         "/update",
-        // "http://192.168.4.1/updaterecoveryfirmware",
         fileHandle,
         {
             onUploadProgress: p=>store.onProgress(p.loaded / p.total),
