@@ -55,7 +55,7 @@ export const loadVoice = async i => {
         headers:{
             "voice": i
         },
-        timeout:5000,
+        timeout:2000,
     })    
     .catch(e=>{
         console.log(e)
@@ -65,8 +65,6 @@ export const loadVoice = async i => {
         console.log("retry load voice " + i)
         return await loadVoice(i)
     }
-    // throttle requests a little
-    // await new Promise(res=>setTimeout(()=>res(),100))
     store.loadProgress = store.loadProgress + 5
     return res.data
 }
