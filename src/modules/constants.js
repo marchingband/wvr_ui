@@ -25,10 +25,10 @@ export const HALT         = 0
 export const IGNORE       = 1
 
 // response curve
-export const LINEAR         = 0
-export const ROOT_SQUARE    = 1
-export const FIXED          = 2
-
+export const LINEAR          = 0
+export const SQUARE_ROOT     = 1
+export const INV_SQUARE_ROOT = 2
+export const FIXED           = 3
 
 /////////////////
 // pin configs //

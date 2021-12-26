@@ -8,7 +8,7 @@ import {Button} from './button'
 import {Slider} from './slider'
 import {auditionLocal, auditionDisk} from '../audio/audition'
 import {NOTE_OFF,ONE_SHOT,LOOP,PING_PONG,RETRIGGER,RESTART,NONE,HALT,IGNORE,
-    PRIORITIES,LINEAR,FIXED,ROOT_SQUARE} from '../modules/constants'
+    PRIORITIES,LINEAR,FIXED,SQUARE_ROOT,INV_SQUARE_ROOT} from '../modules/constants'
 import {SelectNum} from '../components/select'
 
 export const WavDetails = observer(() => {
@@ -110,7 +110,8 @@ export const WavDetails = observer(() => {
                                 onChange={e=>store.setCurrentNoteProp('responseCurve',e)}
                             >
                                 <option value={LINEAR}>linear</option>
-                                <option value={ROOT_SQUARE}>root square</option>
+                                <option value={SQUARE_ROOT}>square root</option>
+                                <option value={INV_SQUARE_ROOT}>inv square root</option>
                                 <option value={FIXED}>fixed</option>
                             </SelectNum>
                             <SelectNum
