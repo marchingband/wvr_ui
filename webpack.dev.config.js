@@ -100,6 +100,12 @@ module.exports = env => ({
                 "cookieDomainRewrite": "localhost",
                 "target": "http://192.168.5.18/update"
             },
+            "/wvr_emmc_backup.bin": {
+                "changeOrigin": true,
+                "cookieDomainRewrite": "localhost",
+                "target": "http://192.168.5.18/wvr_emmc_backup.bin"
+            },
+            
 
         }
     },

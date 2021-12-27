@@ -7,7 +7,7 @@ export const Button = ({onClick,title="",style={},disabled=false,warn=false}) =>
         style={{...button(disabled),...style}}
         onClick={e=>!disabled && onClick(e)}
     >
-        <Text secondary={!disabled && !warn} primary={disabled && !warn} warn={warn}>
+        <Text secondary={!disabled && !warn} disabled={disabled && !warn} warn={warn}>
             {title}
         </Text>
     </div>

@@ -30,4 +30,5 @@ const colors = props =>
     props.primary ? store.theme.textColorPrimary :
     props.secondary ? store.theme.textColorSecondary :
     props.warn ? store.theme.textColorWarn :
+    props.disabled ? 'grey' :
     'grey'

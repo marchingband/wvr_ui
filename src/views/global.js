@@ -1,40 +1,26 @@
 import React, { useState, useRef } from 'react';
 import {Text} from '../components/text'
 import {observer} from 'mobx-react-lite'
-import {uploadRecoveryFirmware, forceUploadFirmware} from '../wvr/uploadFirmwareAndGUI'
+import {forceUploadFirmware} from '../wvr/uploadFirmware'
 import {Button} from '../components/button'
 import {SelectNum} from '../components/select'
 import {store} from '../modules/store'
 import {resetEMMC} from '../helpers/resetEMMC'
+import { restoreEMMC } from '../wvr/emmc';
 
 export const Global = observer(() => {
     const [firmware,setFirmware] = useState(null)
     const firmwareFileInput = useRef(null)
+    const emmcRestoreFileInput = useRef(null)
+    const emmcBackupRef = useRef(null)
     const metadata = store.getMetadata()
     return(
         <div style={container}>
             <Text>
                 GLOBAL SETTINGS
             </Text>
-            <div style={{display:'flex',flexDirection:'row',margin:20, marginTop:0}}>
-                <Button
-                    warn
-                    title="force firmware upload"
-                    style={{cursor:firmware?'pointer':'default',width:300}}
-                    onClick={()=>{
-                        if(!firmware) return
-                        if(!window.confirm("upload this firmware to WVR and boot it?")) return
-                        forceUploadFirmware({fileHandle:firmware})
-                    }}
-                    disabled={!firmware}
-                />
-                <Button
-                    style={{width:300}}
-                    title={firmware ? firmware.name : "select firmware to force upload"}
-                    onClick={()=>{firmwareFileInput.current.click()}}
-                />
-            </div>
             <SelectNum
+                style={{marginTop:20}}
                 label="global volume"
                 value={metadata.globalVolume}
                 onChange={e=>store.setMetadataField('globalVolume',e)}
@@ -118,17 +104,83 @@ export const Global = observer(() => {
                     {store.getNumRackSlotsOpen()} / 128
                 </Text>
             </div>
-            <div style={{display:'flex',flexDirection:'row',alignItems:'center', marginLeft:20, width:400}}>
+            <Text 
+                style={{marginLeft:20,marginTop:20, marginRight:'auto'}}
+                primary
+            >
+                Manage eMMC :
+            </Text>
+            <div style={{display:'flex',flexDirection:'row',alignItems:'center', marginLeft:20, width:400, marginTop:5}}>
                 <Button
-                    style={{marginRight:'auto', marginTop:20}}
+                    style={{marginRight:5}}
+                    title="backup eMMC"
+                    onClick={()=>{
+                        const res = window.confirm("\
+                            This will download all the contents of the WVR eMMC memory to your computer, \
+                            and it may take a very long time.\n\
+                            Do you wish to proceed?\
+                        ")
+                        if(res){
+                            emmcBackupRef.current.click()
+                        }
+                    }}
+                    warn
+                />
+                <Button
+                    style={{marginRight:5}}
+                    title="restore eMMC"
+                    onClick={()=>{
+                        const res = window.confirm("\
+                            This will overwrite all the data saved on the WVR, and replace it with \
+                            a backup file from your computer.\n\
+                            Do you wish to proceed?\n\
+                            If so, please click \"ok\" and choose a WVR backupfile ( .bin ) from your computer\
+                        ")
+                        if(res){
+                            emmcRestoreFileInput.current.click()
+                        }
+                    }}
+                    warn
+                />
+                <Button
+                    style={{marginRight:'auto'}}
                     title="reset eMMC"
                     onClick={()=>{
-                        const res = window.confirm("this will permanently delete all data on the WVR, are you absolutely sure?")
+                        const res = window.confirm("\
+                            this will permanently delete all data on the WVR, are you absolutely sure?\
+                        ")
                         if(res){
                             resetEMMC()
                         }
                     }}
                     warn
+                />
+            </div>
+            <Text 
+                style={{marginLeft:20,marginTop:20, marginRight:'auto'}}
+                primary
+            >
+                Force firmware directly to flash and boot :
+            </Text>
+            <div style={{display:'flex',flexDirection:'row',margin:20, marginTop:5}}>
+                <Button
+                    warn = {firmwareFileInput.current}
+                    disabled = {!firmwareFileInput.current}
+                    title="force upload"
+                    style={{cursor:firmware?'pointer':'default',
+                    // width:150
+                    }}
+                    onClick={()=>{
+                        if(!firmware) return
+                        if(!window.confirm("upload this firmware to WVR and boot it?")) return
+                        forceUploadFirmware({fileHandle:firmware})
+                    }}
+                    disabled={!firmware}
+                />
+                <Button
+                    style={{width:228}}
+                    title={firmware ? firmware.name : "select firmware"}
+                    onClick={()=>{firmwareFileInput.current.click()}}
                 />
             </div>
             <input 
@@ -137,6 +189,18 @@ export const Global = observer(() => {
                 onChange={e=>setFirmware(e.target.files[0])}
                 style={{display:'none'}}
                 accept=".bin"
+            />
+            <input 
+                ref={emmcRestoreFileInput}
+                type="file" 
+                onChange={e=>restoreEMMC(e.target.files[0])}
+                style={{display:'none'}}
+                accept=".bin"
+            />
+            <a 
+                href='/wvr_emmc_backup.bin' 
+                download
+                ref={emmcBackupRef}
             />
         </div>
     )

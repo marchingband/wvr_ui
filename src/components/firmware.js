@@ -2,8 +2,8 @@ import React, { useState, useRef, useEffect } from 'react';
 import {Text} from '../components/text'
 import { store } from '../modules/store';
 import {Button} from './button'
-import {uploadFirmwareAndGUI} from '../wvr/uploadFirmwareAndGUI'
-import {bootFromEMMC} from '../wvr/bootFromEMMC'
+import {uploadFirmware} from '../wvr/uploadFirmware'
+import {bootFromEMMC} from '../wvr/emmc'
 
 
 export const Firmware = ({num,f}) => {
@@ -58,7 +58,7 @@ export const Firmware = ({num,f}) => {
             />
             <Button
                 title={"upload"}
-                onClick={()=>uploadFirmwareAndGUI({
+                onClick={()=>uploadFirmware({
                     index:num,
                     firmwareFileHandle:firmware,
                     GUIFileHandle:GUI,

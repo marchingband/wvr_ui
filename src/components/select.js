@@ -3,7 +3,7 @@ import {store} from '../modules/store.js'
 import { Text } from './text.js';
 
 export const SelectNum = props => 
-<div style={container}>
+<div style={{...container, ...props.style}}>
     {/* <label>{props.label}</label> */}
     <Text primary>
         {props.label}
