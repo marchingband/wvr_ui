@@ -2,7 +2,7 @@ import React, { useRef, useEffect, useState } from 'react';
 import {store} from '../modules/store.js'
 import {observer} from 'mobx-react-lite'
 import {noteToName, noteToOctave} from '../helpers/noteToName'
-import {drawWave} from '../helpers/drawWave'
+import {drawWave} from '../audio/drawWave'
 import {Stack} from './stack'
 import {Button} from './button'
 import {Slider} from './slider'

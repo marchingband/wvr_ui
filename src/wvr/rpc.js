@@ -1,4 +1,4 @@
-import { ws } from "../helpers/init";
+import { ws } from "../wvr/init";
 import { store } from "../modules/store";
 
 const RPC_NOTE_ON     = 0;

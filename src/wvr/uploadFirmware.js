@@ -1,5 +1,5 @@
 import axios from 'axios'
-import {initStore} from '../helpers/init'
+import {initStore} from '../wvr/init'
 import {store} from '../modules/store'
 
 export const uploadFirmware = async({ index, firmwareFileHandle, name }) => {

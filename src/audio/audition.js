@@ -1,6 +1,6 @@
 import {RPCOut} from '../wvr/rpc'
 import {store} from '../modules/store.js'
-import {makeDistortionCurve,make_verb_array_buffer} from '../helpers/toPcm'
+import {makeDistortionCurve,make_verb_array_buffer} from '../audio/toPcm'
 
 export const auditionDisk = async() => {
     const voice = store.currentVoice

@@ -1,4 +1,4 @@
-import {initStore} from '../helpers/init'
+import {initStore} from '../wvr/init'
 import { store } from '../modules/store'
 
 export const bootFromEMMC = async num => {
@@ -28,4 +28,11 @@ export const restoreEMMC = async (file) => {
     )
     .catch(e=>console.log(e))
     store.setLoading(false)
+}
+
+export const resetEMMC = async() =>{
+    const response = await fetch('http://192.168.5.18/emmcReset', {
+        method: 'get',
+    });
+    alert("eMMC on WVR has been reset, please refresh the browser")
 }

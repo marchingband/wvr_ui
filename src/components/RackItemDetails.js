@@ -1,7 +1,7 @@
 import React, { useRef, useEffect } from 'react';
 import {store} from '../modules/store.js'
 import {observer} from 'mobx-react-lite'
-import {drawWave} from '../helpers/drawWave'
+import {drawWave} from '../audio/drawWave'
 import {Button} from './button'
 import {Stack} from './stack'
 import { clamp } from '../helpers/clamp';

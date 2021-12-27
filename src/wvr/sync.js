@@ -1,7 +1,7 @@
-import { store } from '../modules/store.js';
-import {toPcmFX} from '../helpers/toPcm.js'
 import axios from 'axios'
-import { loadVoice } from '../helpers/init.js';
+import { store } from '../modules/store.js';
+import { toPcmFX } from '../audio/toPcm.js'
+import { loadVoice } from '../wvr/init.js';
 import { default_fx } from '../helpers/makeDefaultStores.js';
 
 export const sync = async() => {

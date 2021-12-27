@@ -1,6 +1,6 @@
-import { store } from "../modules/store";
 import axios from 'axios'
-import {isJson} from './isJson'
+import { store } from "../modules/store";
+import {isJson} from '../helpers/isJson'
 import {handleRPCIn} from '../wvr/rpc'
 import {WVR_IP} from '../modules/constants'
 export var ws;

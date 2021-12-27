@@ -1,27 +1,19 @@
 import React, { useEffect } from 'react';
 import {observer} from 'mobx-react-lite'
 import {store} from './modules/store.js'
-import {init} from './helpers/init'
+import {init} from './wvr/init'
 import {Menu} from './components/menu'
 import {Loading} from './components/loading'
 import {Home} from './views/home'
 import {Pins} from './views/pins'
 import {Firmwares} from './views/firmwares'
 import {Global} from './views/global'
-import { fillVoices } from './helpers/makeDefaultStores.js';
 
 const INIT = 1
 
 const App = () => {
     useEffect(()=>{
-        if(INIT){
-            init()
-        } else {
-            (async () => {
-                // await init()
-                // fillVoices()
-            })()
-        }
+        INIT && init()
     },[])
     return(
         <div style={container}>
