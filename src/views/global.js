@@ -114,7 +114,7 @@ export const Global = observer(() => {
                     style={{marginRight:5}}
                     title="backup eMMC"
                     onClick={()=>{
-                        const res = window.confirm("This will download all the contents of the WVR eMMC memory to your computer, and it may take a very long time.\nDo you wish to proceed?")
+                        const res = window.confirm("This will download all the contents of the WVR eMMC memory to your computer.\nIt may take a very long time.\nDo you wish to proceed?")
                         if(res){
                             emmcBackupRef.current.click()
                         }
@@ -125,7 +125,7 @@ export const Global = observer(() => {
                     style={{marginRight:5}}
                     title="restore eMMC"
                     onClick={()=>{
-                        const res = window.confirm("This will overwrite all the data saved on the WVR, and replace it with a backup file from your computer.\nDo you wish to proceed?\nIf so, please click \"ok\" and choose a WVR backupfile ( .bin ) from your computer")
+                        const res = window.confirm("This will overwrite all the data saved on the WVR, and replace it with a backup file from your computer.\nIt may take a very long time\nDo you wish to proceed?\nIf so, please click \"ok\" and choose a WVR backupfile ( .bin ) from your computer")
                         if(res){
                             emmcRestoreFileInput.current.click()
                         }

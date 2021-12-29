@@ -10,6 +10,12 @@ export const Firmwares = observer(() =>
             FIRMWARE MANAGER
         </Text>
         {
+            store.metadata.currentFirmwareIndex == -1 &&
+            <Text small warn style={{marginTop:10}}>
+                * current running firmware was force-uploaded
+            </Text>
+        }
+        {
             store.firmwares.slice().map((f,i)=>
                 <Firmware key={i} num={i} f={f}/>
             )
