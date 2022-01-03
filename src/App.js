@@ -34,12 +34,12 @@ const views = {
 const container = {
     position:'fixed',
     top:0,left:0,right:0,bottom:0,
-    // width:window.innerWidth,
-    // height:window.innerHeight,
     padding:0,
     margin:0,
     border:'none',
-    backgroundColor:store.theme.backgroundColor
+    backgroundColor:store.theme.backgroundColor,
+    overflow:'scroll',
+    minWidth:750
 }
 
 export default observer(App)

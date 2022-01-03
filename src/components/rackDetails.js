@@ -5,7 +5,7 @@ import {noteToName} from '../helpers/noteToName'
 import {Stack} from './stack'
 import {Button} from './button'
 import {NOTE_OFF,ONE_SHOT,LOOP,PING_PONG,RETRIGGER,RESTART,NONE,HALT,IGNORE,PRIORITIES,
-    NUM_LAYERS,LINEAR,LOGARITHMIC,ROOT_SQUARE} from '../modules/constants'
+    NUM_LAYERS,LINEAR,FIXED,SQUARE_ROOT,INV_SQUARE_ROOT} from '../modules/constants'
 import {SelectNum} from '../components/select'
 import {Slider} from './slider'
 
@@ -60,8 +60,9 @@ export const RackDetails = observer(() => {
                                 onChange={e=>store.setCurrentNoteProp('responseCurve',e)}
                             >
                                 <option value={LINEAR}>linear</option>
-                                <option value={LOGARITHMIC}>logarithmic</option>
-                                <option value={ROOT_SQUARE}>root square</option>
+                                <option value={SQUARE_ROOT}>square root</option>
+                                <option value={INV_SQUARE_ROOT}>inv square root</option>
+                                <option value={FIXED}>fixed</option>
                             </SelectNum>
                             <SelectNum
                                 label='priority'
@@ -171,9 +172,10 @@ const container = {
     flex:1,
     display:'flex',
     flexDirection:'column',
-    margin:70,
-    marginTop:40,
-    marginBottom:40,
+    marginLeft:70,
+    marginRight:70,
+    marginTop:30,
+    marginBottom:30,
 }
 
 const column = {
@@ -185,9 +187,6 @@ const column = {
 const row = {
     display:'flex',
     flexDirection:'row',
-    // margin:70,
-    // marginTop:40,
-    // marginBottom:40,
 }
 const Select_style = {
     width:120,

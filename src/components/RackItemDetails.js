@@ -95,8 +95,8 @@ const container = {
     display:'flex',
     flexDirection:'column',
     margin:70,
-    marginTop:40,
-    marginBottom:40,
+    marginTop:10,
+    marginBottom:10,
 }
 const column = {
     display:'flex',

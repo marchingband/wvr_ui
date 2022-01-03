@@ -61,6 +61,24 @@ export const Global = observer(() => {
                 <option value={1}>true</option>
                 <option value={0}>false</option>
             </SelectNum>
+            <SelectNum
+                label="wifi power"
+                value={metadata.wifiPower}
+                onChange={e=>window.confirm("high wifi power settings will consume more power and create more heat, are you sure?") && store.setMetadataField('wifiPower',e)}
+            >
+                <option value={8}>8</option>
+                <option value={20}>20</option>
+                <option value={28}>28</option>
+                <option value={34}>34</option>
+                <option value={44}>44</option>
+                <option value={52}>52</option>
+                <option value={60}>60</option>
+                <option value={68}>68</option>
+                <option value={74}>74</option>
+                <option value={76}>76</option>
+                <option value={78}>78</option>
+            </SelectNum>
+
             <div style={{display:'flex',flexDirection:'row',alignItems:'center', marginLeft:20, width:400}}>
                 <Text primary>wifi network name :</Text>
                 <Text warn style={{marginLeft:10}}>{store.metadata.wifiNetworkName}</Text>

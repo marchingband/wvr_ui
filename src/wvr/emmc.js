@@ -1,6 +1,21 @@
 import {initStore} from '../wvr/init'
 import { store } from '../modules/store'
 
+export const deleteFirmware = async num => {
+    console.log("deleting from EMMC slot " + num)
+    let res = await fetch(
+        "/deleteFirmware",
+        {
+            method: "GET",
+            headers: {
+                "index":num
+            }
+        }
+    )
+    .catch(e=>console.log(e))
+    store.deleteFirmware(num)
+}
+
 export const bootFromEMMC = async num => {
     console.log("booting from EMMC slot " + num)
     let res = await fetch(

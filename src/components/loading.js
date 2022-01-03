@@ -10,12 +10,14 @@ export const Loading = observer(() => {
     return(
         <div style={container1}>
             <div style={container2}>
-                <Text large secondary>
-                    {store.loadingTitle}
-                </Text>
-                <Text medium secondary>
-                    {store.loadProgress > 0 ? `${store.loadProgress}%` : ""}
-                </Text>
+                <div style={container3}>
+                    <Text large secondary>
+                        {store.loadingTitle}
+                    </Text>
+                    <Text medium secondary>
+                        {store.loadProgress > 0 ? `${store.loadProgress}%` : ""}
+                    </Text>
+                </div>
             </div>
         </div>
     )
@@ -43,4 +45,15 @@ const container2 = {
     zIndex:2,
     opacity:0.7,
     backgroundColor:store.theme.backgroundColor,
+}
+
+const container3 = {
+    display:'flex',
+    flexDirection:'column',
+    alignItems:'center',
+    // justifyContent:'center',
+    zIndex:3,
+    // opacity:0.7,
+    // backgroundColor:store.theme.backgroundColor,
+    height:300
 }

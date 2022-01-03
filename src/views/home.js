@@ -11,7 +11,6 @@ export const Home = observer(() =>
         <VoiceMenu/>
         <WavBoard/>
         <FileDetails/>
-        <div style={{width:'100%',height:20,marginBottom:'auto'}}/>
         {store.isRecoveryMode &&
             <RecoveryModeHome/>
         }
@@ -19,9 +18,11 @@ export const Home = observer(() =>
 )
 
 const container = {
-    width:'100%',
-    height:'100%',
+    flex:1,
     display:'flex',
     flexDirection:'column',
-    position:'relative'
+    position:'relative',
+    justifyContent:'space-around',
+    padding:0,
+    margin:0
 }

@@ -92,6 +92,7 @@ export const store = observable(
         voiceNeedsUpdate:function(){voiceNeedsUpdate(this)},
         getVoicesNeedUpdate:function(){return toJS(this.voicesNeedUpdate)},
         resetSelected:function(){resetSelected(this)},
+        deleteFirmware:function(num){deleteFirmware(this,num)},
         logData:function(){console.log({
             metadata: toJS(this.metadata),
             voices: toJS(this.voices),
@@ -325,6 +326,7 @@ const setCurrentRackFile = (self,files) => {
 }
 
 const setCurrentWavFile = (self,files) => {
+    self.setLoading(true)
     if(self.wavBoardRange.length > 1){
         // there is a range
         if(files.length > 1){
@@ -377,6 +379,7 @@ const setCurrentWavFile = (self,files) => {
         self.voices[self.currentVoice][self.wavBoardSelected].empty = 0
     }
     self.voiceNeedsUpdate()
+    self.setLoading(false)
 }
 
 const getCurrentPin = self => self.pinConfig.slice()[self.pinConfigSelected]
@@ -478,6 +481,7 @@ const rackBoardAddToSelection = (self,note) => {
 }
 
 const bulkUploadRacks = (self,e) => {
+    self.setLoading(true)
     let tree = parseDirectories(e)
     if(!tree){
         window.alert("error in drectory parse")
@@ -507,6 +511,7 @@ const bulkUploadRacks = (self,e) => {
         }
     }
     self.voiceNeedsUpdate()
+    self.setLoading(false)
 }
 
 const getNumRackSlotsOpen = self => {
@@ -531,4 +536,12 @@ const resetSelected = self => {
     self.rackBoardSelected = 0
     self.wavBoardRange.replace([])
     self.rackBoardRange.replace([])
+}
+
+const deleteFirmware = (self, num) => {
+    let firmwares = toJS(self.firmwares)
+    firmwares[num].name = ""
+    firmwares[num].free = 1
+    firmwares[num].corrupt = 0
+    self.firmwares.replace(firmwares)
 }

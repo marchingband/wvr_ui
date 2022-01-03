@@ -105,6 +105,11 @@ module.exports = env => ({
                 "cookieDomainRewrite": "localhost",
                 "target": "http://192.168.5.18/wvr_emmc_backup.bin"
             },
+            "/deleteFirmware": {
+                "changeOrigin": true,
+                "cookieDomainRewrite": "localhost",
+                "target": "http://192.168.5.18/deleteFirmware"
+            },
             
 
         }

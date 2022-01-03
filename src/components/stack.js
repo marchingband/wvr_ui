@@ -20,7 +20,8 @@ export const Stack = observer(({items}) =>
 )
 
 const text = {
-    margin:4
+    margin:4,
+    whiteSpace: "nowrap"
 }
 
 const column = {

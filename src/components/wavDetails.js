@@ -81,6 +81,7 @@ export const WavDetails = observer(() => {
                                 value={mode}
                                 onChange={e=>store.setCurrentNoteProp('mode',e)}
                                 label="mode"
+                                style={{width:270}}
                             >
                                 <option value={ONE_SHOT}>one-shot</option>
                                 <option value={LOOP}>loop</option>
@@ -90,6 +91,7 @@ export const WavDetails = observer(() => {
                                 value={retrigger}
                                 label='retrigger mode'
                                 onChange={e=>store.setCurrentNoteProp('retrigger',e)}
+                                style={{width:270}}
                             >
                                 <option value={RETRIGGER}>retrigger</option>
                                 <option value={RESTART}>restart</option>
@@ -100,6 +102,7 @@ export const WavDetails = observer(() => {
                                 value={noteOff}
                                 label='note-off'
                                 onChange={e=>store.setCurrentNoteProp('noteOff',e)}
+                                style={{width:270}}
                             >
                                 <option value={IGNORE}>ignore</option>
                                 <option value={HALT}>halt</option>
@@ -108,6 +111,7 @@ export const WavDetails = observer(() => {
                                 value={responseCurve}
                                 label='response curve'
                                 onChange={e=>store.setCurrentNoteProp('responseCurve',e)}
+                                style={{width:270}}
                             >
                                 <option value={LINEAR}>linear</option>
                                 <option value={SQUARE_ROOT}>square root</option>
@@ -118,6 +122,7 @@ export const WavDetails = observer(() => {
                                 value={priority}
                                 label='priority'
                                 onChange={e=>store.setCurrentNoteProp('priority',e)}
+                                style={{width:270}}
                             >
                                 {
                                     PRIORITIES.map(x=>
@@ -236,9 +241,10 @@ const container = {
     flex:1,
     display:'flex',
     flexDirection:'column',
-    margin:70,
-    marginTop:40,
-    marginBottom:40,
+    marginLeft:70,
+    marginRight:70,
+    marginTop:30,
+    // marginBottom:30,
 }
 
 const column = {

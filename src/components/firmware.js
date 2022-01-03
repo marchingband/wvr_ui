@@ -3,7 +3,7 @@ import {Text} from '../components/text'
 import { store } from '../modules/store';
 import {Button} from './button'
 import {uploadFirmware} from '../wvr/uploadFirmware'
-import {bootFromEMMC} from '../wvr/emmc'
+import {bootFromEMMC, deleteFirmware} from '../wvr/emmc'
 
 
 export const Firmware = ({num,f}) => {
@@ -13,7 +13,6 @@ export const Firmware = ({num,f}) => {
     const [name,setName] = useState(null)
     const firmwareFileInput = useRef(null)
     const GUIFileInput = useRef(null)
-
     return(
     <div style={container}>
         <div style={row}>
@@ -70,6 +69,14 @@ export const Firmware = ({num,f}) => {
                 title={"select binary"}
                 onClick={()=>{firmwareFileInput.current.click()}}
             />
+            {f.name &&
+                <Button
+                    warn
+                    title={"delete"}
+                    onClick={()=>window.confirm("Delete firmware in slot " + num + "?") && deleteFirmware(num)}
+                    style={{width:50}}
+                />
+            }
             {isCurrent &&
                 <Text style={{marginLeft:20}}>
                     {"<- current"}
