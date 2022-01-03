@@ -9,6 +9,7 @@ export const sync = async() => {
     store.loadProgress = 0
     store.loadingTitle = "Syncing to WVR"
     store.setLoading(true)
+    
     await uploadWavs()
     await uploadPinConfig()
     await uploadVoiceConfig()
@@ -20,8 +21,8 @@ export const sync = async() => {
     store.wavBoardRange.replace([])
     store.wavBoardSelected = 40
     store.wavBoardIndex = 40
-    store.rackBoardIndex= 0,
-    store.rackBoardSelected= 0,
+    store.rackBoardIndex = 0,
+    store.rackBoardSelected = 0,
     store.rackBoardRange.replace([]),
 
     window.alert("sync completed")
@@ -155,9 +156,9 @@ const uploadWavs = async () => {
                         isRack: -1,
                         dist: n.dist,
                         verb: n.verb,
-                        pitch:n.pitch,
-                        vol:n.vol,
-                        pan:n.pan    
+                        pitch: n.pitch,
+                        vol: n.vol,
+                        pan: n.pan    
                     })
                 }
             } else if(n.rack.layers) {
@@ -173,9 +174,9 @@ const uploadWavs = async () => {
                             rackData: n,
                             dist: n.dist,
                             verb: n.verb,
-                            pitch:n.pitch,
-                            vol:n.vol,
-                            pan:n.pan    
+                            pitch: n.pitch,
+                            vol: n.vol,
+                            pan: n.pan    
                         })
                     }
                 })
@@ -194,57 +195,13 @@ const uploadWavs = async () => {
         if(isRack == -1){
             // not a rack
             await uploadNoteWav({pcm,size,name,voice,note})
-            // await axios.post(
-            //     "/addwav",
-            //     pcm,
-            //     {
-            //         onUploadProgress: p=>store.onProgress(p.loaded / p.total),
-            //         headers:{
-            //             'Content-Type': 'text/plain',
-            //             'size':size,
-            //             'name':name,
-            //             'voice':voice,
-            //             'note':note,
-            //         },
-            //         timeout:2000
-            //     }
-            // )
-            // .catch(e=>{
-            //     if(e.response.status == 507){
-            //         window.alert(`Insufficient Storage in eMMC memory to upload ${name}`)
-            //     } else {
-            //         console.log(e)
-            //     }
-            // })
         } else {
             // a rack
             const json = JSON.stringify({
-                name:rackData.rack.name || "",
-                breakPoints:rackData.rack.break_points,
+                name: rackData.rack.name || "",
+                breakPoints: rackData.rack.break_points,
             })
             await uploadRackWav({pcm, name, voice, note, isRack, json})
-            // await axios.post(
-            //     "/addrack",
-            //     pcm,
-            //     {
-            //         onUploadProgress: p=> store.onProgress( p.loaded / p.total ),
-            //         headers:{
-            //             'Content-Type': 'text/html',
-            //             'name' : name,
-            //             'voice' : voice,
-            //             'note' : note,
-            //             'layer' : isRack,
-            //             'rack-json': json,
-            //         }
-            //     }
-            // )
-            // .catch(e=>{
-            //     if(e.response.status == 507){
-            //         window.alert(`Insufficient Storage in eMMC memory to upload ${name}`)
-            //     } else {
-            //         console.log(e)
-            //     }
-            // })
         }
     }
 }
@@ -305,8 +262,6 @@ const uploadRackWav = async ({pcm, name, voice, note, isRack, json}) => {
     })
     retry && await uploadRackWav({pcm, name, voice, note, isRack, json})
 }
-
-
 
 const resetFileHandles = () => {
     let voices = store.getVoices()
