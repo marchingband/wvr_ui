@@ -193,58 +193,120 @@ const uploadWavs = async () => {
         var size = pcm.size
         if(isRack == -1){
             // not a rack
-            await axios.post(
-                "/addwav",
-                pcm,
-                {
-                    onUploadProgress: p=>store.onProgress(p.loaded / p.total),
-                    headers:{
-                        'Content-Type': 'text/plain',
-                        'size':size,
-                        'name':name,
-                        'voice':voice,
-                        'note':note,
-                    }
-                }
-            )
-            .catch(e=>{
-                if(e.response.status == 507){
-                    window.alert(`Insufficient Storage in eMMC memory to upload ${name}`)
-                } else {
-                    console.log(e)
-                }
-            })
+            await uploadNoteWav({pcm,size,name,voice,note})
+            // await axios.post(
+            //     "/addwav",
+            //     pcm,
+            //     {
+            //         onUploadProgress: p=>store.onProgress(p.loaded / p.total),
+            //         headers:{
+            //             'Content-Type': 'text/plain',
+            //             'size':size,
+            //             'name':name,
+            //             'voice':voice,
+            //             'note':note,
+            //         },
+            //         timeout:2000
+            //     }
+            // )
+            // .catch(e=>{
+            //     if(e.response.status == 507){
+            //         window.alert(`Insufficient Storage in eMMC memory to upload ${name}`)
+            //     } else {
+            //         console.log(e)
+            //     }
+            // })
         } else {
             // a rack
             const json = JSON.stringify({
                 name:rackData.rack.name || "",
                 breakPoints:rackData.rack.break_points,
             })
-            await axios.post(
-                "/addrack",
-                pcm,
-                {
-                    onUploadProgress: p=> store.onProgress( p.loaded / p.total ),
-                    headers:{
-                        'Content-Type': 'text/html',
-                        'name' : name,
-                        'voice' : voice,
-                        'note' : note,
-                        'layer' : isRack,
-                        'rack-json': json,
-                    }
-                }
-            )
-            .catch(e=>{
-                if(e.response.status == 507){
-                    window.alert(`Insufficient Storage in eMMC memory to upload ${name}`)
-                } else {
-                    console.log(e)
-                }
-            })
+            await uploadRackWav({pcm, name, voice, note, isRack, json})
+            // await axios.post(
+            //     "/addrack",
+            //     pcm,
+            //     {
+            //         onUploadProgress: p=> store.onProgress( p.loaded / p.total ),
+            //         headers:{
+            //             'Content-Type': 'text/html',
+            //             'name' : name,
+            //             'voice' : voice,
+            //             'note' : note,
+            //             'layer' : isRack,
+            //             'rack-json': json,
+            //         }
+            //     }
+            // )
+            // .catch(e=>{
+            //     if(e.response.status == 507){
+            //         window.alert(`Insufficient Storage in eMMC memory to upload ${name}`)
+            //     } else {
+            //         console.log(e)
+            //     }
+            // })
         }
     }
 }
+
+const uploadNoteWav = async ({pcm,size,name,voice,note}) => {
+    let retry = false
+    await axios.post(
+        "/addwav",
+        pcm,
+        {
+            onUploadProgress: p=>store.onProgress(p.loaded / p.total),
+            headers:{
+                'Content-Type': 'text/plain',
+                'size':size,
+                'name':name,
+                'voice':voice,
+                'note':note,
+            },
+            // timeout:2000
+        }
+    )
+    .catch(e=>{
+        if(e.response && e.response.status && e.response.status == 507){
+            window.alert(`Insufficient Storage in eMMC memory to upload ${name}`)
+        } else {
+            console.log(e)
+            retry = true
+        }
+    })
+    retry && await uploadNoteWav({pcm,size,name,voice,note})
+}
+
+const uploadRackWav = async ({pcm, name, voice, note, isRack, json}) => {
+    let retry = false
+    await axios.post(
+        "/addrack",
+        pcm,
+        {
+            onUploadProgress: p=> store.onProgress( p.loaded / p.total ),
+            headers:{
+                'Content-Type': 'text/html',
+                'name' : name,
+                'voice' : voice,
+                'note' : note,
+                'layer' : isRack,
+                'rack-json': json,
+            },
+            // timeout: 2000
+        }
+    )
+    .catch(e=>{
+        if(e.response && e.response.status && e.response.status == 507){
+            window.alert(`Insufficient Storage in eMMC memory to upload ${name}`)
+        } else {
+            console.log(e)
+            retry = true
+        }
+    })
+    retry && await uploadRackWav({pcm, name, voice, note, isRack, json})
+}
+
+
 
 const resetFileHandles = () => {
     let voices = store.getVoices()
