@@ -85,7 +85,6 @@ export const toPcmFX = async({fileHandle:f,pitch,dist,verb,pan,vol}) => new Prom
         var reverb_tail_length = verb > 0 ? (44100 * reverb_length) : 0
         var off_ctx = new OfflineAudioContext(
                 2,
-                // (buf1.length * (1/pitch)) + (44100 * reverb_length),
                 (buf1.length * (1/playbackRate)) + reverb_tail_length,
                 44100
             );
