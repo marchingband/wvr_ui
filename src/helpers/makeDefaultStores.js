@@ -15,6 +15,8 @@ export const defaultVoices = () => {
                 retrigger:RETRIGGER,
                 noteOff:IGNORE,
                 responseCurve:ROOT_SQUARE,
+                loopStart:0,
+                loopEnd:0,
                 priority:0,
                 dist:0,
                 verb:0,
@@ -222,4 +224,5 @@ export const defaultMetadata = {
     recoveryModeStrappingPin : 1,
     wLogVerbosity : 3,
     wifiStartsOn : 1,
+    midiChannel : 0,
 }

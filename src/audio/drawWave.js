@@ -1,17 +1,17 @@
 // buff is an AudioBuffer
 
-export const drawWave = ({ctx,filehandle,width,height}) => {
+export const drawWave = ({ctx,filehandle,width,height,loopStart,loopEnd,showLoop}) => {
    var context = ctx
    var input_reader = new FileReader();
    input_reader.onload = async(e) => {
       var ctx = new AudioContext({sampleRate:44100});
       var buff = await ctx.decodeAudioData(e.target.result);
-      draw({buff,context,width,height})
+      draw({buff,context,width,height,loopStart,loopEnd,showLoop})
    }
    input_reader.readAsArrayBuffer(filehandle);
 }
 
-const draw = ({buff,context,width,height}) => {
+const draw = ({buff,context,width,height,loopStart,loopEnd,showLoop}) => {
    var canvasHeight = height
    var canvasWidth = width
 
@@ -30,11 +30,25 @@ const draw = ({buff,context,width,height}) => {
    context.beginPath();
    for(var i=0;i<=drawLines;i++){
       var audioBuffKey = Math.floor(eachBlock * i);
-       var x = i*lineGap;
-       var y = leftChannel[audioBuffKey] * canvasHeight / 2;
-       context.moveTo( x, y );
-       context.lineTo( x, (y*-1) );
+      var x = i*lineGap;
+      var y = leftChannel[audioBuffKey] * canvasHeight / 2;
+      context.moveTo( x, y );
+      context.lineTo( x, (y*-1) );
    }
    context.stroke();
+
+   // maybe draw the loop points
+   if(showLoop && (loopStart != undefined) && (loopEnd != undefined)){
+      context.closePath();
+      context.beginPath();
+      var sampleWidth = canvasWidth / totallength
+      context.moveTo( sampleWidth * loopStart, 50 );
+      context.lineTo( sampleWidth * loopStart, -50 );
+      context.moveTo( sampleWidth * loopEnd, 50 );
+      context.lineTo( sampleWidth * loopEnd, -50 );
+      context.strokeStyle = "#FFD700";
+      context.stroke();
+   }
+
    context.restore();
 }

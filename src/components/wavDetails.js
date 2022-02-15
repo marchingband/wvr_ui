@@ -2,21 +2,23 @@ import React, { useRef, useEffect, useState } from 'react';
 import {store} from '../modules/store.js'
 import {observer} from 'mobx-react-lite'
 import {noteToName, noteToOctave} from '../helpers/noteToName'
+import {clamp} from '../helpers/clamp'
 import {drawWave} from '../audio/drawWave'
 import {Stack} from './stack'
 import {Button} from './button'
 import {Slider} from './slider'
 import {auditionLocal, auditionDisk} from '../audio/audition'
-import {NOTE_OFF,ONE_SHOT,LOOP,PING_PONG,RETRIGGER,RESTART,NONE,HALT,IGNORE,
+import {NOTE_OFF,ONE_SHOT,LOOP,PING_PONG,ASR_LOOP,RETRIGGER,RESTART,NONE,HALT,IGNORE,
     PRIORITIES,LINEAR,FIXED,SQUARE_ROOT,INV_SQUARE_ROOT} from '../modules/constants'
 import {SelectNum} from '../components/select'
+import {NumberInput} from '../components/numberInput'
 
 export const WavDetails = observer(() => {
     const filePicker = useRef(null)
     const directoryPicker = useRef(null)
     const canvas = useRef(null)
     const [showSettings, setShowSettings] = useState(true)
-    const {name,size,filehandle,mode,retrigger,noteOff,responseCurve,priority,dist,verb,pitch,vol,pan} = store.getCurrentNote()
+    const {name,size,filehandle,mode,retrigger,noteOff,responseCurve,priority,dist,verb,pitch,vol,pan,loopStart,loopEnd,empty} = store.getCurrentNote()
     const range = store.wavBoardRange.length > 0
     const allowMultiple = store.wavBoardRange.length > 1 && store.wavBoardInterpolationTarget == undefined
     useEffect(()=>{
@@ -28,12 +30,17 @@ export const WavDetails = observer(() => {
     useEffect(()=>{
         // draw the wav when a file is selected
         const ctx = canvas.current.getContext('2d')
+        // console.log(mode)
+        // console.log(mode == ASR_LOOP)
         filehandle ? 
             drawWave({
                 ctx,
                 filehandle,
-                width:canvas.current.width,
-                height:canvas.current.height
+                loopStart,
+                loopEnd,
+                showLoop: mode == ASR_LOOP,
+                width: canvas.current.width,
+                height: canvas.current.height
             }) : 
             ctx.clearRect(0, 0, canvas.current.width, canvas.current.height)
     })
@@ -86,6 +93,7 @@ export const WavDetails = observer(() => {
                                 <option value={ONE_SHOT}>one-shot</option>
                                 <option value={LOOP}>loop</option>
                                 <option value={PING_PONG}>ping-pong</option>
+                                <option value={ASR_LOOP}>ASR loop</option>
                             </SelectNum>
                             <SelectNum
                                 value={retrigger}
@@ -132,6 +140,32 @@ export const WavDetails = observer(() => {
                                     )
                                 }
                             </SelectNum>
+                            {/* {(mode == ASR_LOOP) && (empty == false) && (!filehandle) && */}
+                            {(mode == ASR_LOOP) && (empty == false) && 
+                            // only show ASR-looping settings for files on WVR
+                                <div>
+                                    <NumberInput
+                                        style={{width:270}}
+                                        label = "loop start"
+                                        val = {loopStart}
+                                        onChange = {val=>store.setCurrentNoteProp("loopStart",val)}
+                                        onSubmit = {()=>{
+                                            let val = clamp(loopStart, 0, Math.max(loopEnd - 1, 0))
+                                            store.setCurrentNoteProp("loopStart",val)
+                                        }}
+                                        />
+                                    <NumberInput
+                                        style={{width:270}}
+                                        label = "loop end"
+                                        val = {loopEnd}
+                                        onChange = {val=>store.setCurrentNoteProp("loopEnd",val)}
+                                        onSubmit = {()=>{
+                                            let val = clamp(loopEnd, Math.min(loopStart + 1, Math.floor(size / 4)), Math.floor(size / 4))
+                                            store.setCurrentNoteProp("loopEnd",val)
+                                        }}
+                                    />
+                                </div>
+                            }
                         </div>
                 }
                 {
