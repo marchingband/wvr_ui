@@ -6,6 +6,7 @@ import {makeName} from '../helpers/makeName'
 import {defaultVoices, defaultPinConfig, defaultMetadata, default_fx} from '../helpers/makeDefaultStores'
 import { parseDirectories } from '../helpers/parseDirectories.js'
 import {numberSort} from '../helpers/numberSort'
+import { analyzeWav } from '../audio/analyzeWav.js'
 
 configure({
     enforceActions: "never",
@@ -103,6 +104,7 @@ export const store = observable(
 )
 
 const onConnect = (self,data) => {
+    // console.log(data)
     const voices = toJS(self.voices)
     // keep the fx vars by merging the objects
     const newVoices = voices.map((v,i)=>
@@ -325,7 +327,7 @@ const setCurrentRackFile = (self,files) => {
     self.voiceNeedsUpdate()
 }
 
-const setCurrentWavFile = (self,files) => {
+const setCurrentWavFile = async (self,files) => {
     self.setLoading(true)
     if(self.wavBoardRange.length > 1){
         // there is a range
@@ -373,9 +375,12 @@ const setCurrentWavFile = (self,files) => {
         }
     } else {
         // no range
+        const len = await analyzeWav(files[0])
         self.voices[self.currentVoice][self.wavBoardSelected].filehandle = files[0]
         self.voices[self.currentVoice][self.wavBoardSelected].name = makeName(files[0].name)
         self.voices[self.currentVoice][self.wavBoardSelected].size = files[0].size
+        self.voices[self.currentVoice][self.wavBoardSelected].loopEnd = len
+        // self.voices[self.currentVoice][self.wavBoardSelected].loopEnd = Math.floor(files[0].size / 4)
         self.voices[self.currentVoice][self.wavBoardSelected].empty = 0
     }
     self.voiceNeedsUpdate()

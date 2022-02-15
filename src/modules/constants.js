@@ -13,6 +13,7 @@ export const WAV_ITEM_SIZE = 100
 export const ONE_SHOT     = 0
 export const LOOP         = 1
 export const PING_PONG    = 2
+export const ASR_LOOP     = 3
 
 // retrigger_mode
 export const RETRIGGER    = 0
