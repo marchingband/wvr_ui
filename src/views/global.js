@@ -78,6 +78,14 @@ export const Global = observer(() => {
                 <option value={76}>76</option>
                 <option value={78}>78</option>
             </SelectNum>
+            <SelectNum
+                label="midi channel"
+                value={metadata.midiChannel}
+                onChange={e=>store.setMetadataField('midiChannel',e)}  
+            >
+                <option value={0}>OMNI</option>
+                {Array(16).fill().map((x,i)=><option value={i+1}>{i+1}</option>)}
+            </SelectNum>
 
             <div style={{display:'flex',flexDirection:'row',alignItems:'center', marginLeft:20, width:400}}>
                 <Text primary>wifi network name :</Text>

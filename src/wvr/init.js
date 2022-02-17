@@ -57,10 +57,13 @@ export const loadVoice = async i => {
         },
         timeout:2000,
     })    
-    .catch(e=>{
+    .catch(e=>{ // silly AsyncServer was too busy doing something else (who knows what) to handle this and returned an error just because
         console.log(e)
         retry = true
     })
+    if(res && res.data == null){ // silly AsyncServer returned no error code but just made data=null just because
+        retry = true
+    }
     if(retry){
         console.log("retry load voice " + i)
         return await loadVoice(i)
