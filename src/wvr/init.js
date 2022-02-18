@@ -61,7 +61,7 @@ export const loadVoice = async i => {
         console.log(e)
         retry = true
     })
-    if(res && res.data == null){ // silly AsyncServer returned no error code but just made data=null just because
+    if(res && !res.data){ // silly AsyncServer returned no error code but just made data=null or data=undefined just because
         retry = true
     }
     if(retry){
