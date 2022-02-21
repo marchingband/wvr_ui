@@ -18,6 +18,7 @@ export const defaultVoices = () => {
                 loopStart:0,
                 loopEnd:0,
                 priority:0,
+                muteGroup:0,
                 dist:0,
                 verb:0,
                 pitch:0,

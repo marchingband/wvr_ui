@@ -10,7 +10,7 @@ import {SelectNum} from '../components/select'
 import {Slider} from './slider'
 
 export const RackDetails = observer(() => {
-    const {mode,retrigger,noteOff,responseCurve,priority,rack,dist,verb,pitch,vol,pan} = store.getCurrentNote()
+    const {mode,retrigger,noteOff,responseCurve,priority,muteGroup,rack,dist,verb,pitch,vol,pan} = store.getCurrentNote()
     const {name,num_layers} = rack
     const [showSettings, setShowSettings] = useState(true)
     const allowMultiple = store.wavBoardRange.length > 1 && store.wavBoardInterpolationTarget == undefined
@@ -71,6 +71,19 @@ export const RackDetails = observer(() => {
                             >
                                 {
                                     PRIORITIES.map(x=>
+                                        <option value={x} key={x}>
+                                            {x}
+                                        </option>    
+                                    )
+                                }
+                            </SelectNum>
+                            <SelectNum
+                                value={muteGroup}
+                                label='exclusive group'
+                                onChange={e=>store.setCurrentNoteProp('muteGroup',e)}
+                            >
+                                {
+                                    Array(128).fill().map((_,x)=>
                                         <option value={x} key={x}>
                                             {x}
                                         </option>    

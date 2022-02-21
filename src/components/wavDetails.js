@@ -18,7 +18,7 @@ export const WavDetails = observer(() => {
     const directoryPicker = useRef(null)
     const canvas = useRef(null)
     const [showSettings, setShowSettings] = useState(true)
-    const {name,size,filehandle,mode,retrigger,noteOff,responseCurve,priority,dist,verb,pitch,vol,pan,loopStart,loopEnd,empty} = store.getCurrentNote()
+    const {name,size,filehandle,mode,retrigger,noteOff,responseCurve,priority,muteGroup,dist,verb,pitch,vol,pan,loopStart,loopEnd,empty} = store.getCurrentNote()
     const range = store.wavBoardRange.length > 0
     const allowMultiple = store.wavBoardRange.length > 1 && store.wavBoardInterpolationTarget == undefined
     useEffect(()=>{
@@ -66,21 +66,24 @@ export const WavDetails = observer(() => {
                 webkitdirectory=""
             />
             <div style={row}>
-                <Stack items={[
-                    "voice",
-                    "note name",
-                    "note number",
-                    "file name",
-                    "file size"
+                <Stack 
+                    items={[
+                        "voice",
+                        "note name",
+                        "note number",
+                        "file name",
+                        "file size"
                     ]}
                 />
-                <Stack items={[
-                    store.currentVoice,
-                    range ? "range" : `${noteToName(store.wavBoardSelected)} ${noteToOctave(store.wavBoardSelected)}` || '',
-                    range ? "range" : store.wavBoardSelected || '',
-                    range ? "range" : name || 'empty',
-                    range ? "range" : size.toLocaleString() + ' bytes' || ''
-                ]}/>
+                <Stack 
+                    items={[
+                        store.currentVoice,
+                        range ? "range" : `${noteToName(store.wavBoardSelected)} ${noteToOctave(store.wavBoardSelected)}` || '',
+                        range ? "range" : store.wavBoardSelected || '',
+                        range ? "range" : name || 'empty',
+                        range ? "range" : size.toLocaleString() + ' bytes' || ''
+                    ]}
+                />
                 {
                     showSettings &&
                         <div style={{...column,marginLeft:'auto'}}>
@@ -140,7 +143,20 @@ export const WavDetails = observer(() => {
                                     )
                                 }
                             </SelectNum>
-                            {/* {(mode == ASR_LOOP) && (empty == false) && (!filehandle) && */}
+                            <SelectNum
+                                value={muteGroup}
+                                label='exclusive group'
+                                onChange={e=>store.setCurrentNoteProp('muteGroup',e)}
+                                style={{width:270}}
+                            >
+                                {
+                                    Array(128).fill().map((_,x)=>
+                                        <option value={x} key={x}>
+                                            {x}
+                                        </option>    
+                                    )
+                                }
+                            </SelectNum>
                             {(mode == ASR_LOOP) && (empty == false) && 
                             // only show ASR-looping settings for files on WVR
                                 <div>
