@@ -152,7 +152,7 @@ export const WavDetails = observer(() => {
                                 {
                                     Array(128).fill().map((_,x)=>
                                         <option value={x} key={x}>
-                                            {x}
+                                            {x || "none"}
                                         </option>    
                                     )
                                 }
