@@ -7,6 +7,7 @@ import {defaultVoices, defaultPinConfig, defaultMetadata, default_fx} from '../h
 import { parseDirectories } from '../helpers/parseDirectories.js'
 import {numberSort} from '../helpers/numberSort'
 import { analyzeWav } from '../audio/analyzeWav.js'
+import { observer } from 'mobx-react-lite'
 
 configure({
     enforceActions: "never",
@@ -46,6 +47,8 @@ export const store = observable(
         websites: observable([]),
         pinConfig: observable(defaultPinConfig),
         metadata: observable(defaultMetadata),
+
+        midiInputs: observer([]),
 
         getVoices:function(){
             return toJS(this.voices)

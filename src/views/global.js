@@ -6,6 +6,7 @@ import {Button} from '../components/button'
 import {SelectNum} from '../components/select'
 import {store} from '../modules/store'
 import { restoreEMMC, resetEMMC } from '../wvr/emmc';
+import {initWebMidi} from '../modules/webMidi'
 
 export const Global = observer(() => {
     const [firmware,setFirmware] = useState(null)
@@ -84,7 +85,7 @@ export const Global = observer(() => {
                 onChange={e=>store.setMetadataField('midiChannel',e)}  
             >
                 <option value={0}>OMNI</option>
-                {Array(16).fill().map((x,i)=><option value={i+1}>{i+1}</option>)}
+                {Array(16).fill().map((x,i)=><option value={i+1} key={i}>{i+1}</option>)}
             </SelectNum>
 
             <div style={{display:'flex',flexDirection:'row',alignItems:'center', marginLeft:20, width:400}}>
@@ -189,13 +190,35 @@ export const Global = observer(() => {
                         if(!window.confirm("upload this firmware to WVR and boot it?")) return
                         forceUploadFirmware({fileHandle:firmware})
                     }}
-                    disabled={!firmware}
                 />
                 <Button
                     style={{width:228}}
                     title={firmware ? firmware.name : "select firmware"}
                     onClick={()=>{firmwareFileInput.current.click()}}
                 />
+            </div>
+            <Text 
+                style={{marginLeft:20, marginRight:'auto'}}
+                primary
+            >
+                MIDI data sources :
+            </Text>
+            <div style={{display:'flex',flexDirection:'row',margin:20, marginTop:5}}>
+
+                <Button
+                    title="refresh"
+                    onClick={()=>initWebMidi()}
+                />
+                {
+                    store.midiInputs.map(x=>
+                        <Button 
+                            key={x}
+                            style={{width:200}}
+                            title={x}
+                            disabled
+                        />    
+                    )
+                }
             </div>
             <input 
                 ref={firmwareFileInput}
