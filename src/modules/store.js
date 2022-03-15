@@ -239,6 +239,9 @@ const clearCurrentNote = self => {
         loopEnd:0,
         muteGroup:0,
         size: 0,
+        loopStart:0,
+        loopEnd:0,
+        muteGroup:0,
         ...default_fx
     }
     self.voiceNeedsUpdate()
