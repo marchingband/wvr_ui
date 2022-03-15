@@ -235,6 +235,9 @@ const clearCurrentNote = self => {
         priority: 0,
         responseCurve: 1,
         retrigger: 0,
+        loopStart:0,
+        loopEnd:0,
+        muteGroup:0,
         size: 0,
         ...default_fx
     }
@@ -253,6 +256,9 @@ const clearSelectedNotes = self => {
             responseCurve: 1,
             retrigger: 0,
             size: 0,
+            loopStart:0,
+            loopEnd:0,
+            muteGroup:0,
             ...default_fx
         }
     })
