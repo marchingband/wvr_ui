@@ -233,6 +233,8 @@ const clearCurrentNote = self => {
         responseCurve: 1,
         retrigger: 0,
         size: 0,
+        loopStart:0,
+        loopEnd:0,
         ...default_fx
     }
     self.voiceNeedsUpdate()
@@ -250,6 +252,8 @@ const clearSelectedNotes = self => {
             responseCurve: 1,
             retrigger: 0,
             size: 0,
+            loopStart:0,
+            loopEnd:0,
             ...default_fx
         }
     })
