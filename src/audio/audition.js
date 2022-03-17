@@ -9,13 +9,25 @@ export const auditionDisk = async() => {
     if(store.getCurrentNote().isRack > -1){
         velocity = store.getCurrentNote().rack.break_points.slice()[store.rackBoardSelected + 1] -1
     }
-    const data = {
-        procedure:0,
-        voice,
-        note,
-        velocity
-    }
-    RPCOut(data)
+    // const data = {
+    //     procedure:0,
+    //     voice,
+    //     note,
+    //     velocity
+    // }
+    // RPCOut(data)
+    fetch(
+        "/playWav",
+        {
+            method: "GET",
+            headers: {
+                "voice": voice,
+                "note": note,
+                "velocity": velocity
+            }
+        }
+    )
+    .catch(e=>console.log(e))
 }
 
 export const auditionLocal = async(f) => new Promise(async(res)=>{
