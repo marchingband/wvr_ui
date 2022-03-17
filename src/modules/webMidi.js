@@ -6,6 +6,8 @@ var midiAccess = null;  // global MIDIAccess object
 function onMIDISuccess( midi ) {
   console.log( "MIDI ready!" );
   midiAccess = midi;  // store in the global (in real usage, would probably keep in an object instance)
+  listInputsAndOutputs();
+  startMidi()    
 }
 
 function onMIDIFailure(msg) {
@@ -51,9 +53,17 @@ function startMidi() {
 }
 
 const initWebMidi = async () => {
-    await navigator.requestMIDIAccess().then( onMIDISuccess, onMIDIFailure );
-    listInputsAndOutputs();
-    startMidi()
+  if(!navigator.requestMIDIAccess){
+    store.midiInputs = []
+    console.log("MIDI Access forbidden - see WVR documentation to enable Web MIDI")
+    return
+  }
+  try{
+    navigator.requestMIDIAccess().then( onMIDISuccess, onMIDIFailure )
+  } catch (e){
+    store.midiInputs = []
+    console.log("requestMIDIaccess Error " + e)
+  }
 }
 
 module.exports = {initWebMidi}

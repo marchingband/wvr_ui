@@ -110,8 +110,11 @@ module.exports = env => ({
                 "cookieDomainRewrite": "localhost",
                 "target": "http://192.168.5.18/deleteFirmware"
             },
-            
-
+            "/playWav": {
+                "changeOrigin": true,
+                "cookieDomainRewrite": "localhost",
+                "target": "http://192.168.5.18/playWav"
+            },
         }
     },
 
