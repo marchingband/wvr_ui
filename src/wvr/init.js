@@ -3,6 +3,8 @@ import { store } from "../modules/store";
 import {isJson} from '../helpers/isJson'
 import {handleRPCIn} from '../wvr/rpc'
 import {WVR_IP} from '../modules/constants'
+import {initWebMidi} from '../modules/webMidi'
+
 export var ws;
 
 export const init = async () => {
@@ -11,6 +13,7 @@ export const init = async () => {
     await initStore();
     if (store.isRecoveryMode) return;
     await initWebSockets();
+    initWebMidi()
 }
 
 export const initStore = async () => {
