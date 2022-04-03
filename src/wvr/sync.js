@@ -208,6 +208,7 @@ const uploadWavs = async () => {
 
 const uploadNoteWav = async ({pcm,size,name,voice,note}) => {
     let retry = false
+    console.log(size, name, voice, note, pcm.size)
     await axios.post(
         "/addwav",
         pcm,
@@ -231,7 +232,10 @@ const uploadNoteWav = async ({pcm,size,name,voice,note}) => {
             retry = true
         }
     })
-    retry && await uploadNoteWav({pcm,size,name,voice,note})
+    if(retry){
+        console.log("retry voice " + voice + " note " + note)
+        return await uploadNoteWav({pcm,size,name,voice,note})
+    }
 }
 
 const uploadRackWav = async ({pcm, name, voice, note, isRack, json}) => {
