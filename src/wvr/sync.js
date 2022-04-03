@@ -53,7 +53,7 @@ const uploadPinConfig = async() => {
         json,
         {
             onUploadProgress: p=>store.onProgress(p.loaded / p.total),
-            headers:{'Content-Type': 'text/plain'}
+            headers:{'Content-Type': 'application/json'}
         }
     )
     .catch(e=>console.log(e))
@@ -75,7 +75,7 @@ const uploadMetadata = async() => {
                     store.loadProgress = 0
                 }
             },
-            headers:{'Content-Type': 'text/plain'}
+            headers:{'Content-Type': 'application/json'}
         }
     )
     .catch(e=>console.log(e))
@@ -94,7 +94,7 @@ const uploadSingleVoiceConfig = async(numVoice) => {
                 store.onProgress(p.loaded / p.total)
             },
             headers:{
-                'Content-Type': 'text/plain',
+                'Content-Type': 'application/json',
                 'numVoice' : numVoice
             }
         }
@@ -208,14 +208,13 @@ const uploadWavs = async () => {
 
 const uploadNoteWav = async ({pcm,size,name,voice,note}) => {
     let retry = false
-    console.log(size, name, voice, note, pcm.size)
     await axios.post(
         "/addwav",
         pcm,
         {
             onUploadProgress: p=>store.onProgress(p.loaded / p.total),
             headers:{
-                'Content-Type': 'text/plain',
+                'Content-Type': 'audio/PCMA',
                 'size':size,
                 'name':name,
                 'voice':voice,
@@ -246,7 +245,7 @@ const uploadRackWav = async ({pcm, name, voice, note, isRack, json}) => {
         {
             onUploadProgress: p=> store.onProgress( p.loaded / p.total ),
             headers:{
-                'Content-Type': 'text/html',
+                'Content-Type': 'audio/PCMA',
                 'name' : name,
                 'voice' : voice,
                 'note' : note,
