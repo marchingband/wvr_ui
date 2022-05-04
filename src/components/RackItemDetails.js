@@ -36,7 +36,7 @@ export const RackItemDetails = observer(() => {
             <input
                 ref={filePicker}
                 type="file" 
-                onChange={e=>e.target.files && store.setCurrentRackFile(e.target.files)}
+                onChange={e=>e.target.files.length && store.setCurrentRackFile(e.target.files)}
                 style={{display:'none'}}
                 multiple = { allowMultiple }
             />

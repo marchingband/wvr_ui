@@ -85,14 +85,14 @@ export const Firmware = ({num,f}) => {
             <input 
                 ref={firmwareFileInput}
                 type="file" 
-                onChange={e=>e.target.files && setFirmware(e.target.files[0])}
+                onChange={e=>e.target.files.length && setFirmware(e.target.files[0])}
                 style={{display:'none'}}
                 accept=".bin"
                 />
             <input 
                 ref={GUIFileInput}
                 type="file" 
-                onChange={e=>e.target.files && setGUI(e.target.files[0])}
+                onChange={e=>e.target.files.length && setGUI(e.target.files[0])}
                 style={{display:'none'}}
                 accept=".html"
             />
