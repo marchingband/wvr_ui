@@ -50,9 +50,7 @@ export const WavDetails = observer(() => {
                 ref={filePicker}
                 multiple = { allowMultiple }
                 type="file" 
-                onChange={e=>{
-                    e && store.setCurrentWavFile(e.target.files)
-                }}
+                onChange={e=>e.target.files && store.setCurrentWavFile(e.target.files)}
                 style={{display:'none'}}
                 />
             <input 
@@ -60,7 +58,7 @@ export const WavDetails = observer(() => {
                 multiple
                 type="file" 
                 // onChange={e=>console.log(e.target.files)}
-                onChange={e=>e && store.bulkUploadRacks(e)}
+                onChange={e=>e.target.files && store.bulkUploadRacks(e)}
                 style={{display:'none'}}
                 directory="" 
                 webkitdirectory=""

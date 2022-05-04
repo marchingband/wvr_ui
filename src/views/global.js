@@ -223,14 +223,14 @@ export const Global = observer(() => {
             <input 
                 ref={firmwareFileInput}
                 type="file" 
-                onChange={e=>setFirmware(e.target.files[0])}
+                onChange={e=>e.target.files && setFirmware(e.target.files[0])}
                 style={{display:'none'}}
                 accept=".bin"
             />
             <input 
                 ref={emmcRestoreFileInput}
                 type="file" 
-                onChange={e=>restoreEMMC(e.target.files[0])}
+                onChange={e=>e.target.files && restoreEMMC(e.target.files[0])}
                 style={{display:'none'}}
                 accept=".bin"
             />
