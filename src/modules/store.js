@@ -2,7 +2,7 @@ import {observable, configure, toJS} from 'mobx'
 import {themes} from './themes.js'
 import {WAV_ITEM_SIZE} from './constants'
 import {clamp} from '../helpers/clamp.js'
-import {makeName} from '../helpers/makeName'
+import {makeName, makeRackName} from '../helpers/makeName'
 import {defaultVoices, defaultPinConfig, defaultMetadata, default_fx} from '../helpers/makeDefaultStores'
 import { parseDirectories } from '../helpers/parseDirectories.js'
 import {numberSort} from '../helpers/numberSort'
@@ -342,17 +342,39 @@ const setCurrentWavFile = async (self,files) => {
         // there is a range
         if(files.length > 1){
             // multiple files selected
-            files = Array.from(files).sort((a,b)=>numberSort(a.name,b.name))
-            // files = Array.from(files).sort((a,b)=>a.name < b.name ? -1 : 1)
-            let len = Math.min(files.length, self.wavBoardRange.length)
-            if(!window.confirm(`${files.length} files, ${self.wavBoardRange.length} notes, will allocate ${len} files.`))return
-            for(let i=0;i<len;i++){
-                self.voices[self.currentVoice][self.wavBoardRange[i]].filehandle = files[i]
-                self.voices[self.currentVoice][self.wavBoardRange[i]].name = makeName(files[i].name)
-                self.voices[self.currentVoice][self.wavBoardRange[i]].size = files[i].size
-                self.voices[self.currentVoice][self.wavBoardRange[i]].empty = 0
-                self.voices[self.currentVoice][self.wavBoardRange[i]].isRack = -1
-                delete self.voices[self.currentVoice][self.wavBoardRange[i]].rack
+            if(self.wavBoardInterpolationTarget != undefined){
+                // interpolate racks
+                if(!window.confirm(`pitch interpolate a new rack of ${files.length} layers, across ${self.wavBoardRange.length} notes?`))return
+                files = Array.from(files).sort((a,b)=>numberSort(a.name,b.name))
+                for(let i=0;i<self.wavBoardRange.length;i++){
+                    const note = self.wavBoardRange[i]
+                    let pitch = self.wavBoardRange[i] - self.wavBoardInterpolationTarget
+                    const name = makeRackName(files[0].name)
+                    convertToRack(self, note)
+                    setRackNumLayers(self, note, files.length)
+                    setRackName(self, note, name + " " + pitch)
+                    setNoteProp(self, self.wavBoardRange[i], "pitch", pitch)
+                    for(let j=0;j<files.length;j++){
+                        self.voices[self.currentVoice][note].rack.layers[j].filehandle = files[j]
+                        self.voices[self.currentVoice][note].rack.layers[j].name = makeName(files[j].name)
+                        self.voices[self.currentVoice][note].rack.layers[j].size = files[j].size
+                        self.voices[self.currentVoice][note].rack.layers[j].empty = 0
+                    }
+                }
+            } else {
+                // multi note upload
+                files = Array.from(files).sort((a,b)=>numberSort(a.name,b.name))
+                // files = Array.from(files).sort((a,b)=>a.name < b.name ? -1 : 1)
+                let len = Math.min(files.length, self.wavBoardRange.length)
+                if(!window.confirm(`${files.length} files, ${self.wavBoardRange.length} notes, will allocate ${len} files.`))return
+                for(let i=0;i<len;i++){
+                    self.voices[self.currentVoice][self.wavBoardRange[i]].filehandle = files[i]
+                    self.voices[self.currentVoice][self.wavBoardRange[i]].name = makeName(files[i].name)
+                    self.voices[self.currentVoice][self.wavBoardRange[i]].size = files[i].size
+                    self.voices[self.currentVoice][self.wavBoardRange[i]].empty = 0
+                    self.voices[self.currentVoice][self.wavBoardRange[i]].isRack = -1
+                    delete self.voices[self.currentVoice][self.wavBoardRange[i]].rack
+                }
             }
         } else {
             // only one file selected

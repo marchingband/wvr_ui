@@ -48,7 +48,8 @@ export const WavDetails = observer(() => {
         <div style={container}>
             <input 
                 ref={filePicker}
-                multiple = { allowMultiple }
+                multiple = { true }
+                // multiple = { allowMultiple }
                 type="file" 
                 onChange={e=>e.target.files.length && store.setCurrentWavFile(e.target.files)}
                 style={{display:'none'}}
@@ -93,7 +94,7 @@ export const WavDetails = observer(() => {
                             >
                                 <option value={ONE_SHOT}>one-shot</option>
                                 <option value={LOOP}>loop</option>
-                                <option value={PING_PONG}>ping-pong</option>
+                                {/* <option value={PING_PONG}>ping-pong</option> */}
                                 <option value={ASR_LOOP}>ASR loop</option>
                             </SelectNum>
                             <SelectNum
@@ -222,7 +223,10 @@ export const WavDetails = observer(() => {
                         title={allowMultiple ? "select files": "select file"}
                         // onClick={()=>filePicker.current.click()}
                         onClick={({shiftKey,altKey,metaKey})=>{
-                            if(shiftKey){
+                            if(shiftKey && altKey){
+                                // TODO interpolate racks
+
+                            } else if(shiftKey){
                                 if(store.wavBoardRange.length < 2){
                                     window.alert("Please select range of notes to enable bulk rack upload")
                                     return
