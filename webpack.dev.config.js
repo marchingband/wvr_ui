@@ -115,6 +115,16 @@ module.exports = env => ({
                 "cookieDomainRewrite": "localhost",
                 "target": "http://192.168.5.18/playWav"
             },
+            "/emmcReset": {
+                "changeOrigin": true,
+                "cookieDomainRewrite": "localhost",
+                "target": "http://192.168.5.18/emmcReset"
+            },
+            "/restoreEMMC": {
+                "changeOrigin": true,
+                "cookieDomainRewrite": "localhost",
+                "target": "http://192.168.5.18/restoreEMMC"
+            }
         }
     },
 

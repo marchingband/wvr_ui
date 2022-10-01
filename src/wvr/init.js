@@ -46,6 +46,7 @@ export const initStore = async () => {
     })
     // store.logData()
     store.loading = false
+    // console.log(JSON.stringify(voices[0][40], null, 2))
 }
 
 export const loadVoice = async i => {

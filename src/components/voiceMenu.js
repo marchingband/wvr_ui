@@ -13,19 +13,58 @@ export const VoiceMenu = () =>
     </div>
 
 
-const VoiceButton = observer(({i}) => 
-    <div 
-        style={voiceButton(i)}
-        onClick={()=>{
-            store.currentVoice = i
-            store.resetSelected()
-        }}
-    >
-        <Text primary small>
-            {i+1}
-        </Text>
-    </div>
-)
+const VoiceButton = observer(({i}) => {
+    const downloadJSONRef = useRef()
+    const uploadJSONRef = useRef()
+    return(
+        <div 
+            style={voiceButton(i)}
+            onClick={({shiftKey,altKey,metaKey})=>{
+                if(shiftKey && altKey){
+                    if(!window.confirm("load voice config from disk?")) return
+                    uploadJSONRef.current.click()
+                }else if(shiftKey){
+                    if(!window.confirm("save voice config to disk?")) return
+                    const data = store.getVoiceData(i)
+                    const json = JSON.stringify(data, null, 2)
+                    const blob = new Blob([json], {type:'application/json'})
+                    const href = URL.createObjectURL(blob)
+                    downloadJSONRef.current.href = href
+                    downloadJSONRef.current.download = "wvr.json"
+                    downloadJSONRef.current.click()
+                } else {
+                    store.currentVoice = i
+                    store.resetSelected()
+                }
+            }}
+        >
+            <a  
+                download
+                ref={downloadJSONRef}
+            />
+            <input 
+                ref={uploadJSONRef}
+                type="file" 
+                onChange={e=>{
+                    if(e.target.files.length < 1) return
+                    const file = e.target.files[0]
+                    const fileReader = new FileReader();
+                    fileReader.readAsText(file, "UTF-8");
+                    fileReader.onload = e => {
+                        console.log("reading file")
+                        const data = JSON.parse(e.target.result)
+                        store.setVoiceData(i, data)
+                    };
+                }}
+                style={{display:'none'}}
+                accept=".json"
+            />
+            <Text primary small>
+                {i+1}
+            </Text>
+        </div>
+    )
+})
 const voiceButton = i => ({
     flex:1,
     display:'flex',

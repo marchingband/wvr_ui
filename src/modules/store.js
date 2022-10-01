@@ -8,6 +8,7 @@ import { parseDirectories } from '../helpers/parseDirectories.js'
 import {numberSort} from '../helpers/numberSort'
 import { analyzeWav } from '../audio/analyzeWav.js'
 import { observer } from 'mobx-react-lite'
+import {semitonesToStretch} from "../helpers/semitonesToStretch"
 
 configure({
     enforceActions: "never",
@@ -56,7 +57,7 @@ export const store = observable(
         getMetadata:function(){
             return toJS(this.metadata)
         },
-
+        
         onConnect:function(data){onConnect(this,data)},
         onProgress:function(p){onProgress(this,p)},
         scrollWavBoard:function(right){scrollWavBoard(this,right)},
@@ -102,7 +103,10 @@ export const store = observable(
             voices: toJS(this.voices),
             pinConfig: toJS(this.pinConfig),
             firmwares: toJS(this.firmwares)
-        })}
+        })},
+        getVoiceData:function(num){return getVoiceData(this, num)},
+        setVoiceData:function(num, data){return setVoiceData(this, num, data)},
+        selectAllNotes:function(){return selectAllNotes(this)},
     }
 )
 
@@ -337,7 +341,6 @@ const setCurrentRackFile = (self,files) => {
 }
 
 const setCurrentWavFile = async (self,files) => {
-    self.setLoading(true)
     if(self.wavBoardRange.length > 1){
         // there is a range
         if(files.length > 1){
@@ -383,6 +386,7 @@ const setCurrentWavFile = async (self,files) => {
                 if(!window.confirm(`interpolate pitch across ${self.wavBoardRange.length} notes?`))return
                 for(let i=0;i<self.wavBoardRange.length;i++){
                     let pitch = self.wavBoardRange[i] - self.wavBoardInterpolationTarget
+                    let stretch = semitonesToStretch(pitch)
                     self.voices[self.currentVoice][self.wavBoardRange[i]].filehandle = files[0]
                     self.voices[self.currentVoice][self.wavBoardRange[i]].name = makeName(files[0].name)
                     self.voices[self.currentVoice][self.wavBoardRange[i]].size = files[0].size
@@ -415,7 +419,6 @@ const setCurrentWavFile = async (self,files) => {
         self.voices[self.currentVoice][self.wavBoardSelected].empty = 0
     }
     self.voiceNeedsUpdate()
-    self.setLoading(false)
 }
 
 const getCurrentPin = self => self.pinConfig.slice()[self.pinConfigSelected]
@@ -517,7 +520,7 @@ const rackBoardAddToSelection = (self,note) => {
 }
 
 const bulkUploadRacks = (self,e) => {
-    self.setLoading(true)
+    // self.setLoading(true)
     let tree = parseDirectories(e)
     if(!tree){
         window.alert("error in drectory parse")
@@ -547,7 +550,7 @@ const bulkUploadRacks = (self,e) => {
         }
     }
     self.voiceNeedsUpdate()
-    self.setLoading(false)
+    // self.setLoading(false)
 }
 
 const getNumRackSlotsOpen = self => {
@@ -580,4 +583,35 @@ const deleteFirmware = (self, num) => {
     firmwares[num].free = 1
     firmwares[num].corrupt = 0
     self.firmwares.replace(firmwares)
+}
+
+const getVoiceData = (self, num) => {
+    const data = self.getVoices()[num]
+    const voiceData = data.map(({loopEnd, loopStart, mode, muteGroup, name, noteOff, priority, responseCurve, retrigger, rack})=>{
+        return({loopEnd, loopStart, mode, muteGroup, name, noteOff, priority, responseCurve, retrigger, rack})
+    })
+    return(voiceData)
+}
+
+const setVoiceData = (self, num, data) => {
+    if(data.length != 128){
+        console.log("error updating voice: data must contain 128 notes!")
+        return
+    }
+    let voices = self.getVoices()
+    data.forEach((note, i) => {
+        voices[num][i] = {
+            ...voices[num][i], 
+            ...note
+        }
+        if(note.isRack != -1){
+            voices[num][i].isRack = -2
+        }
+    })
+    self.voices.replace(voices)
+}
+
+const selectAllNotes = self => {
+    const all = Array(128).fill().map((_,i)=>i)
+    self.wavBoardRange.replace(all)
 }
