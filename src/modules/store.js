@@ -76,8 +76,8 @@ export const store = observable(
         getRackBreakPoint:function(i){return getRackBreakPoint(this,i)},
         getRackLayer:function(i){return getRackLayer(this,i)},
         getCurrentRackLayer:function(){return getCurrentRackLayer(this)},
-        setCurrentRackFile:function(f){setCurrentRackFile(this,f)},
-        setCurrentWavFile:function(f){setCurrentWavFile(this,f)},
+        setCurrentRackFile:function(f){return setCurrentRackFile(this,f)},
+        setCurrentWavFile:function(f){return setCurrentWavFile(this,f)},
         getCurrentPin:function(){return getCurrentPin(this)},
         getPinConfig:function(){return getPinConfig(this)},
         setCurrentPinProp:function(prop,val){setCurrentPinProp(this,prop,val)},
@@ -92,7 +92,7 @@ export const store = observable(
         rackBoardRangeSelect:function(note){rackBoardRangeSelect(this,note)},
         rackBoardAddToSelection:function(note){rackBoardAddToSelection(this,note)},
         rackBoardClearRange:function(){this.rackBoardRange.replace([])},
-        bulkUploadRacks:function(e){bulkUploadRacks(this,e)},
+        bulkUploadRacks:function(e){return bulkUploadRacks(this,e)},
         getNumRackSlotsOpen:function(){return getNumRackSlotsOpen(this)},
         voiceNeedsUpdate:function(){voiceNeedsUpdate(this)},
         getVoicesNeedUpdate:function(){return toJS(this.voicesNeedUpdate)},
@@ -347,7 +347,7 @@ const setCurrentWavFile = async (self,files) => {
             // multiple files selected
             if(self.wavBoardInterpolationTarget != undefined){
                 // interpolate racks
-                if(!window.confirm(`pitch interpolate a new rack of ${files.length} layers, across ${self.wavBoardRange.length} notes?`))return
+                if(!window.confirm(`pitch interpolate a new rack of ${files.length} layers, across ${self.wavBoardRange.length} notes?`))return false
                 files = Array.from(files).sort((a,b)=>numberSort(a.name,b.name))
                 for(let i=0;i<self.wavBoardRange.length;i++){
                     const note = self.wavBoardRange[i]
@@ -369,7 +369,7 @@ const setCurrentWavFile = async (self,files) => {
                 files = Array.from(files).sort((a,b)=>numberSort(a.name,b.name))
                 // files = Array.from(files).sort((a,b)=>a.name < b.name ? -1 : 1)
                 let len = Math.min(files.length, self.wavBoardRange.length)
-                if(!window.confirm(`${files.length} files, ${self.wavBoardRange.length} notes, will allocate ${len} files.`))return
+                if(!window.confirm(`${files.length} files, ${self.wavBoardRange.length} notes, will allocate ${len} files.`))return false
                 for(let i=0;i<len;i++){
                     self.voices[self.currentVoice][self.wavBoardRange[i]].filehandle = files[i]
                     self.voices[self.currentVoice][self.wavBoardRange[i]].name = makeName(files[i].name)
@@ -383,7 +383,7 @@ const setCurrentWavFile = async (self,files) => {
             // only one file selected
             if(self.wavBoardInterpolationTarget != undefined){
                 // interpolate
-                if(!window.confirm(`interpolate pitch across ${self.wavBoardRange.length} notes?`))return
+                if(!window.confirm(`interpolate pitch across ${self.wavBoardRange.length} notes?`))return false
                 for(let i=0;i<self.wavBoardRange.length;i++){
                     let pitch = self.wavBoardRange[i] - self.wavBoardInterpolationTarget
                     let stretch = semitonesToStretch(pitch)
@@ -397,7 +397,7 @@ const setCurrentWavFile = async (self,files) => {
                 }
             } else {
                 // copy to all
-                if(!window.confirm(`copy to ${self.wavBoardRange.length} notes selected?`))return
+                if(!window.confirm(`copy to ${self.wavBoardRange.length} notes selected?`))return false
                 for(let i=0;i<self.wavBoardRange.length;i++){
                     self.voices[self.currentVoice][self.wavBoardRange[i]].filehandle = files[0]
                     self.voices[self.currentVoice][self.wavBoardRange[i]].name = makeName(files[0].name)
@@ -434,9 +434,23 @@ const setCurrentPinProp = (self,prop,val) => {
 
 const setCurrentNoteProp = (self,prop,val) => {
     let range = toJS(self.wavBoardRange)
+    let target = self.wavBoardInterpolationTarget
     if(range.length > 0){
-        for(let note of range){
-            setNoteProp(self,note,prop,val)
+        // check for interpolate loop points
+        if(target != undefined && (prop == "loopStart" || prop == "loopEnd")
+        ){
+            console.log("interpolate loop points")
+            for(let note of range){
+                const pitch = note - target
+                const stretch = semitonesToStretch(pitch)
+                const newVal = Math.round(val * stretch)
+                setNoteProp(self,note,prop,newVal)
+            }
+
+        } else { // no interpolating
+            for(let note of range){
+                setNoteProp(self,note,prop,val)
+            }
         }
     } else {
         setNoteProp(self,self.wavBoardSelected,prop,val)
@@ -489,6 +503,7 @@ const wavBoardAddToSelection = (self,note) => {
 const wavBoardsetInterpolationTarget = (self,note) => {
     if(self.wavBoardInterpolationTarget != note){
         self.wavBoardInterpolationTarget = note
+        self.wavBoardSelected = note
     } else {
         self.wavBoardInterpolationTarget = undefined
     }
@@ -531,7 +546,7 @@ const bulkUploadRacks = (self,e) => {
 
     let openSlots = self.getNumRackSlotsOpen()
     let numNotes = Math.min(self.wavBoardRange.length, dirs.length, openSlots)
-    if(!window.confirm(`${dirs.length} racks selected, ${self.wavBoardRange.length} notes selected, ${openSlots} rack slots available in memory, will allocate ${numNotes} racks.`))return
+    if(!window.confirm(`${dirs.length} racks selected, ${self.wavBoardRange.length} notes selected, ${openSlots} rack slots available in memory, will allocate ${numNotes} racks.`))return false
     for(let i=0;i<numNotes;i++){
         let files = tree[dirs[i]]
             // remove hidden files like .DSstore

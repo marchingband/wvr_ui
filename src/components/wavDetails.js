@@ -51,7 +51,14 @@ export const WavDetails = observer(() => {
                 multiple = { true }
                 // multiple = { allowMultiple }
                 type="file" 
-                onChange={e=>e.target.files.length && store.setCurrentWavFile(e.target.files)}
+                onChange={async e=>{
+                    e.persist()
+                    if(!e.target.files.length) return
+                    const ret = await store.setCurrentWavFile(e.target.files)
+                    if(ret == false){ // file dialog dismissed
+                        e.target.value = null
+                    }
+                }}
                 style={{display:'none'}}
                 />
             <input 
@@ -59,7 +66,14 @@ export const WavDetails = observer(() => {
                 multiple
                 type="file" 
                 // onChange={e=>console.log(e.target.files)}
-                onChange={e=>e.target.files.length && store.bulkUploadRacks(e)}
+                onChange={async e=>{
+                    e.persist()
+                    if(!e.target.files.length) return
+                    const ret = await store.bulkUploadRacks(e)
+                    if(ret == false){ // file dialog dismissed
+                        e.target.value = null
+                    }
+                }}
                 style={{display:'none'}}
                 directory="" 
                 webkitdirectory=""
