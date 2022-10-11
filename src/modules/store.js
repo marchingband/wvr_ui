@@ -1,6 +1,6 @@
 import {observable, configure, toJS} from 'mobx'
 import {themes} from './themes.js'
-import {WAV_ITEM_SIZE} from './constants'
+import {MAX_LAYERS_PER_RACK, WAV_ITEM_SIZE} from './constants'
 import {clamp} from '../helpers/clamp.js'
 import {makeName, makeRackName} from '../helpers/makeName'
 import {defaultVoices, defaultPinConfig, defaultMetadata, default_fx} from '../helpers/makeDefaultStores'
@@ -9,6 +9,7 @@ import {numberSort} from '../helpers/numberSort'
 import { analyzeWav } from '../audio/analyzeWav.js'
 import { observer } from 'mobx-react-lite'
 import {semitonesToStretch} from "../helpers/semitonesToStretch"
+import {NUM_RACK_SLOTS, MAX_LAYERS_PER_RACK} from "./constants"
 
 configure({
     enforceActions: "never",
@@ -535,7 +536,7 @@ const rackBoardAddToSelection = (self,note) => {
 }
 
 const bulkUploadRacks = (self,e) => {
-    // self.setLoading(true)
+    self.setLoading(true)
     let tree = parseDirectories(e)
     if(!tree){
         window.alert("error in drectory parse")
@@ -545,7 +546,7 @@ const bulkUploadRacks = (self,e) => {
     let dirs = Object.keys(tree).sort(numberSort)
 
     let openSlots = self.getNumRackSlotsOpen()
-    let numNotes = Math.min(self.wavBoardRange.length, dirs.length, openSlots)
+    let numNotes = Math.min(self.wavBoardRange.length, dirs.length, openSlots, MAX_LAYERS_PER_RACK)
     if(!window.confirm(`${dirs.length} racks selected, ${self.wavBoardRange.length} notes selected, ${openSlots} rack slots available in memory, will allocate ${numNotes} racks.`))return false
     for(let i=0;i<numNotes;i++){
         let files = tree[dirs[i]]
@@ -565,7 +566,7 @@ const bulkUploadRacks = (self,e) => {
         }
     }
     self.voiceNeedsUpdate()
-    // self.setLoading(false)
+    self.setLoading(false)
 }
 
 const getNumRackSlotsOpen = self => {
@@ -578,7 +579,7 @@ const getNumRackSlotsOpen = self => {
             }
         })
     })
-    return 128 - cnt
+    return NUM_RACK_SLOTS - cnt
 }
 
 const voiceNeedsUpdate = self => {
