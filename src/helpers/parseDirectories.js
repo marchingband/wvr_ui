@@ -13,11 +13,6 @@ export const parseDirectories = e => {
     if(bad.length){
         window.alert(`removed ${bad.map(x=>x.webkitRelativePath)}`)
     }
-    // if(files.every(x=>x.webkitRelativePath.split("/").length == 3)){
-    // } else {
-    //     window.alert("error :please select a folder of files (for notes), or a filder of folders of files (for racks)")
-    //     return false
-    // }
     return parseAsRacks(files)
 }
 
@@ -29,7 +24,9 @@ const parseAsRacks = files => {
         if(!tree[dir]){
             tree[dir] = []
         }
-        tree[dir].push(file)
+        if(!file.name.startsWith(".")){ // remove hidden files
+            tree[dir].push(file)
+        }
     }
     return tree
 }

@@ -71,5 +71,5 @@ export const VELOCITIES = Array(128).fill().map((_,i)=>i)
 export const NUM_LAYERS = Array(31).fill().map((_,i)=>i+2)
 
 // global defines
-export const NUM_RACK_SLOTS = 512
+export const NUM_RACK_SLOTS = 127
 export const MAX_LAYERS_PER_RACK = 32

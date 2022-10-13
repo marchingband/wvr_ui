@@ -49,7 +49,6 @@ export const WavDetails = observer(() => {
             <input 
                 ref={filePicker}
                 multiple = { true }
-                // multiple = { allowMultiple }
                 type="file" 
                 onChange={async e=>{
                     e.persist()
@@ -60,7 +59,7 @@ export const WavDetails = observer(() => {
                     }
                 }}
                 style={{display:'none'}}
-                />
+            />
             <input 
                 ref={directoryPicker}
                 multiple

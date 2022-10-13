@@ -1,6 +1,6 @@
 import {observable, configure, toJS} from 'mobx'
 import {themes} from './themes.js'
-import {MAX_LAYERS_PER_RACK, WAV_ITEM_SIZE} from './constants'
+import {MAX_LAYERS_PER_RACK, WAV_ITEM_SIZE, NUM_RACK_SLOTS} from './constants'
 import {clamp} from '../helpers/clamp.js'
 import {makeName, makeRackName} from '../helpers/makeName'
 import {defaultVoices, defaultPinConfig, defaultMetadata, default_fx} from '../helpers/makeDefaultStores'
@@ -9,7 +9,6 @@ import {numberSort} from '../helpers/numberSort'
 import { analyzeWav } from '../audio/analyzeWav.js'
 import { observer } from 'mobx-react-lite'
 import {semitonesToStretch} from "../helpers/semitonesToStretch"
-import {NUM_RACK_SLOTS, MAX_LAYERS_PER_RACK} from "./constants"
 
 configure({
     enforceActions: "never",
@@ -515,7 +514,6 @@ const rackBoardRangeSelect = (self,note) => {
     let first = Math.min(note, self.rackBoardSelected)
     let selected = Array(len + 1).fill().map((_,i)=>i + first)
     self.rackBoardRange.replace(selected.sort((a,b)=>a-b))
-    // console.log(toJS(self.rackBoardRange))
 }
 
 const rackBoardAddToSelection = (self,note) => {
@@ -535,34 +533,60 @@ const rackBoardAddToSelection = (self,note) => {
     // console.log(toJS(self.rackBoardRange))
 }
 
-const bulkUploadRacks = (self,e) => {
+const bulkUploadRacks = async (self,e) => {
     self.setLoading(true)
+
     let tree = parseDirectories(e)
+    console.log(tree)
     if(!tree){
         window.alert("error in drectory parse")
         return
     }
-    // let dirs = Object.keys(tree).sort()
     let dirs = Object.keys(tree).sort(numberSort)
 
+    // see if there is room for all these racks
+    let numRacks = Object.values(tree).filter(files=>files.length > 1).length // if there is only 1 file its empty or its a single sample (not a rack)
     let openSlots = self.getNumRackSlotsOpen()
-    let numNotes = Math.min(self.wavBoardRange.length, dirs.length, openSlots, MAX_LAYERS_PER_RACK)
-    if(!window.confirm(`${dirs.length} racks selected, ${self.wavBoardRange.length} notes selected, ${openSlots} rack slots available in memory, will allocate ${numNotes} racks.`))return false
+
+    let racksRequested = Math.min(self.wavBoardRange.length, numRacks)
+
+    if(numRacks > openSlots){
+        console.log(`${openSlots} rack slots open, but ${numRacks} were picked, please try again with less racks`)
+        return false
+    }
+    
+    let numNotes = Math.min(self.wavBoardRange.length, dirs.length)
+
+    if(!window.confirm(`${dirs.length} folders picked, ${numRacks} are racks, ${self.wavBoardRange.length} notes selected, ${openSlots} rack slots available in memory, will allocate ${racksRequested} racks.`)){
+        return false
+    }
+
     for(let i=0;i<numNotes;i++){
         let files = tree[dirs[i]]
             // remove hidden files like .DSstore
             .filter(x=>!x.webkitRelativePath.split("/")[2].startsWith("."))
-            // .sort((a,b)=>a.name < b.name ? -1 : 1)
             .sort((a,b)=>numberSort(a.name,b.name))
         let note = self.wavBoardRange[i]
-        convertToRack(self, note)
-        setRackNumLayers(self, note, files.length)
-        setRackName(self, note, dirs[i].substring(0,22))
-        for(let j=0;j<files.length;j++){
-            self.voices[self.currentVoice][note].rack.layers[j].filehandle = files[j]
-            self.voices[self.currentVoice][note].rack.layers[j].name = makeName(files[j].name)
-            self.voices[self.currentVoice][note].rack.layers[j].size = files[j].size
-            self.voices[self.currentVoice][note].rack.layers[j].empty = 0
+        if(files[0].name == "empty.txt"){ // its empty
+            continue
+        } else if(files.length == 1){ // its not a rack
+            const len = await analyzeWav(files[0])
+            self.voices[self.currentVoice][note].filehandle = files[0]
+            self.voices[self.currentVoice][note].name = makeName(files[0].name)
+            self.voices[self.currentVoice][note].size = files[0].size
+            self.voices[self.currentVoice][note].loopEnd = len
+            self.voices[self.currentVoice][self.wavBoardSelected].empty = 0
+        } else { // it is a rack
+            convertToRack(self, note)
+            setRackNumLayers(self, note, files.length)
+            setRackName(self, note, dirs[i].substring(0,22))
+            const numLayers = Math.min(files.length, MAX_LAYERS_PER_RACK)
+            for(let j=0; j<numLayers; j++){
+                self.voices[self.currentVoice][note].rack.layers[j].filehandle = files[j]
+                self.voices[self.currentVoice][note].rack.layers[j].name = makeName(files[j].name)
+                self.voices[self.currentVoice][note].rack.layers[j].size = files[j].size
+                self.voices[self.currentVoice][note].rack.layers[j].empty = 0
+            }
         }
     }
     self.voiceNeedsUpdate()
