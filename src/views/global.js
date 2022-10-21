@@ -40,7 +40,7 @@ export const Global = observer(() => {
                 value={metadata.recoveryModeStrappingPin}
                 onChange={e=>window.confirm("this is dangerous are you sure?") && store.setMetadataField('recoveryModeStrappingPin',e)}
             >
-                {[0,1,2,3,4,5,11,12,13].map(x=><option key ={x} value={x}>{"D"+x}</option>)}
+                {[0,1,2,3,4,5,11,12,13].filter(x=>x!=metadata.bleStrappingPin).map(x=><option key ={x} value={x}>{"D"+x}</option>)}
             </SelectNum>
             <SelectNum
                 label="wifi log verbosity"
@@ -86,6 +86,21 @@ export const Global = observer(() => {
             >
                 <option value={0}>OMNI</option>
                 {Array(16).fill().map((x,i)=><option value={i+1} key={i}>{i+1}</option>)}
+            </SelectNum>
+            <SelectNum
+                label="use ble"
+                value={metadata.ble}
+                onChange={e=>store.setMetadataField('ble',e)}  
+            >
+                <option value={0}>no</option>
+                <option value={1}>yes</option>
+            </SelectNum>
+            <SelectNum
+                label="ble pin"
+                value={metadata.bleStrappingPin}
+                onChange={e=>store.setMetadataField('bleStrappingPin',e)}  
+            >
+                {[0,1,2,3,4,5,11,12,13].filter(x=>x!=metadata.recoveryModeStrappingPin).map(x=><option key ={x} value={x}>{"D"+x}</option>)}
             </SelectNum>
 
             <div style={{display:'flex',flexDirection:'row',alignItems:'center', marginLeft:20, width:400}}>
