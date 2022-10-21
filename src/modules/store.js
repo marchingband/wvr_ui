@@ -575,7 +575,7 @@ const bulkUploadRacks = async (self,e) => {
             self.voices[self.currentVoice][note].name = makeName(files[0].name)
             self.voices[self.currentVoice][note].size = files[0].size
             self.voices[self.currentVoice][note].loopEnd = len
-            self.voices[self.currentVoice][self.wavBoardSelected].empty = 0
+            self.voices[self.currentVoice][note].empty = 0
         } else { // it is a rack
             convertToRack(self, note)
             setRackNumLayers(self, note, files.length)
