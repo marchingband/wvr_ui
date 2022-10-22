@@ -1,3 +1,4 @@
+import axios from 'axios'
 import {initStore} from '../wvr/init'
 import { store } from '../modules/store'
 
@@ -30,18 +31,27 @@ export const bootFromEMMC = async num => {
     .catch(e=>console.log(e))
 }
 
-export const restoreEMMC = async (file) => {
+export const restoreEMMC = async handle => {
     store.loadProgress = 0
-    store.loadingTitle = `Restoring eMMC from image ${file.name}`
+    store.loadingTitle = `Restoring eMMC from image ${handle.name}`
     store.setLoading(true)
-    let res = await fetch(
+    let success = true
+    await axios.post(
         "/restoreEMMC",
-        file,
+        handle,
         {
-            method: "GET",
+            onUploadProgress: p=>store.onProgress(p.loaded / p.total),
+            headers:{
+                'Content-Type': 'application/octet-stream',
+                'size':handle.size,
+            },
         }
     )
-    .catch(e=>console.log(e))
+    .catch(e=>{
+        console.log(e)
+        success = false
+    })
+    success && alert("eMMC restored successfully ")
     store.setLoading(false)
 }
 
