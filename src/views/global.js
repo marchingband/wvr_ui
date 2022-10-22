@@ -7,13 +7,18 @@ import {SelectNum} from '../components/select'
 import {store} from '../modules/store'
 import { restoreEMMC, resetEMMC } from '../wvr/emmc';
 import {initWebMidi} from '../modules/webMidi'
-
+import { handleSFZ } from '../helpers/sfz';
 export const Global = observer(() => {
+
     const [firmware,setFirmware] = useState(null)
+
     const firmwareFileInput = useRef(null)
     const emmcRestoreFileInput = useRef(null)
     const emmcBackupRef = useRef(null)
+    const xmlFileInput = useRef(null)
+
     const metadata = store.getMetadata()
+
     return(
         <div style={container}>
             <Text>
@@ -220,6 +225,17 @@ export const Global = observer(() => {
                     )
                 }
             </div>
+            <div style={{display:'flex',flexDirection:'row',margin:20, marginTop:5}}>
+
+                <Button
+                    title="xml"
+                    onClick={()=>{
+                        xmlFileInput.current.click()
+                        // let data = parseSFZ("<group> volume=-15 amp_veltrack=100 key=42 loop_mode=one_shot lovel=66 hivel=127	// hihat closed ////20 Samples Random!<region> sample=OH\hihatClosed_OH_F_1.wav lorand=0 hirand=0.05")
+                        // console.log(data)
+                    }}
+                />
+            </div>
             <input 
                 ref={firmwareFileInput}
                 type="file" 
@@ -233,6 +249,18 @@ export const Global = observer(() => {
                 onChange={e=>e.target.files.length && restoreEMMC(e.target.files[0])}
                 style={{display:'none'}}
                 accept=".bin"
+            />
+            <input 
+                ref={xmlFileInput}
+                multiple
+                type="file" 
+                onChange={async e=>{
+                    if(!e.target.files.length) return
+                    e.persist()
+                    await handleSFZ(e)
+                    e.target.value = null
+                }}
+                style={{display:'none'}}
             />
             <a 
                 href='/wvr_emmc_backup.bin' 
