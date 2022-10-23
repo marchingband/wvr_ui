@@ -1,4 +1,5 @@
 import parseSFZ from 'sfz-parser'
+import { store } from '../modules/store';
 
 export const handleSFZ = async e => {
 
@@ -13,7 +14,7 @@ export const handleSFZ = async e => {
                 sfzFile = file
             }
         } else {
-            // not sfz
+            // not sfz must be a sound file
             files.push(e.target.files[i])
         }
     }
@@ -26,23 +27,37 @@ export const handleSFZ = async e => {
     regions.forEach(region=>{
         const fileHandle = files.find(f=>region.sample.includes(f.name))
         const { pitch_keycenter, key, lokey, hikey, hivel, loop_mode, volume} = region
-        if(!notes[key]){
-            notes[key] = {} // initialize new notes
-        }
+        // notes[key] = notes[key] || {} // initialize new notes
         if(hivel){ // its a rack
-            if(!notes[key].rack){
-                notes[key].rack = [] // initialize the rack
+            if(pitch_keycenter){ // it's an interpolated rack
+                for(let p = lokey; pitch <= hikey; p++){
+                    notes[p] = notes[p] || {} // initialize new note
+                    notes[p].rack = notes[p].rack || [] // initialize the rack
+                    notes[p].rack.push({
+                        fileHandle,
+                        volume,
+                        loop_mode,
+                        name: makeName(fileHandle.name),
+                        size: fileHandle.size,
+                        empty: 0,
+                        breakpoint: hivel,
+                        pitch: p - pitch_keycenter, // amount of pitchshift
+                    })
+                }
+            } else { // its a normal rack
+                notes[key] = notes[key] || {} // initialize new notes
+                notes[key].rack = notes[key].rack || [] // initialize the rack
+                notes[key].rack.push({
+                    fileHandle,
+                    volume,
+                    loop_mode,
+                    name: makeName(fileHandle.name),
+                    size: fileHandle.size,
+                    empty: 0,
+                    breakpoint: hivel,
+                    pitch: 0
+                })
             }
-            notes[key].rack.push({
-                fileHandle,
-                volume,
-                loop_mode,
-                name: makeName(fileHandle.name),
-                size: fileHandle.size,
-                empty: 0,
-                breakpoint: hivel,
-                pitch:0
-            })
         } else if(pitch_keycenter){ // it's interpolated
             for(let p = lokey; pitch <= hikey; p++){
                 notes[p] = {
@@ -55,7 +70,7 @@ export const handleSFZ = async e => {
                     empty: 0,
                 }
             }
-        } else { // singleton note
+        } else { // its a singleton note
             notes[key] = {
                 fileHandle,
                 volume,
@@ -68,29 +83,35 @@ export const handleSFZ = async e => {
     })
 
     // process the notes into racks
-    Object.keys(notes).forEach(note=>{
+    Object.keys(notes).forEach(key=>{
+        const note = notes[key]
         if(note.racks){ // its a rack
             const sortedRacks = note.racks.sort((a, b) => a.breakpoint > b.breakpoint)
             const noteData = {
-                isRack: -2,
+                isRack: -2, // it is a rack that needs to have a number assigned by wvr
                 empty: 0,
+                name: note.racks[0].name, // it takes on the name of the file
+                pitch: note,
                 rack: {
                     num_layers: sortedRacks.length,
                     break_points: sortedRacks.map(r=>r.breakpoint),
                     layers: sortedRacks.map(({fileHandle, name, size})=>({fileHandle, name, size, empty: 0}))
                 }
             }
-        } else {
-
+            store.notes[key].replace(noteData)
+        } else { // its a normal note
+            const {name, size, fileHandle, pitch} = note
+            const noteData = {
+                fileHandle,
+                isRack: -1,
+                empty: 0,
+                name,
+                size,
+                pitch
+            }
         }
     })
     console.log(notes)
-}
-
-const handleRegion = ({amp_veltrack, hirand, hivel, key, loop_mode, lorand, lovel, sample, volume, fileHandle}) => {
-    const breakpoint = hivel
-    const note = key
-
 }
 
 const readSFZ = file => new Promise(res=>{
