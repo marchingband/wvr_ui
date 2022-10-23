@@ -9,7 +9,7 @@ import {Pins} from './views/pins'
 import {Firmwares} from './views/firmwares'
 import {Global} from './views/global'
 
-const INIT = 0
+const INIT = 1
 
 const App = () => {
     useEffect(()=>{

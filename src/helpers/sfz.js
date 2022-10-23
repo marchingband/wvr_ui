@@ -1,5 +1,6 @@
 import parseSFZ from 'sfz-parser'
 import { store } from '../modules/store';
+import { makeName } from './makeName';
 
 export const handleSFZ = async e => {
 
@@ -21,24 +22,26 @@ export const handleSFZ = async e => {
     if(!sfzFile || !files.length) return 0;
 
     const regions = await readSFZ(sfzFile).catch(e=>{return 0})
-    const notes = {}
+    console.log(regions)
 
     // sort all the regions into notes
+    const notes = {}
     regions.forEach(region=>{
-        const fileHandle = files.find(f=>region.sample.includes(f.name))
-        const { pitch_keycenter, key, lokey, hikey, hivel, loop_mode, volume} = region
+        const filehandle = files.find(f=>region.sample.includes(f.name))
+        const { pitch_keycenter, key, lokey, hikey, hivel, loop_mode, volume, group} = region
         // notes[key] = notes[key] || {} // initialize new notes
-        if(hivel){ // its a rack
+        if(hivel){ // its (probably) a rack
             if(pitch_keycenter){ // it's an interpolated rack
                 for(let p = lokey; pitch <= hikey; p++){
                     notes[p] = notes[p] || {} // initialize new note
                     notes[p].rack = notes[p].rack || [] // initialize the rack
                     notes[p].rack.push({
-                        fileHandle,
+                        filehandle,
                         volume,
+                        group,
                         loop_mode,
-                        name: makeName(fileHandle.name),
-                        size: fileHandle.size,
+                        name: makeName(filehandle.name),
+                        size: filehandle.size,
                         empty: 0,
                         breakpoint: hivel,
                         pitch: p - pitch_keycenter, // amount of pitchshift
@@ -48,11 +51,12 @@ export const handleSFZ = async e => {
                 notes[key] = notes[key] || {} // initialize new notes
                 notes[key].rack = notes[key].rack || [] // initialize the rack
                 notes[key].rack.push({
-                    fileHandle,
+                    filehandle,
                     volume,
+                    group,
                     loop_mode,
-                    name: makeName(fileHandle.name),
-                    size: fileHandle.size,
+                    name: makeName(filehandle.name),
+                    size: filehandle.size,
                     empty: 0,
                     breakpoint: hivel,
                     pitch: 0
@@ -61,22 +65,24 @@ export const handleSFZ = async e => {
         } else if(pitch_keycenter){ // it's interpolated
             for(let p = lokey; pitch <= hikey; p++){
                 notes[p] = {
-                    fileHandle,
+                    filehandle,
                     volume,
+                    group,
                     loop_mode,
                     pitch: p - pitch_keycenter, // amount of pitchshift
-                    name: makeName(fileHandle.name),
-                    size: fileHandle.size,
+                    name: makeName(filehandle.name),
+                    size: filehandle.size,
                     empty: 0,
                 }
             }
         } else { // its a singleton note
             notes[key] = {
-                fileHandle,
+                filehandle,
                 volume,
+                group,
                 loop_mode,
-                name: makeName(fileHandle.name),
-                size: fileHandle.size,
+                name: makeName(filehandle.name),
+                size: filehandle.size,
                 empty: 0,
             }
         }
@@ -85,33 +91,62 @@ export const handleSFZ = async e => {
     // process the notes into racks
     Object.keys(notes).forEach(key=>{
         const note = notes[key]
-        if(note.racks){ // its a rack
-            const sortedRacks = note.racks.sort((a, b) => a.breakpoint > b.breakpoint)
-            const noteData = {
-                isRack: -2, // it is a rack that needs to have a number assigned by wvr
-                empty: 0,
-                name: note.racks[0].name, // it takes on the name of the file
-                pitch: note,
-                rack: {
-                    num_layers: sortedRacks.length,
-                    break_points: sortedRacks.map(r=>r.breakpoint),
-                    layers: sortedRacks.map(({fileHandle, name, size})=>({fileHandle, name, size, empty: 0}))
+        if(note.rack){ // its a rack
+            const sortedRacks = note.rack
+                .map(x=>({
+                    ...x, 
+                    breakpoint: parseInt(x.breakpoint),
+                    group: parseInt(x.group),
+                    volume: parseInt(x.volume)
+                })) // make sure its not a string
+                .reduce((acc, cur)=>!acc.find(x=>x.breakpoint == cur.breakpoint) ? [...acc, cur] : acc, []) // remove duplicate breakpoints
+                .sort((a, b) => a.breakpoint - b.breakpoint)
+            if(sortedRacks.length == 1){ // it's a fake rack
+                const {filehandle, name, size, pitch, group, volume} = sortedRacks[0] // there is only one
+                const noteData = {
+                    filehandle,
+                    isRack: -1,
+                    volume: volume || 127,
+                    muteGroup: group || 0,
+                    empty: 0,
+                    name,
+                    size,
+                    pitch: pitch || 0
                 }
+                store.voices[store.currentVoice][key] = {...store.voices[store.currentVoice][key], ...noteData}
+            } else { // it's actaully a rack
+                const noteData = {
+                    isRack: -2, // it is a rack that needs to have a number assigned by wvr
+                    empty: 0,
+                    pitch: sortedRacks[0].pitch || 0, // it takes on the config of the first file,
+                    volume: sortedRacks[0].volume || 127,
+                    muteGroup: sortedRacks[0].group || 0,
+                    rack: {
+                        name: sortedRacks[0].name, // it takes on the name of the files
+                        num_layers: sortedRacks.length,
+                        break_points: [0, ...sortedRacks.map(r=>r.breakpoint)],
+                        layers: sortedRacks.map(({filehandle, name, size})=>({filehandle, name, size, empty: 0}))
+                    }
+                }
+                store.voices[store.currentVoice][key] = {...store.voices[store.currentVoice][key], ...noteData}
             }
-            store.notes[key].replace(noteData)
         } else { // its a normal note
-            const {name, size, fileHandle, pitch} = note
+            const {name, size, filehandle, pitch, group, volume} = note
             const noteData = {
-                fileHandle,
+                filehandle,
                 isRack: -1,
+                volume: volume || 127,
+                muteGroup: group || 0,
                 empty: 0,
                 name,
                 size,
                 pitch
             }
+            store.voices[store.currentVoice][key] = {...store.voices[store.currentVoice][key], ...noteData}
         }
     })
-    console.log(notes)
+    store.voiceNeedsUpdate()
+    console.log(store.getVoices())
 }
 
 const readSFZ = file => new Promise(res=>{
