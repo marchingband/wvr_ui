@@ -15,7 +15,8 @@ export const Global = observer(() => {
     const firmwareFileInput = useRef(null)
     const emmcRestoreFileInput = useRef(null)
     const emmcBackupRef = useRef(null)
-    const xmlFileInput = useRef(null)
+    const sfzFileInput = useRef(null)
+    const sfzFolderInput = useRef(null)
 
     const metadata = store.getMetadata()
 
@@ -225,15 +226,20 @@ export const Global = observer(() => {
                     )
                 }
             </div>
+            <Text 
+                style={{marginLeft:20, marginRight:'auto'}}
+                primary
+            >
+                Upload an .sfz :
+            </Text>
             <div style={{display:'flex',flexDirection:'row',margin:20, marginTop:5}}>
-
                 <Button
-                    title="xml"
-                    onClick={()=>{
-                        xmlFileInput.current.click()
-                        // let data = parseSFZ("<group> volume=-15 amp_veltrack=100 key=42 loop_mode=one_shot lovel=66 hivel=127	// hihat closed ////20 Samples Random!<region> sample=OH\hihatClosed_OH_F_1.wav lorand=0 hirand=0.05")
-                        // console.log(data)
-                    }}
+                    title="files"
+                    onClick={()=>sfzFileInput.current.click()}
+                />
+                <Button
+                    title="folder"
+                    onClick={()=>sfzFolderInput.current.click()}
                 />
             </div>
             <input 
@@ -251,13 +257,31 @@ export const Global = observer(() => {
                 accept=".bin"
             />
             <input 
-                ref={xmlFileInput}
+                ref={sfzFolderInput}
                 multiple
                 type="file" 
                 onChange={async e=>{
                     if(!e.target.files.length) return
                     e.persist()
+                    store.setLoading(true)
                     await handleSFZ(e)
+                    store.setLoading(false)
+                    e.target.value = null
+                }}
+                style={{display:'none'}}
+                directory="" 
+                webkitdirectory=""
+                />
+            <input 
+                ref={sfzFileInput}
+                multiple
+                type="file" 
+                onChange={async e=>{
+                    if(!e.target.files.length) return
+                    e.persist()
+                    store.setLoading(true)
+                    await handleSFZ(e).catch(alert)
+                    store.setLoading(false)
                     e.target.value = null
                 }}
                 style={{display:'none'}}
