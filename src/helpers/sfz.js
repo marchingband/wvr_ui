@@ -131,34 +131,29 @@ export const handleSFZ = async e => {
         const note = notes[key]
         if(note.rack){ // its rack-like
             const sortedRacks = note.rack
-                .map(x=>({
-                    ...x, 
-                    breakpoint: parseInt(x.breakpoint),
-                    group: parseInt(x.group),
-                    volume: parseInt(x.volume)
-                })) // make sure its not a string
                 .reduce((acc, cur)=>!acc.find(x=>x.breakpoint == cur.breakpoint) ? [...acc, cur] : acc, []) // remove duplicate breakpoints
                 .sort((a, b) => a.breakpoint - b.breakpoint)
             if(sortedRacks.length == 1){ // it's a fake rack
-                const {filehandle, name, size, pitch, group, volume} = sortedRacks[0] // there is only one
                 const noteData = {
-                    filehandle,
+                    ...sortedRacks[0],
                     isRack: -1,
-                    volume: volume || 127,
-                    muteGroup: group || 0,
-                    empty: 0,
-                    name,
-                    size,
-                    pitch: pitch || 0
                 }
                 store.voices[store.currentVoice][key] = {...store.voices[store.currentVoice][key], ...noteData}
             } else { // it's actaully a rack
                 const noteData = {
                     isRack: -2, // it is a rack that needs to have a number assigned by wvr
                     empty: 0,
-                    pitch: sortedRacks[0].pitch || 0, // it takes on the config of the first sound,
-                    volume: sortedRacks[0].volume || 127,
-                    muteGroup: sortedRacks[0].group || 0,
+                    // it takes on the config of the first sound,
+                    pitch: sortedRacks[0].pitch, 
+                    volume: sortedRacks[0].volume,
+                    pan: sortedRacks[0].pan,
+                    dist: sortedRacks[0].dist,
+                    muteGroup: sortedRacks[0].muteGroup,
+                    retrigger: sortedRacks[0].retrigger,
+                    priority: sortedRacks[0].priority,
+                    responseCurve: sortedRacks[0].responseCurve,
+                    noteOff: sortedRacks[0].noteOff,
+                    mode: sortedRacks[0].mode,
                     rack: {
                         name: sortedRacks[0].name, // it takes on the config of the sounds
                         num_layers: sortedRacks.length,
@@ -169,16 +164,9 @@ export const handleSFZ = async e => {
                 store.voices[store.currentVoice][key] = {...store.voices[store.currentVoice][key], ...noteData}
             }
         } else { // its a normal note
-            const {name, size, filehandle, pitch, group, volume} = note
             const noteData = {
-                filehandle,
+                ...note,
                 isRack: -1,
-                volume: volume || 127,
-                muteGroup: group || 0,
-                empty: 0,
-                name,
-                size,
-                pitch
             }
             store.voices[store.currentVoice][key] = {...store.voices[store.currentVoice][key], ...noteData}
         }
