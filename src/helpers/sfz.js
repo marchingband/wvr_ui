@@ -91,6 +91,9 @@ export const handleSFZ = async e => {
 
     const regions = await readSFZ(sfzFile).catch(e=>{return Promise.reject("no readable .sfz file")})
     if(!regions.length){return Promise.reject("no regions extraced from .sfz")}
+    
+    const cont = confirm(`found ${sfzFile.name} and ${files.length} files, continue to allocate these files?`)
+    if(!cont) return;
 
     // sort all the regions into notes
     const notes = {}

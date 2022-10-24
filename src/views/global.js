@@ -264,9 +264,10 @@ export const Global = observer(() => {
                     if(!e.target.files.length) return
                     e.persist()
                     store.setLoading(true)
-                    await handleSFZ(e)
-                    store.setLoading(false)
+                    await handleSFZ(e).catch(alert)
                     e.target.value = null
+                    store.setLoading(false)
+                    store.view="home"
                 }}
                 style={{display:'none'}}
                 directory="" 
@@ -281,8 +282,9 @@ export const Global = observer(() => {
                     e.persist()
                     store.setLoading(true)
                     await handleSFZ(e).catch(alert)
-                    store.setLoading(false)
                     e.target.value = null
+                    store.setLoading(false)
+                    store.view="home"
                 }}
                 style={{display:'none'}}
             />
