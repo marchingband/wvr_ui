@@ -51,7 +51,7 @@ export const restoreEMMC = async handle => {
         console.log(e)
         success = false
     })
-    success && alert("eMMC restored successfully ")
+    success && alert("eMMC restored successfully, please reset WVR and refresh browser")
     store.setLoading(false)
 }
 
