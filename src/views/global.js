@@ -8,13 +8,19 @@ import {store} from '../modules/store'
 import { restoreEMMC, resetEMMC } from '../wvr/emmc';
 import {initWebMidi} from '../modules/webMidi'
 import { NUM_VOICES } from '../modules/constants'
-
+import { handleSFZ } from '../helpers/sfz';
 export const Global = observer(() => {
+
     const [firmware,setFirmware] = useState(null)
+
     const firmwareFileInput = useRef(null)
     const emmcRestoreFileInput = useRef(null)
     const emmcBackupRef = useRef(null)
+    const sfzFileInput = useRef(null)
+    const sfzFolderInput = useRef(null)
+
     const metadata = store.getMetadata()
+
     return(
         <div style={container}>
             <Text>
@@ -221,6 +227,22 @@ export const Global = observer(() => {
                     )
                 }
             </div>
+            <Text 
+                style={{marginLeft:20, marginRight:'auto'}}
+                primary
+            >
+                Upload an .sfz :
+            </Text>
+            <div style={{display:'flex',flexDirection:'row',margin:20, marginTop:5}}>
+                <Button
+                    title="files"
+                    onClick={()=>sfzFileInput.current.click()}
+                />
+                <Button
+                    title="folder"
+                    onClick={()=>sfzFolderInput.current.click()}
+                />
+            </div>
             <input 
                 ref={firmwareFileInput}
                 type="file" 
@@ -234,6 +256,38 @@ export const Global = observer(() => {
                 onChange={e=>e.target.files.length && restoreEMMC(e.target.files[0])}
                 style={{display:'none'}}
                 accept=".bin"
+            />
+            <input 
+                ref={sfzFolderInput}
+                multiple
+                type="file" 
+                onChange={async e=>{
+                    if(!e.target.files.length) return
+                    e.persist()
+                    store.setLoading(true)
+                    await handleSFZ(e).catch(alert)
+                    e.target.value = null
+                    store.setLoading(false)
+                    store.view="home"
+                }}
+                style={{display:'none'}}
+                directory="" 
+                webkitdirectory=""
+                />
+            <input 
+                ref={sfzFileInput}
+                multiple
+                type="file" 
+                onChange={async e=>{
+                    if(!e.target.files.length) return
+                    e.persist()
+                    store.setLoading(true)
+                    await handleSFZ(e).catch(alert)
+                    e.target.value = null
+                    store.setLoading(false)
+                    store.view="home"
+                }}
+                style={{display:'none'}}
             />
             <a 
                 href='/wvr_emmc_backup.bin' 

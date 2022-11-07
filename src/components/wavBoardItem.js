@@ -46,7 +46,7 @@ export const WavBoardItem = observer(({voiceIndex,noteIndex}) =>
                     store.getNote(voiceIndex,noteIndex).rack.name ? 
                         store.getNote(voiceIndex,noteIndex).rack.name.slice(0,10) :
                         'untitled' :
-                    store.getNote(voiceIndex,noteIndex).name.slice(0,10) || 'empty'
+                    store.getNote(voiceIndex, noteIndex).name.slice(0,10) || 'empty'
             }
         </Text>
     </div>

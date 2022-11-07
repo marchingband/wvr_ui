@@ -26,6 +26,7 @@ export const store = observable(
         configNeedsUpdate: false,
         voicesNeedUpdate: observable(Array(NUM_VOICES).fill(false)),
         fileHandleKey: 0,
+        midiInputs:observable([]),
 
         numWavPerPage: 6,
         currentVoice: 0,
@@ -49,7 +50,7 @@ export const store = observable(
         pinConfig: observable(defaultPinConfig),
         metadata: observable(defaultMetadata),
 
-        midiInputs: observer([]),
+        midiInputs: [],
 
         getVoices:function(){
             return toJS(this.voices)
