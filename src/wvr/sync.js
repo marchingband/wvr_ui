@@ -3,6 +3,7 @@ import { store } from '../modules/store.js';
 import { toPcmFX } from '../audio/toPcm.js'
 import { loadVoice } from '../wvr/init.js';
 import { default_fx } from '../helpers/makeDefaultStores.js';
+import { NUM_VOICES } from '../modules/constants.js';
 
 export const sync = async() => {
     store.resetSelected()
@@ -16,7 +17,7 @@ export const sync = async() => {
     await uploadMetadata()
     store.setLoading(false)
     resetFileHandles()
-    store.voicesNeedUpdate.replace(Array(16).fill(false))
+    store.voicesNeedUpdate.replace(Array(NUM_VOICES).fill(false))
     store.wavBoardInterpolationTarget = undefined
     store.wavBoardRange.replace([])
     store.wavBoardSelected = 40
@@ -111,7 +112,7 @@ const uploadVoiceConfig = async() => {
     let voicesNeedUpdate = store.getVoicesNeedUpdate()
 
     // upload each voice config
-    for(let i=0; i<16; i++){
+    for(let i=0; i<NUM_VOICES; i++){
         if(!voicesNeedUpdate[i]){
             continue
         }
@@ -121,7 +122,7 @@ const uploadVoiceConfig = async() => {
     }
 
     // now download each voice config
-    for(let i=0; i<16; i++){
+    for(let i=0; i<NUM_VOICES; i++){
         if(!voicesNeedUpdate[i]){
             continue
         }

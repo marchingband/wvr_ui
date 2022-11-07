@@ -2,7 +2,7 @@ import axios from 'axios'
 import { store } from "../modules/store";
 import {isJson} from '../helpers/isJson'
 import {handleRPCIn} from '../wvr/rpc'
-import {WVR_IP} from '../modules/constants'
+import {WVR_IP,NUM_VOICES} from '../modules/constants'
 import {initWebMidi} from '../modules/webMidi'
 
 export var ws;
@@ -20,7 +20,7 @@ export const initStore = async () => {
     store.loading = true
     let voices = []
     store.loadProgress = 0
-    for(let i=0; i<16; i++){
+    for(let i=0; i<NUM_VOICES; i++){
         let voice = await loadVoice(i)
         voices.push(voice)
     }
