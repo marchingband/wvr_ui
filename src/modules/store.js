@@ -1,6 +1,6 @@
 import {observable, configure, toJS} from 'mobx'
 import {themes} from './themes.js'
-import {MAX_LAYERS_PER_RACK, WAV_ITEM_SIZE, NUM_RACK_SLOTS} from './constants'
+import {MAX_LAYERS_PER_RACK, WAV_ITEM_SIZE, NUM_RACK_SLOTS, NUM_VOICES} from './constants'
 import {clamp} from '../helpers/clamp.js'
 import {makeName, makeRackName} from '../helpers/makeName'
 import {defaultVoices, defaultPinConfig, defaultMetadata, default_fx} from '../helpers/makeDefaultStores'
@@ -24,7 +24,7 @@ export const store = observable(
         loadProgress: 0,
         loadingTitle: "",
         configNeedsUpdate: false,
-        voicesNeedUpdate: observable(Array(16).fill(false)),
+        voicesNeedUpdate: observable(Array(NUM_VOICES).fill(false)),
         fileHandleKey: 0,
 
         numWavPerPage: 6,

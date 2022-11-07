@@ -2,11 +2,12 @@ import React, { useState, useRef, useEffect } from 'react';
 import {Text} from '../components/text'
 import {store} from '../modules/store.js'
 import {observer} from 'mobx-react-lite'
+import { NUM_VOICES } from '../modules/constants';
 
 export const VoiceMenu = () =>
     <div style={container}>
         {
-            Array(16).fill().map((_,i)=>
+            Array(NUM_VOICES).fill().map((_,i)=>
                 <VoiceButton key={i} i={i}/>
             )
         }

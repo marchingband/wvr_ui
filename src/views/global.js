@@ -7,6 +7,7 @@ import {SelectNum} from '../components/select'
 import {store} from '../modules/store'
 import { restoreEMMC, resetEMMC } from '../wvr/emmc';
 import {initWebMidi} from '../modules/webMidi'
+import { NUM_VOICES } from '../modules/constants'
 
 export const Global = observer(() => {
     const [firmware,setFirmware] = useState(null)
@@ -85,7 +86,7 @@ export const Global = observer(() => {
                 onChange={e=>store.setMetadataField('midiChannel',e)}  
             >
                 <option value={0}>OMNI</option>
-                {Array(16).fill().map((x,i)=><option value={i+1} key={i}>{i+1}</option>)}
+                {Array(NUM_VOICES).fill().map((x,i)=><option value={i+1} key={i}>{i+1}</option>)}
             </SelectNum>
 
             <div style={{display:'flex',flexDirection:'row',alignItems:'center', marginLeft:20, width:400}}>

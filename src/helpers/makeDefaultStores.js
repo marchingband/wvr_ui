@@ -1,10 +1,10 @@
 import {observable} from 'mobx'
-import {IGNORE, NOTE_ON, ONE_SHOT, RETRIGGER, EDGE_FALLING, EDGE_NONE, ROOT_SQUARE} from '../modules/constants'
+import {IGNORE, NOTE_ON, ONE_SHOT, RETRIGGER, EDGE_FALLING, EDGE_NONE, ROOT_SQUARE, NUM_VOICES} from '../modules/constants'
 import { store } from '../modules/store'
 
 export const defaultVoices = () => {
     const voices = []
-    for(let i=0;i<16;i++){
+    for(let i=0;i<NUM_VOICES;i++){
         let voice = []
         for(let j=0;j<128;j++){
             voice.push({
