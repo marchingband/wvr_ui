@@ -76,7 +76,7 @@ const voiceButton = i => ({
     alignItems:'center',
     justifyContent:'center',
     marginLeft:  i== 0  ? 76 : 2,
-    marginRight: i== 15 ? 76 : 2,
+    marginRight: i== (NUM_VOICES - 1) ? 76 : 2,
     boxShadow:`0px 0px ${i==store.currentVoice?10:2}px gold`,
     cursor:'pointer',
     userSelect:'none',

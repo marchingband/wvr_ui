@@ -72,7 +72,7 @@ export const loadVoice = async i => {
         console.log("retry load voice " + i)
         return await loadVoice(i)
     }
-    store.loadProgress = store.loadProgress + 5
+    store.loadProgress = store.loadProgress + 2
     // console.log(res.data)
     return res.data
 }
