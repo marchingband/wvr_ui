@@ -11,9 +11,9 @@ export const sync = async() => {
     store.setLoading(true)
     
     await uploadWavs()
-    await uploadPinConfig()
-    await uploadVoiceConfig()
-    await uploadMetadata()
+    // await uploadPinConfig()
+    // await uploadVoiceConfig()
+    // await uploadMetadata()
     store.setLoading(false)
     resetFileHandles()
     store.voicesNeedUpdate.replace(Array(16).fill(false))
@@ -219,6 +219,8 @@ const uploadNoteWav = async ({pcm,size,name,voice,note}) => {
                 'name':name,
                 'voice':voice,
                 'note':note,
+                'layer':0,
+                'robin':0
             },
             // timeout:2000
         }

@@ -124,6 +124,11 @@ module.exports = env => ({
                 "changeOrigin": true,
                 "cookieDomainRewrite": "localhost",
                 "target": "http://192.168.5.18/restoreEMMC"
+            },
+            "/getVoiceData": {
+                "changeOrigin": true,
+                "cookieDomainRewrite": "localhost",
+                "target": "http://192.168.5.18/getVoiceData"
             }
         }
     },
