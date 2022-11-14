@@ -44,10 +44,13 @@ export const initStore = async () => {
         store.loading = false
     })
     store.loading = false
-    axios({
+    let res = await axios({
         method:'get',
         url:'/getVoiceData',
+        responseType: 'blob'
     })
+    handleWSBlob(res.data)
+    // console.log(res.data)
 
     // console.log({voices,...config})
     // store.onConnect({
@@ -112,21 +115,27 @@ const handleWSBlob = async blob => {
     const data = await readBlob(blob)
     var arr = new Uint8Array(data)
     console.log(arr)
-    const lut_index = (arr[0] < 8) & arr[1]
-    const name = String.fromCharCode(...arr.slice(2, 26).filter(x=>x))
-    const length = a32toi(arr.slice(26, 30))
-    const start_block = a32toi(arr.slice(30, 34))
-    const loop_start = a32toi(arr.slice(34, 38))
-    const loop_end = a32toi(arr.slice(38, 42))
-    const playback_mode = a32toi(arr.slice(42, 46))
-    const noteoff_meaning = a32toi(arr.slice(46, 50))
-    const response_curve = a32toi(arr.slice(50, 54))
-    const priority = arr[54]
-    const mute_group = arr[55]
-    const empty = arr[56]
-    const breakpoint = arr[57]
-    const chance = arr[58]
-    console.table({lut_index, name, length, start_block, loop_start, loop_end, playback_mode})
+    const length = arr.length;
+    let p = 0
+    while(p < length){
+        let ret = {}
+        ret.lut_index = (arr[p] << 8) & arr[p+1]
+        ret.name = String.fromCharCode(...arr.slice(p+2, p+26).filter(x=>x))
+        ret.length = a32toi(arr.slice(p+26, p+30))
+        ret.start_block = a32toi(arr.slice(p+30, p+34))
+        ret.loop_start = a32toi(arr.slice(p+34, p+38))
+        ret.loop_end = a32toi(arr.slice(p+38, p+42))
+        ret.playback_mode = a32toi(arr.slice(p+42, p+46))
+        ret.noteoff_meaning = a32toi(arr.slice(p+46, p+50))
+        ret.response_curve = a32toi(arr.slice(p+50, p+54))
+        ret.priority = arr[p+54]
+        ret.mute_group = arr[p+55]
+        ret.empty = arr[p+56]
+        ret.breakpoint = arr[p+57]
+        ret.chance = arr[p+58]
+        console.table(ret)
+        p+=66;
+    }
 }
 
 const readBlob = data => new Promise(res=>{
