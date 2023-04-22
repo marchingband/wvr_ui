@@ -242,6 +242,7 @@ const clearCurrentNote = self => {
         size: 0,
         loopStart:0,
         loopEnd:0,
+        samples:0,
         muteGroup:0,
         ...default_fx
     }
@@ -262,6 +263,7 @@ const clearSelectedNotes = self => {
             size: 0,
             loopStart:0,
             loopEnd:0,
+            samples:0,
             muteGroup:0,
             ...default_fx
         }
@@ -414,8 +416,8 @@ const setCurrentWavFile = async (self,files) => {
         self.voices[self.currentVoice][self.wavBoardSelected].filehandle = files[0]
         self.voices[self.currentVoice][self.wavBoardSelected].name = makeName(files[0].name)
         self.voices[self.currentVoice][self.wavBoardSelected].size = files[0].size
+        self.voices[self.currentVoice][self.wavBoardSelected].samples = len
         self.voices[self.currentVoice][self.wavBoardSelected].loopEnd = len
-        // self.voices[self.currentVoice][self.wavBoardSelected].loopEnd = Math.floor(files[0].size / 4)
         self.voices[self.currentVoice][self.wavBoardSelected].empty = 0
     }
     self.voiceNeedsUpdate()
@@ -575,6 +577,7 @@ const bulkUploadRacks = async (self,e) => {
             self.voices[self.currentVoice][note].name = makeName(files[0].name)
             self.voices[self.currentVoice][note].size = files[0].size
             self.voices[self.currentVoice][note].loopEnd = len
+            self.voices[self.currentVoice][note].samples = len
             self.voices[self.currentVoice][note].empty = 0
         } else { // it is a rack
             convertToRack(self, note)
@@ -627,8 +630,8 @@ const deleteFirmware = (self, num) => {
 
 const getVoiceData = (self, num) => {
     const data = self.getVoices()[num]
-    const voiceData = data.map(({loopEnd, loopStart, mode, muteGroup, name, noteOff, priority, responseCurve, retrigger, rack})=>{
-        return({loopEnd, loopStart, mode, muteGroup, name, noteOff, priority, responseCurve, retrigger, rack})
+    const voiceData = data.map(({loopEnd, samples, loopStart, mode, muteGroup, name, noteOff, priority, responseCurve, retrigger, rack})=>{
+        return({loopEnd, samples, loopStart, mode, muteGroup, name, noteOff, priority, responseCurve, retrigger, rack})
     })
     return(voiceData)
 }

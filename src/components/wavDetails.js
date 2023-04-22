@@ -18,9 +18,10 @@ export const WavDetails = observer(() => {
     const directoryPicker = useRef(null)
     const canvas = useRef(null)
     const [showSettings, setShowSettings] = useState(true)
-    const {name,size,filehandle,mode,retrigger,noteOff,responseCurve,priority,muteGroup,dist,verb,pitch,vol,pan,loopStart,loopEnd,empty} = store.getCurrentNote()
+    const {name,size,filehandle,mode,retrigger,noteOff,responseCurve,priority,muteGroup,dist,verb,pitch,vol,pan,loopStart,loopEnd,empty,samples} = store.getCurrentNote()
     const range = store.wavBoardRange.length > 0
     const allowMultiple = store.wavBoardRange.length > 1 && store.wavBoardInterpolationTarget == undefined
+    const maxSampleIndex = filehandle ? samples : size / 4 // if this is a fresh file, we use the wav analyzer, if its been synced already, we use the raw file size, as the headers have been stripped already
     useEffect(()=>{
         // hide FX screen when switching to a note with no file upload selected
         if(!filehandle){
@@ -186,9 +187,9 @@ export const WavDetails = observer(() => {
                                         style={{width:270}}
                                         label = "loop end"
                                         val = {loopEnd}
-                                        onChange = {val=>store.setCurrentNoteProp("loopEnd",val)}
+                                        onChange = {val=>store.setCurrentNoteProp("loopEnd",clamp(val, 0, maxSampleIndex))}
                                         onSubmit = {()=>{
-                                            let val = clamp(loopEnd, Math.min(loopStart + 1, Math.floor(size / 4)), Math.floor(size / 4))
+                                            let val = clamp(loopEnd, Math.min(loopStart + 1, maxSampleIndex), maxSampleIndex)
                                             store.setCurrentNoteProp("loopEnd",val)
                                         }}
                                     />

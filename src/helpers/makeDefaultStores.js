@@ -17,6 +17,7 @@ export const defaultVoices = () => {
                 responseCurve:ROOT_SQUARE,
                 loopStart:0,
                 loopEnd:0,
+                samples:0,
                 priority:0,
                 muteGroup:0,
                 dist:0,
