@@ -240,8 +240,8 @@ const clearCurrentNote = self => {
         responseCurve: 1,
         retrigger: 0,
         size: 0,
-        loopStart:0,
-        loopEnd:0,
+        loopStart:1,
+        loopEnd:2,
         samples:0,
         muteGroup:0,
         ...default_fx
@@ -261,8 +261,8 @@ const clearSelectedNotes = self => {
             responseCurve: 1,
             retrigger: 0,
             size: 0,
-            loopStart:0,
-            loopEnd:0,
+            loopStart:1,
+            loopEnd:2,
             samples:0,
             muteGroup:0,
             ...default_fx
@@ -417,7 +417,7 @@ const setCurrentWavFile = async (self,files) => {
         self.voices[self.currentVoice][self.wavBoardSelected].name = makeName(files[0].name)
         self.voices[self.currentVoice][self.wavBoardSelected].size = files[0].size
         self.voices[self.currentVoice][self.wavBoardSelected].samples = len
-        self.voices[self.currentVoice][self.wavBoardSelected].loopEnd = len
+        self.voices[self.currentVoice][self.wavBoardSelected].loopEnd = len - 1
         self.voices[self.currentVoice][self.wavBoardSelected].empty = 0
     }
     self.voiceNeedsUpdate()
@@ -576,7 +576,7 @@ const bulkUploadRacks = async (self,e) => {
             self.voices[self.currentVoice][note].filehandle = files[0]
             self.voices[self.currentVoice][note].name = makeName(files[0].name)
             self.voices[self.currentVoice][note].size = files[0].size
-            self.voices[self.currentVoice][note].loopEnd = len
+            self.voices[self.currentVoice][note].loopEnd = len - 1
             self.voices[self.currentVoice][note].samples = len
             self.voices[self.currentVoice][note].empty = 0
         } else { // it is a rack

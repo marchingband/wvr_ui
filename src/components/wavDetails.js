@@ -128,7 +128,7 @@ export const WavDetails = observer(() => {
                                 onChange={e=>store.setCurrentNoteProp('noteOff',e)}
                                 style={{width:270}}
                             >
-                                <option value={IGNORE}>ignore</option>
+                                <option value={IGNORE}>{ mode==ASR_LOOP ? "release" : "ignore"}</option>
                                 <option value={HALT}>halt</option>
                             </SelectNum>
                             <SelectNum
@@ -176,20 +176,22 @@ export const WavDetails = observer(() => {
                                     <NumberInput
                                         style={{width:270}}
                                         label = "loop start"
-                                        val = {loopStart}
+                                        val = {loopStart || 1}
                                         onChange = {val=>store.setCurrentNoteProp("loopStart",val)}
                                         onSubmit = {()=>{
-                                            let val = clamp(loopStart, 0, Math.max(loopEnd - 1, 0))
+                                            // ASR LOOP breaks if there is no A or no R, so we must ensure there is at least 1 sample for each section
+                                            let val = clamp(loopStart, 1, Math.max(loopEnd - 2, 1))
                                             store.setCurrentNoteProp("loopStart",val)
                                         }}
                                         />
                                     <NumberInput
                                         style={{width:270}}
                                         label = "loop end"
-                                        val = {loopEnd}
-                                        onChange = {val=>store.setCurrentNoteProp("loopEnd",clamp(val, 0, maxSampleIndex))}
+                                        val = {loopEnd || 2}
+                                        onChange = {val=>store.setCurrentNoteProp("loopEnd",clamp(val, 1, maxSampleIndex - 1))}
                                         onSubmit = {()=>{
-                                            let val = clamp(loopEnd, Math.min(loopStart + 1, maxSampleIndex), maxSampleIndex)
+                                            // ASR LOOP breaks if there is no A or no R, so we must ensure there is at least 1 sample for each section
+                                            let val = clamp(loopEnd, Math.min(loopStart + 1, maxSampleIndex - 1), maxSampleIndex - 1)
                                             store.setCurrentNoteProp("loopEnd",val)
                                         }}
                                     />
