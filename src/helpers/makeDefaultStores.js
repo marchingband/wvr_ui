@@ -227,4 +227,5 @@ export const defaultMetadata = {
     wLogVerbosity : 3,
     wifiStartsOn : 1,
     midiChannel : 0,
+    doStationMode: 0
 }

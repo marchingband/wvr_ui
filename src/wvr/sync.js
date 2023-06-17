@@ -75,7 +75,11 @@ const uploadMetadata = async() => {
                     store.loadProgress = 0
                 }
             },
+<<<<<<< HEAD
             headers:{'Content-Type': 'application/json'}
+=======
+            headers:{'Content-Type': 'text/plain'}
+>>>>>>> 9f94bc3 (local wifi beta done)
         }
     )
     .catch(e=>console.log(e))
@@ -99,6 +103,7 @@ const uploadSingleVoiceConfig = async(numVoice) => {
             }
         }
     )
+<<<<<<< HEAD
     .catch(e=>{
         console.log(e)
         console.log("retry")
@@ -106,6 +111,10 @@ const uploadSingleVoiceConfig = async(numVoice) => {
     })
     // retry && await uploadSingleVoiceConfig(numVoice)
 }
+=======
+    .catch(e=>console.log(e))
+    console.log("uploadVoiceConfig done")
+>>>>>>> 9f94bc3 (local wifi beta done)
 
 const uploadVoiceConfig = async() => {
     let voicesNeedUpdate = store.getVoicesNeedUpdate()
@@ -189,6 +198,7 @@ const uploadWavs = async () => {
         store.loadingTitle = `rendering to audio ${i+1} of ${uploads.length}`
         // var pcm2 = await toPcm(fileHandle)
         var pcm = await toPcmFX({fileHandle,pitch,dist,verb,pan,vol})
+        // var pcm = await toPcm(fileHandle)
         .catch(e=>console.log(e))
         store.loadingTitle = `syncing to WVR ${i+1} of ${uploads.length}`
         var size = pcm.size

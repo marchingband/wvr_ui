@@ -75,6 +75,17 @@ module.exports = {
                 "cookieDomainRewrite": "localhost",
                 "target": "http://192.168.5.18/updateMetadata"
             },
+            "/fetchLocalIP": {
+                "changeOrigin": true,
+                "cookieDomainRewrite": "localhost",
+                "target": "http://192.168.5.18/fetchLocalIP"
+            },
+            "/tryLogonLocalNetwork": {
+                "changeOrigin": true,
+                "cookieDomainRewrite": "localhost",
+                "target": "http://192.168.5.18/tryLogonLocalNetwork"
+            },
+
         }
     },
 
