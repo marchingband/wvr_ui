@@ -15,6 +15,7 @@ export const fetchLocalIP = async() => {
 }
 
 export const joinLocalNetwork = async() => {
+    console.log(store.metadata.stationWifiNetworkName, store.metadata.stationWifiNetworkPassword)
     const ret = await axios.get(
         "/tryLogonLocalNetwork",
         {

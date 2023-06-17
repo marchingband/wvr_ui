@@ -124,7 +124,8 @@ module.exports = env => ({
                 "changeOrigin": true,
                 "cookieDomainRewrite": "localhost",
                 "target": "http://192.168.5.18/restoreEMMC"
-            }            "/fetchLocalIP": {
+            },
+            "/fetchLocalIP": {
                 "changeOrigin": true,
                 "cookieDomainRewrite": "localhost",
                 "target": "http://192.168.5.18/fetchLocalIP"

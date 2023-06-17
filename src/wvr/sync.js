@@ -75,11 +75,7 @@ const uploadMetadata = async() => {
                     store.loadProgress = 0
                 }
             },
-<<<<<<< HEAD
             headers:{'Content-Type': 'application/json'}
-=======
-            headers:{'Content-Type': 'text/plain'}
->>>>>>> 9f94bc3 (local wifi beta done)
         }
     )
     .catch(e=>console.log(e))
@@ -103,7 +99,6 @@ const uploadSingleVoiceConfig = async(numVoice) => {
             }
         }
     )
-<<<<<<< HEAD
     .catch(e=>{
         console.log(e)
         console.log("retry")
@@ -111,10 +106,6 @@ const uploadSingleVoiceConfig = async(numVoice) => {
     })
     // retry && await uploadSingleVoiceConfig(numVoice)
 }
-=======
-    .catch(e=>console.log(e))
-    console.log("uploadVoiceConfig done")
->>>>>>> 9f94bc3 (local wifi beta done)
 
 const uploadVoiceConfig = async() => {
     let voicesNeedUpdate = store.getVoicesNeedUpdate()
