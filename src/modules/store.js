@@ -386,9 +386,13 @@ const setCurrentWavFile = async (self,files) => {
             if(self.wavBoardInterpolationTarget != undefined){
                 // interpolate
                 if(!window.confirm(`interpolate pitch across ${self.wavBoardRange.length} notes?`))return false
+                const len = await analyzeWav(files[0])
                 for(let i=0;i<self.wavBoardRange.length;i++){
                     let pitch = self.wavBoardRange[i] - self.wavBoardInterpolationTarget
                     let stretch = semitonesToStretch(pitch)
+                    const newLen = Math.floor(len * stretch)
+                    self.voices[self.currentVoice][self.wavBoardRange[i]].samples = newLen
+                    self.voices[self.currentVoice][self.wavBoardRange[i]].loopEnd = newLen - 1
                     self.voices[self.currentVoice][self.wavBoardRange[i]].filehandle = files[0]
                     self.voices[self.currentVoice][self.wavBoardRange[i]].name = makeName(files[0].name)
                     self.voices[self.currentVoice][self.wavBoardRange[i]].size = files[0].size
@@ -434,7 +438,7 @@ const setCurrentPinProp = (self,prop,val) => {
     self.configNeedsUpdate = true
 }
 
-const setCurrentNoteProp = (self,prop,val) => {
+const setCurrentNoteProp = (self, prop, val) => {
     let range = toJS(self.wavBoardRange)
     let target = self.wavBoardInterpolationTarget
     if(range.length > 0){
@@ -446,7 +450,7 @@ const setCurrentNoteProp = (self,prop,val) => {
                 const pitch = note - target
                 const stretch = semitonesToStretch(pitch)
                 const newVal = Math.round(val * stretch)
-                setNoteProp(self,note,prop,newVal)
+                setNoteProp(self, note, prop, newVal)
             }
 
         } else { // no interpolating

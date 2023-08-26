@@ -41,7 +41,8 @@ export const WavDetails = observer(() => {
                 loopEnd,
                 showLoop: mode == ASR_LOOP,
                 width: canvas.current.width,
-                height: canvas.current.height
+                height: canvas.current.height,
+                pitch
             }) : 
             ctx.clearRect(0, 0, canvas.current.width, canvas.current.height)
     })
@@ -191,6 +192,7 @@ export const WavDetails = observer(() => {
                                         onChange = {val=>store.setCurrentNoteProp("loopEnd",clamp(val, 1, maxSampleIndex - 1))}
                                         onSubmit = {()=>{
                                             // ASR LOOP breaks if there is no A or no R, so we must ensure there is at least 1 sample for each section
+                                            console.log({maxSampleIndex, filehandle, samples, size})
                                             let val = clamp(loopEnd, Math.min(loopStart + 1, maxSampleIndex - 1), maxSampleIndex - 1)
                                             store.setCurrentNoteProp("loopEnd",val)
                                         }}

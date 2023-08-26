@@ -1,17 +1,18 @@
-// buff is an AudioBuffer
+import {semitonesToStretch} from "../helpers/semitonesToStretch"
 
-export const drawWave = ({ctx,filehandle,width,height,loopStart,loopEnd,showLoop}) => {
+// buff is an AudioBuffer
+export const drawWave = ({ctx,filehandle,width,height,loopStart,loopEnd,showLoop, pitch=0}) => {
    var context = ctx
    var input_reader = new FileReader();
    input_reader.onload = async(e) => {
       var ctx = new AudioContext({sampleRate:44100});
       var buff = await ctx.decodeAudioData(e.target.result);
-      draw({buff,context,width,height,loopStart,loopEnd,showLoop})
+      draw({buff,context,width,height,loopStart,loopEnd,showLoop,pitch})
    }
    input_reader.readAsArrayBuffer(filehandle);
 }
 
-const draw = ({buff,context,width,height,loopStart,loopEnd,showLoop}) => {
+const draw = ({buff,context,width,height,loopStart,loopEnd,showLoop,pitch}) => {
    var canvasHeight = height
    var canvasWidth = width
 
@@ -41,7 +42,8 @@ const draw = ({buff,context,width,height,loopStart,loopEnd,showLoop}) => {
    if(showLoop && (loopStart != undefined) && (loopEnd != undefined)){
       context.closePath();
       context.beginPath();
-      var sampleWidth = canvasWidth / totallength
+      let stretch = semitonesToStretch(pitch)
+      var sampleWidth = canvasWidth / (totallength * stretch)
       context.moveTo( sampleWidth * loopStart, 50 );
       context.lineTo( sampleWidth * loopStart, -50 );
       context.moveTo( sampleWidth * loopEnd, 50 );
