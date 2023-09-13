@@ -7,6 +7,7 @@ import {SelectNum} from '../components/select'
 import {store} from '../modules/store'
 import { restoreEMMC, resetEMMC } from '../wvr/emmc';
 import {initWebMidi} from '../modules/webMidi'
+import { toJS } from 'mobx';
 
 export const Global = observer(() => {
     const [firmware,setFirmware] = useState(null)
@@ -86,6 +87,20 @@ export const Global = observer(() => {
             >
                 <option value={0}>OMNI</option>
                 {Array(16).fill().map((x,i)=><option value={i+1} key={i}>{i+1}</option>)}
+            </SelectNum>
+            <SelectNum
+                label="pitch bend up"
+                value={metadata.pitchBendSemitonesUp}
+                onChange={e=>store.setMetadataField('pitchBendSemitonesUp',e)}  
+            >
+                {[0, 1, 2].map(x=><option value={x} key={x}>{x}</option>)}
+            </SelectNum>
+            <SelectNum
+                label="pitch bend down"
+                value={metadata.pitchBendSemitonesDown}
+                onChange={e=>store.setMetadataField('pitchBendSemitonesDown',e)}  
+            >
+                {[0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12].map(x=><option value={x} key={x}>{x}</option>)}
             </SelectNum>
 
             <div style={{display:'flex',flexDirection:'row',alignItems:'center', marginLeft:20, width:400}}>

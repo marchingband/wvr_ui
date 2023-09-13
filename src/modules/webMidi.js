@@ -31,7 +31,7 @@ function listInputsAndOutputs() {
         "' version:'" + output.version + "'" );
     }
     
-    console.log(inputs)
+    console.log({inputs})
     store.midiInputs = inputs
 }
 

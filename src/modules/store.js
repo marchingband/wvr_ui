@@ -49,7 +49,7 @@ export const store = observable(
         pinConfig: observable(defaultPinConfig),
         metadata: observable(defaultMetadata),
 
-        midiInputs: observer([]),
+        midiInputs: observable([]),
 
         getVoices:function(){
             return toJS(this.voices)
