@@ -129,7 +129,8 @@ export const WavDetails = observer(() => {
                                 onChange={e=>store.setCurrentNoteProp('noteOff',e)}
                                 style={{width:270}}
                             >
-                                <option value={IGNORE}>{ mode==ASR_LOOP ? "release" : "ignore"}</option>
+                                {/* <option value={IGNORE}>{ mode==ASR_LOOP ? "release" : "ignore"}</option> */}
+                                <option value={IGNORE}>ignore</option>
                                 <option value={HALT}>halt</option>
                             </SelectNum>
                             <SelectNum
