@@ -73,13 +73,18 @@ var semitones_to_float = semitones => {
     return Math.pow(semitone_ratio, semitones)
 }
 
-export const toPcmFX = async({fileHandle:f,pitch,dist,verb,pan,vol}) => new Promise(async(res,rej)=>{
+export const toPcmFX = async({fileHandle:f,pitch,dist,verb,pan,vol,reverse}) => new Promise(async(res,rej)=>{
     var playbackRate = semitones_to_float(pitch)
     var reverb_length = 1
     var input_reader = new FileReader();
     input_reader.onload = async(e) => {
         var ctx = new AudioContext({sampleRate:44100});
         var buf1 = await ctx.decodeAudioData(e.target.result);
+        if(reverse){
+            for(let i=0; i<buf1.numberOfChannels; i++){
+                Array.prototype.reverse.call( buf1.getChannelData(i) );
+            }
+        }
         ctx.close()
         // if there is reverb, add space for the tail
         var reverb_tail_length = verb > 0 ? (44100 * reverb_length) : 0

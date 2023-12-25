@@ -158,7 +158,8 @@ const uploadWavs = async () => {
                         verb: n.verb,
                         pitch: n.pitch,
                         vol: n.vol,
-                        pan: n.pan    
+                        pan: n.pan,
+                        reverse: n.reverse    
                     })
                 }
             } else if(n.rack.layers) {
@@ -176,19 +177,20 @@ const uploadWavs = async () => {
                             verb: n.verb,
                             pitch: n.pitch,
                             vol: n.vol,
-                            pan: n.pan    
+                            pan: n.pan,
+                            reverse: n.reverse  
                         })
                     }
                 })
             }
         })
     })
-    for(let [i, {fileHandle,voice,note,name,isRack,rackData,pitch,verb,dist,pan,vol}] of uploads.entries())
+    for(let [i, {fileHandle,voice,note,name,isRack,rackData,pitch,verb,dist,pan,vol,reverse}] of uploads.entries())
     {
         store.loadProgress = 0
         store.loadingTitle = `rendering to audio ${i+1} of ${uploads.length}`
         // var pcm2 = await toPcm(fileHandle)
-        var pcm = await toPcmFX({fileHandle,pitch,dist,verb,pan,vol})
+        var pcm = await toPcmFX({fileHandle,pitch,dist,verb,pan,vol,reverse})
         .catch(e=>console.log(e))
         store.loadingTitle = `syncing to WVR ${i+1} of ${uploads.length}`
         var size = pcm.size

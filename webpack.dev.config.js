@@ -28,102 +28,102 @@ module.exports = env => ({
             "/fsjson": {
                 "changeOrigin": true,
                 "cookieDomainRewrite": "localhost",
-                "target": "http://192.168.5.18/fsjson"
+                "target": "http://192.168.4.1/fsjson"
             },
             "/addwav": {
                 "changeOrigin": true,
                 "cookieDomainRewrite": "localhost",
-                "target": "http://192.168.5.18/addwav"
+                "target": "http://192.168.4.1/addwav"
             },
             "/addrack": {
                 "changeOrigin": true,
                 "cookieDomainRewrite": "localhost",
-                "target": "http://192.168.5.18/addrack"
+                "target": "http://192.168.4.1/addrack"
             },
             "/updateVoiceConfig": {
                 "changeOrigin": true,
                 "cookieDomainRewrite": "localhost",
-                "target": "http://192.168.5.18/updateVoiceConfig"
+                "target": "http://192.168.4.1/updateVoiceConfig"
             },
             "/updateSingleVoiceConfig": {
                 "changeOrigin": true,
                 "cookieDomainRewrite": "localhost",
-                "target": "http://192.168.5.18/updateSingleVoiceConfig"
+                "target": "http://192.168.4.1/updateSingleVoiceConfig"
             },
             "/updatePinConfig": {
                 "changeOrigin": true,
                 "cookieDomainRewrite": "localhost",
-                "target": "http://192.168.5.18/updatePinConfig"
+                "target": "http://192.168.4.1/updatePinConfig"
             },
             "/addfirmware": {
                 "changeOrigin": true,
                 "cookieDomainRewrite": "localhost",
-                "target": "http://192.168.5.18/addfirmware"
+                "target": "http://192.168.4.1/addfirmware"
             },
             "/addgui": {
                 "changeOrigin": true,
                 "cookieDomainRewrite": "localhost",
-                "target": "http://192.168.5.18/addgui"
+                "target": "http://192.168.4.1/addgui"
             },
             "/bootFromEmmc": {
                 "changeOrigin": true,
                 "cookieDomainRewrite": "localhost",
-                "target": "http://192.168.5.18/bootFromEmmc"
+                "target": "http://192.168.4.1/bootFromEmmc"
             },
             "/rpc": {
                 "changeOrigin": true,
                 "cookieDomainRewrite": "localhost",
-                "target": "http://192.168.5.18/rpc"
+                "target": "http://192.168.4.1/rpc"
             },
             "/updaterecoveryfirmware": {
                 "changeOrigin": true,
                 "cookieDomainRewrite": "localhost",
-                "target": "http://192.168.5.18/updaterecoveryfirmware"
+                "target": "http://192.168.4.1/updaterecoveryfirmware"
             },
             "/updateMetadata": {
                 "changeOrigin": true,
                 "cookieDomainRewrite": "localhost",
-                "target": "http://192.168.5.18/updateMetadata"
+                "target": "http://192.168.4.1/updateMetadata"
             },
             "/voicejson": {
                 "changeOrigin": true,
                 "cookieDomainRewrite": "localhost",
-                "target": "http://192.168.5.18/voicejson"
+                "target": "http://192.168.4.1/voicejson"
             },
             "/configjson": {
                 "changeOrigin": true,
                 "cookieDomainRewrite": "localhost",
-                "target": "http://192.168.5.18/configjson"
+                "target": "http://192.168.4.1/configjson"
             },
             "/update": {
                 "changeOrigin": true,
                 "cookieDomainRewrite": "localhost",
-                "target": "http://192.168.5.18/update"
+                "target": "http://192.168.4.1/update"
             },
             "/wvr_emmc_backup.bin": {
                 "changeOrigin": true,
                 "cookieDomainRewrite": "localhost",
-                "target": "http://192.168.5.18/wvr_emmc_backup.bin"
+                "target": "http://192.168.4.1/wvr_emmc_backup.bin"
             },
             "/deleteFirmware": {
                 "changeOrigin": true,
                 "cookieDomainRewrite": "localhost",
-                "target": "http://192.168.5.18/deleteFirmware"
+                "target": "http://192.168.4.1/deleteFirmware"
             },
             "/playWav": {
                 "changeOrigin": true,
                 "cookieDomainRewrite": "localhost",
-                "target": "http://192.168.5.18/playWav"
+                "target": "http://192.168.4.1/playWav"
             },
             "/emmcReset": {
                 "changeOrigin": true,
                 "cookieDomainRewrite": "localhost",
-                "target": "http://192.168.5.18/emmcReset"
+                "target": "http://192.168.4.1/emmcReset"
             },
             "/restoreEMMC": {
                 "changeOrigin": true,
                 "cookieDomainRewrite": "localhost",
-                "target": "http://192.168.5.18/restoreEMMC"
+                "target": "http://192.168.4.1/restoreEMMC"
             }
         }
     },

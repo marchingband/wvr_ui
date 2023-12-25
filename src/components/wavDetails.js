@@ -12,13 +12,14 @@ import {NOTE_OFF,ONE_SHOT,LOOP,PING_PONG,ASR_LOOP,RETRIGGER,RESTART,NONE,HALT,IG
     PRIORITIES,LINEAR,FIXED,SQUARE_ROOT,INV_SQUARE_ROOT} from '../modules/constants'
 import {SelectNum} from '../components/select'
 import {NumberInput} from '../components/numberInput'
+import { Checkbox } from './checkbox.js';
 
 export const WavDetails = observer(() => {
     const filePicker = useRef(null)
     const directoryPicker = useRef(null)
     const canvas = useRef(null)
     const [showSettings, setShowSettings] = useState(true)
-    const {name,size,filehandle,mode,retrigger,noteOff,responseCurve,priority,muteGroup,dist,verb,pitch,vol,pan,loopStart,loopEnd,empty,samples} = store.getCurrentNote()
+    const {name,size,filehandle,mode,retrigger,noteOff,responseCurve,priority,muteGroup,dist,verb,pitch,vol,pan,reverse,loopStart,loopEnd,empty,samples} = store.getCurrentNote()
     const range = store.wavBoardRange.length > 0
     const allowMultiple = store.wavBoardRange.length > 1 && store.wavBoardInterpolationTarget == undefined
     const maxSampleIndex = filehandle ? samples : size / 4 // if this is a fresh file, we use the wav analyzer, if its been synced already, we use the raw file size, as the headers have been stripped already
@@ -234,6 +235,11 @@ export const WavDetails = observer(() => {
                                 onChange={e=>store.setCurrentNoteProp("pan",e)}
                                 value={pan}
                                 label="pan"
+                            />
+                            <Checkbox
+                                label = "reverse"
+                                value = {reverse}
+                                onChange = {e=>store.setCurrentNoteProp("reverse",e)}
                             />
                         </div>
                 }

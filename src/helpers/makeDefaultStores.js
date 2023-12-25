@@ -24,7 +24,8 @@ export const defaultVoices = () => {
                 verb:0,
                 pitch:0,
                 vol:100,
-                pan:0
+                pan:0,
+                reverse: false
             })
         }
         voices[i]=observable(voice)
@@ -37,7 +38,8 @@ export const default_fx = {
     verb:0,
     pitch:0,
     vol:100,
-    pan:0
+    pan:0,
+    reverse: false
 }
 
 export const fillVoices = () => {

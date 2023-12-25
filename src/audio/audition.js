@@ -40,7 +40,7 @@ export const auditionLocal = async(f) => new Promise(async(res)=>{
     // console.log(f)
     const voice = store.currentVoice
     const note = store.wavBoardSelected
-    const {dist,verb,pitch,vol,pan} = store.getVoices()[voice][note]
+    const {dist,verb,pitch,vol,pan,reverse} = store.getVoices()[voice][note]
     var playbackRate = semitones_to_float(pitch)
     var input_reader = new FileReader();
     input_reader.onload = async(e) => {
@@ -62,6 +62,11 @@ export const auditionLocal = async(f) => new Promise(async(res)=>{
         panning.pan.value = pan / 100
 
         src.buffer = await ctx.decodeAudioData(e.target.result);
+        if(reverse){
+            for(let i=0; i<src.buffer.numberOfChannels; i++){
+                Array.prototype.reverse.call( src.buffer.getChannelData(i) );
+            }
+        }
         src.connect(reverb)
         src.connect(distortion)
         reverb.connect(reverbGain)
