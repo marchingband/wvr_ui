@@ -231,4 +231,5 @@ export const defaultMetadata = {
     midiChannel : 0,
     pitchBendSemitonesUp : 2,
     pitchBendSemitonesDown : 2,
+    doStationMode: 0
 }

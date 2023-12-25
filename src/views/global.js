@@ -7,6 +7,8 @@ import {SelectNum} from '../components/select'
 import {store} from '../modules/store'
 import { restoreEMMC, resetEMMC } from '../wvr/emmc';
 import {initWebMidi} from '../modules/webMidi'
+import {fetchLocalIP} from '../wvr/localNetwork'
+import {joinLocalNetwork} from '../wvr/localNetwork'
 import { toJS } from 'mobx';
 
 export const Global = observer(() => {
@@ -104,7 +106,7 @@ export const Global = observer(() => {
             </SelectNum>
 
             <div style={{display:'flex',flexDirection:'row',alignItems:'center', marginLeft:20, width:400}}>
-                <Text primary>wifi network name :</Text>
+                <Text primary>WVR wifi network name :</Text>
                 <Text warn style={{marginLeft:10}}>{store.metadata.wifiNetworkName}</Text>
                 <Button
                     style={{marginLeft:'auto'}}
@@ -119,7 +121,7 @@ export const Global = observer(() => {
                 />
             </div>
             <div style={{display:'flex',flexDirection:'row',alignItems:'center', marginLeft:20, width:400}}>
-                <Text primary>wifi network password :</Text>
+                <Text primary>WVR wifi network password :</Text>
                 <Text warn style={{marginLeft:10}}>{store.metadata.wifiNetworkPassword}</Text>
                 <Button
                     style={{marginLeft:'auto'}}
@@ -218,7 +220,7 @@ export const Global = observer(() => {
             >
                 MIDI data sources :
             </Text>
-            <div style={{display:'flex',flexDirection:'row',margin:20, marginTop:5}}>
+            <div style={{display:'flex',flexDirection:'row',margin:20, marginTop:5, marginBottom:5}}>
 
                 <Button
                     title="refresh"
@@ -235,6 +237,71 @@ export const Global = observer(() => {
                     )
                 }
             </div>
+            <div style={{marginBottom:20}}>
+                <SelectNum
+                    style={{width:350, marginTop:20}}
+                    label="join external wifi network"
+                    value={metadata.doStationMode}
+                    onChange={e=>store.setMetadataField('doStationMode',e)}
+                >
+                    <option value={1}>yes</option>
+                    <option value={0}>no</option>
+                </SelectNum>
+                {store.metadata.doStationMode &&
+                    <div style={{display:'flex',flexDirection:'row',alignItems:'center', marginLeft:20, width:400}}>
+                        <Text primary>join network name :</Text>
+                        <Text warn style={{marginLeft:10}}>{store.metadata.stationWifiNetworkName}</Text>
+                        <Button
+                            style={{marginLeft:'auto'}}
+                            title="change"
+                            onClick={()=>{
+                                const name = window.prompt("enter the WIFI network name")
+                                if(name){
+                                    store.metadata.stationWifiNetworkName = name
+                                }
+                            }}
+                        />
+                    </div>
+                }
+                {store.metadata.doStationMode &&
+                    <div style={{display:'flex',flexDirection:'row',alignItems:'center', marginLeft:20, width:400}}>
+                        <Text primary>join network password :</Text>
+                        <Text warn style={{marginLeft:10}}>{store.metadata.stationWifiNetworkPassword}</Text>
+                        <Button
+                            style={{marginLeft:'auto'}}
+                            title="change"
+                            onClick={()=>{
+                                const name = window.prompt("enter the WIFI password")
+                                if(name){
+                                    store.metadata.stationWifiNetworkPassword = name
+                                }
+                            }}
+                        />
+                    </div>
+                }
+                {store.metadata.doStationMode &&
+                    <div style={{display:'flex',flexDirection:'row',alignItems:'center', marginLeft:20, width:400}}>
+                        <Text primary>
+                            {"local IP Address : "}
+                        </Text>
+                        <Text warn style={{userSelect:"default", marginLeft:10}}>
+                            {store.localIP || "unknown"}
+                        </Text>
+                        <Button
+                            style={{marginLeft:'auto'}}
+                            title="get IP Address"
+                            onClick={()=>fetchLocalIP()}
+                        />
+                    </div>
+                }
+                {store.metadata.doStationMode &&
+                    <Button
+                        style={{marginLeft:20, width:350}}
+                        title="try new network and password"
+                        onClick={()=>joinLocalNetwork()}
+                    />
+                } 
+            </div>           
             <input 
                 ref={firmwareFileInput}
                 type="file" 

@@ -78,7 +78,8 @@ export const loadVoice = async i => {
 }
 
 const initWebSockets = async() => {
-    ws = new WebSocket(`ws://${WVR_IP}/ws`);
+    ws = new WebSocket(`ws://${window.location.hostname}/ws`);
+    // ws = new WebSocket(`ws://${WVR_IP}/ws`);
     ws.onopen = e => console.log("ws connected : ", e)
     ws.onclose = () => {
         console.error("closed socket")
