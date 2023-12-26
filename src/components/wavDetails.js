@@ -9,7 +9,7 @@ import {Button} from './button'
 import {Slider} from './slider'
 import {auditionLocal, auditionDisk} from '../audio/audition'
 import {NOTE_OFF,ONE_SHOT,LOOP,PAUSE,ASR_LOOP,RETRIGGER,RESTART,NONE,HALT,IGNORE,RELEASE,
-    PRIORITIES,LINEAR,FIXED,SQUARE_ROOT,INV_SQUARE_ROOT, PAUSE_LOOP} from '../modules/constants'
+    PRIORITIES,LINEAR,FIXED,SQUARE_ROOT,INV_SQUARE_ROOT,PAUSE_LOOP,PAUSE_ASR} from '../modules/constants'
 import {SelectNum} from '../components/select'
 import {NumberInput} from '../components/numberInput'
 import { Checkbox } from './checkbox.js';
@@ -40,7 +40,7 @@ export const WavDetails = observer(() => {
                 filehandle,
                 loopStart,
                 loopEnd,
-                showLoop: mode == ASR_LOOP,
+                showLoop: mode == ASR_LOOP || mode == PAUSE_ASR,
                 width: canvas.current.width,
                 height: canvas.current.height,
                 pitch
@@ -113,6 +113,7 @@ export const WavDetails = observer(() => {
                                 <option value={ASR_LOOP}>ASR loop</option>
                                 <option value={PAUSE}>pause/resume</option>
                                 <option value={PAUSE_LOOP}>pause/loop</option>
+                                <option value={PAUSE_ASR}>pause/asr</option>
                             </SelectNum>
                             <SelectNum
                                 value={retrigger}
@@ -134,7 +135,7 @@ export const WavDetails = observer(() => {
                                 {/* <option value={IGNORE}>{ mode==ASR_LOOP ? "release" : "ignore"}</option> */}
                                 <option value={IGNORE}>ignore</option>
                                 <option value={HALT}>halt</option>
-                                {mode==ASR_LOOP && 
+                                {(mode==ASR_LOOP) && 
                                     <option value={RELEASE}>release</option>
                                 }
                             </SelectNum>
@@ -177,7 +178,7 @@ export const WavDetails = observer(() => {
                                     )
                                 }
                             </SelectNum>
-                            {(mode == ASR_LOOP) && (empty == false) && 
+                            {(mode == ASR_LOOP || mode == PAUSE_ASR) && (empty == false) && 
                             // only show ASR-looping settings for files on WVR
                                 <div>
                                     <NumberInput

@@ -14,6 +14,7 @@ export const LOOP         = 1
 export const PAUSE        = 2
 export const ASR_LOOP     = 3
 export const PAUSE_LOOP   = 4
+export const PAUSE_ASR    = 5
 
 // retrigger_mode
 export const RETRIGGER    = 0
