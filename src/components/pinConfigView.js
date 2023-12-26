@@ -2,7 +2,7 @@ import React from 'react'
 import { noteToName, noteToOctave } from '../helpers/noteToName'
 import { store } from '../modules/store'
 import {observer} from 'mobx-react-lite'
-import {EDGE_RISING,EDGE_FALLING,EDGE_NONE,NOTES,VELOCITIES,NOTE_ON,BANK_UP,BANK_DOWN,WIFI_ON,WIFI_OFF,
+import {EDGE_RISING,EDGE_FALLING,EDGE_NONE,NOTES,VELOCITIES,NOTE_ON,BANK_UP,BANK_DOWN,WVR_WIFI_ON,WVR_WIFI_OFF,
     TOGGLE_WIFI,VOLUME_UP,VOLUME_DOWN,MUTE_ON,MUTE_OFF,TOGGLE_MUTE,SOFT,pinNames} from '../modules/constants'
 import { Text } from './text.js'
 import {SelectNum} from '../components/select'
@@ -61,8 +61,8 @@ export const PinConfigView = observer(() => {
                     <option value={NOTE_ON}>note-on</option>
                     <option value={BANK_UP}>bank up</option>
                     <option value={BANK_DOWN}>bank down</option>
-                    <option value={WIFI_ON}>wifi on</option>
-                    <option value={WIFI_OFF}>wifi off</option>
+                    <option value={WVR_WIFI_ON}>wifi on</option>
+                    <option value={WVR_WIFI_OFF}>wifi off</option>
                     <option value={TOGGLE_WIFI}>toggle wifi</option>
                     <option value={VOLUME_UP}>volume up</option>
                     <option value={VOLUME_DOWN}>volume down</option>

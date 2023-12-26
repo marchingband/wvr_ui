@@ -8,7 +8,7 @@ import {Stack} from './stack'
 import {Button} from './button'
 import {Slider} from './slider'
 import {auditionLocal, auditionDisk} from '../audio/audition'
-import {NOTE_OFF,ONE_SHOT,LOOP,PING_PONG,ASR_LOOP,RETRIGGER,RESTART,NONE,HALT,IGNORE,RELEASE,
+import {NOTE_OFF,ONE_SHOT,LOOP,PAUSE,ASR_LOOP,RETRIGGER,RESTART,NONE,HALT,IGNORE,RELEASE,
     PRIORITIES,LINEAR,FIXED,SQUARE_ROOT,INV_SQUARE_ROOT} from '../modules/constants'
 import {SelectNum} from '../components/select'
 import {NumberInput} from '../components/numberInput'
@@ -110,7 +110,7 @@ export const WavDetails = observer(() => {
                             >
                                 <option value={ONE_SHOT}>one-shot</option>
                                 <option value={LOOP}>loop</option>
-                                {/* <option value={PING_PONG}>ping-pong</option> */}
+                                <option value={PAUSE}>pause/resume</option>
                                 <option value={ASR_LOOP}>ASR loop</option>
                             </SelectNum>
                             <SelectNum

@@ -4,7 +4,7 @@ import {observer} from 'mobx-react-lite'
 import {noteToName} from '../helpers/noteToName'
 import {Stack} from './stack'
 import {Button} from './button'
-import {NOTE_OFF,ONE_SHOT,LOOP,PING_PONG,RETRIGGER,RESTART,NONE,HALT,IGNORE,PRIORITIES,
+import {NOTE_OFF,ONE_SHOT,LOOP,PAUSE,RETRIGGER,RESTART,NONE,HALT,IGNORE,PRIORITIES,
     NUM_LAYERS,LINEAR,FIXED,SQUARE_ROOT,INV_SQUARE_ROOT} from '../modules/constants'
 import {SelectNum} from '../components/select'
 import {Slider} from './slider'
@@ -34,7 +34,6 @@ export const RackDetails = observer(() => {
                             >
                                 <option value={ONE_SHOT}>one-shot</option>
                                 <option value={LOOP}>loop</option>
-                                <option value={PING_PONG}>ping-pong</option>
                             </SelectNum>
                             <SelectNum
                                 label='retrigger mode'
