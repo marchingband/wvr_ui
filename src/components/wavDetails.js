@@ -8,7 +8,7 @@ import {Stack} from './stack'
 import {Button} from './button'
 import {Slider} from './slider'
 import {auditionLocal, auditionDisk} from '../audio/audition'
-import {NOTE_OFF,ONE_SHOT,LOOP,PING_PONG,ASR_LOOP,RETRIGGER,RESTART,NONE,HALT,IGNORE,
+import {NOTE_OFF,ONE_SHOT,LOOP,PING_PONG,ASR_LOOP,RETRIGGER,RESTART,NONE,HALT,IGNORE,RELEASE,
     PRIORITIES,LINEAR,FIXED,SQUARE_ROOT,INV_SQUARE_ROOT} from '../modules/constants'
 import {SelectNum} from '../components/select'
 import {NumberInput} from '../components/numberInput'
@@ -133,6 +133,9 @@ export const WavDetails = observer(() => {
                                 {/* <option value={IGNORE}>{ mode==ASR_LOOP ? "release" : "ignore"}</option> */}
                                 <option value={IGNORE}>ignore</option>
                                 <option value={HALT}>halt</option>
+                                {mode==ASR_LOOP && 
+                                    <option value={RELEASE}>release</option>
+                                }
                             </SelectNum>
                             <SelectNum
                                 value={responseCurve}

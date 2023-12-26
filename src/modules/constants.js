@@ -23,6 +23,7 @@ export const NOTE_OFF     = 3
 // note_off_meaning
 export const HALT         = 0
 export const IGNORE       = 1
+export const RELEASE      = 2
 
 // response curve
 export const LINEAR          = 0
