@@ -9,7 +9,7 @@ import {Button} from './button'
 import {Slider} from './slider'
 import {auditionLocal, auditionDisk} from '../audio/audition'
 import {NOTE_OFF,ONE_SHOT,LOOP,PAUSE,ASR_LOOP,RETRIGGER,RESTART,NONE,HALT,IGNORE,RELEASE,
-    PRIORITIES,LINEAR,FIXED,SQUARE_ROOT,INV_SQUARE_ROOT} from '../modules/constants'
+    PRIORITIES,LINEAR,FIXED,SQUARE_ROOT,INV_SQUARE_ROOT, PAUSE_LOOP} from '../modules/constants'
 import {SelectNum} from '../components/select'
 import {NumberInput} from '../components/numberInput'
 import { Checkbox } from './checkbox.js';
@@ -110,8 +110,9 @@ export const WavDetails = observer(() => {
                             >
                                 <option value={ONE_SHOT}>one-shot</option>
                                 <option value={LOOP}>loop</option>
-                                <option value={PAUSE}>pause/resume</option>
                                 <option value={ASR_LOOP}>ASR loop</option>
+                                <option value={PAUSE}>pause/resume</option>
+                                <option value={PAUSE_LOOP}>pause/loop</option>
                             </SelectNum>
                             <SelectNum
                                 value={retrigger}
