@@ -25,6 +25,9 @@ const parseAsRacks = files => {
             tree[dir] = []
         }
         if(!file.name.startsWith(".")){ // remove hidden files
+            if(tree[dir].length >= 32){ // max 32 slots per voice
+                continue
+            }
             tree[dir].push(file)
         }
     }
