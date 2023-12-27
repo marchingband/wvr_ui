@@ -56,7 +56,7 @@ export const restoreEMMC = async handle => {
 }
 
 export const resetEMMC = async() =>{
-    const response = await fetch('http://192.168.4.1/emmcReset', {
+    const response = await fetch('/emmcReset', {
         method: 'get',
     });
     alert("eMMC on WVR has been reset, please refresh the browser")

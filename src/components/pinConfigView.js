@@ -7,10 +7,13 @@ import {EDGE_RISING,EDGE_FALLING,EDGE_NONE,NOTES,VELOCITIES,NOTE_ON,BANK_UP,BANK
 import { Text } from './text.js'
 import {SelectNum} from '../components/select'
 
+// import '../index.css'
+
 export const PinConfigView = observer(() => {
     const pin = store.getCurrentPin()
     return(
         <div style={container}>
+            <div className='test'/>
             <Text medium primary>
                 {`PIN ${pinNames[store.pinConfigSelected]}`}
             </Text>
@@ -27,7 +30,8 @@ export const PinConfigView = observer(() => {
                                 key={x}
                                 value={x}
                             >
-                                {`${noteToName(x)} ${noteToOctave(x)}`}
+                                {`${noteToName(x)}${noteToOctave(x)} (${x})`}
+                                {/* {`${noteToName(x)} ${noteToOctave(x)}`} */}
                             </option>    
                         )
                     }
