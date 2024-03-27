@@ -5,12 +5,12 @@ import {noteToName} from '../helpers/noteToName'
 import {Stack} from './stack'
 import {Button} from './button'
 import {NOTE_OFF,ONE_SHOT,LOOP,PAUSE,RETRIGGER,RESTART,NONE,HALT,IGNORE,PRIORITIES,
-    NUM_LAYERS,LINEAR,FIXED,SQUARE_ROOT,INV_SQUARE_ROOT} from '../modules/constants'
+    NUM_LAYERS,LINEAR,FIXED,SQUARE_ROOT,INV_SQUARE_ROOT,STEREO,SUM_LEFT,SUM_RIGHT,MONO_LEFT,MONO_RIGHT} from '../modules/constants'
 import {SelectNum} from '../components/select'
 import {Slider} from './slider'
 
 export const RackDetails = observer(() => {
-    const {mode,retrigger,noteOff,responseCurve,priority,muteGroup,rack,dist,verb,pitch,vol,pan} = store.getCurrentNote()
+    const {mode,retrigger,noteOff,responseCurve,stereoMode,priority,muteGroup,rack,dist,verb,pitch,vol,pan} = store.getCurrentNote()
     const {name,num_layers} = rack
     const [showSettings, setShowSettings] = useState(true)
     const allowMultiple = store.wavBoardRange.length > 1 && store.wavBoardInterpolationTarget == undefined
@@ -62,6 +62,17 @@ export const RackDetails = observer(() => {
                                 <option value={SQUARE_ROOT}>square root</option>
                                 <option value={INV_SQUARE_ROOT}>inv square root</option>
                                 <option value={FIXED}>fixed</option>
+                            </SelectNum>
+                            <SelectNum
+                                value={stereoMode}
+                                label='stereo mode'
+                                onChange={e=>store.setCurrentNoteProp('stereoMode',e)}
+                            >
+                                <option value={STEREO}>stereo</option>
+                                <option value={SUM_LEFT}>sum left</option>
+                                <option value={SUM_RIGHT}>sum right</option>
+                                <option value={MONO_LEFT}>mono left</option>
+                                <option value={MONO_RIGHT}>mono right</option>
                             </SelectNum>
                             <SelectNum
                                 label='priority'

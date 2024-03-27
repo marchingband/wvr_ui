@@ -238,6 +238,7 @@ const clearCurrentNote = self => {
         noteOff: 0,
         priority: 0,
         responseCurve: 1,
+        stereoMode: 0,
         retrigger: 0,
         size: 0,
         loopStart:1,
@@ -259,6 +260,7 @@ const clearSelectedNotes = self => {
             noteOff: 0,
             priority: 0,
             responseCurve: 1,
+            stereoMode: 0,
             retrigger: 0,
             size: 0,
             loopStart:1,
@@ -634,8 +636,8 @@ const deleteFirmware = (self, num) => {
 
 const getVoiceData = (self, num) => {
     const data = self.getVoices()[num]
-    const voiceData = data.map(({loopEnd, samples, loopStart, mode, muteGroup, name, noteOff, priority, responseCurve, retrigger, rack})=>{
-        return({loopEnd, samples, loopStart, mode, muteGroup, name, noteOff, priority, responseCurve, retrigger, rack})
+    const voiceData = data.map(({loopEnd, samples, loopStart, mode, muteGroup, name, noteOff, priority, responseCurve, stereoMode, retrigger, rack})=>{
+        return({loopEnd, samples, loopStart, mode, muteGroup, name, noteOff, priority, responseCurve, stereoMode, retrigger, rack})
     })
     return(voiceData)
 }

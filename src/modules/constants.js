@@ -33,6 +33,14 @@ export const SQUARE_ROOT     = 1
 export const INV_SQUARE_ROOT = 2
 export const FIXED           = 3
 
+// stereo modes
+export const STEREO          = 0
+export const SUM_LEFT        = 1
+export const SUM_RIGHT       = 2
+export const MONO_LEFT       = 3
+export const MONO_RIGHT      = 4
+
+
 /////////////////
 // pin configs //
 /////////////////

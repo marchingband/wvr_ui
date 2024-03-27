@@ -9,7 +9,7 @@ import {Button} from './button'
 import {Slider} from './slider'
 import {auditionLocal, auditionDisk} from '../audio/audition'
 import {NOTE_OFF,ONE_SHOT,LOOP,PAUSE,ASR_LOOP,RETRIGGER,RESTART,NONE,HALT,IGNORE,RELEASE,
-    PRIORITIES,LINEAR,FIXED,SQUARE_ROOT,INV_SQUARE_ROOT,PAUSE_LOOP,PAUSE_ASR} from '../modules/constants'
+    PRIORITIES,LINEAR,FIXED,SQUARE_ROOT,INV_SQUARE_ROOT,PAUSE_LOOP,PAUSE_ASR,STEREO,SUM_LEFT,SUM_RIGHT,MONO_LEFT,MONO_RIGHT} from '../modules/constants'
 import {SelectNum} from '../components/select'
 import {NumberInput} from '../components/numberInput'
 import { Checkbox } from './checkbox.js';
@@ -19,7 +19,7 @@ export const WavDetails = observer(() => {
     const directoryPicker = useRef(null)
     const canvas = useRef(null)
     const [showSettings, setShowSettings] = useState(true)
-    const {name,size,filehandle,mode,retrigger,noteOff,responseCurve,priority,muteGroup,dist,verb,pitch,vol,pan,reverse,loopStart,loopEnd,empty,samples} = store.getCurrentNote()
+    const {name,size,filehandle,mode,retrigger,noteOff,responseCurve,stereoMode,priority,muteGroup,dist,verb,pitch,vol,pan,reverse,loopStart,loopEnd,empty,samples} = store.getCurrentNote()
     const range = store.wavBoardRange.length > 0
     const allowMultiple = store.wavBoardRange.length > 1 && store.wavBoardInterpolationTarget == undefined
     const maxSampleIndex = filehandle ? samples : size / 4 // if this is a fresh file, we use the wav analyzer, if its been synced already, we use the raw file size, as the headers have been stripped already
@@ -149,6 +149,18 @@ export const WavDetails = observer(() => {
                                 <option value={SQUARE_ROOT}>square root</option>
                                 <option value={INV_SQUARE_ROOT}>inv square root</option>
                                 <option value={FIXED}>fixed</option>
+                            </SelectNum>
+                            <SelectNum
+                                value={stereoMode}
+                                label='stereo mode'
+                                onChange={e=>store.setCurrentNoteProp('stereoMode',e)}
+                                style={{width:270}}
+                            >
+                                <option value={STEREO}>stereo</option>
+                                <option value={SUM_LEFT}>sum left</option>
+                                <option value={SUM_RIGHT}>sum right</option>
+                                <option value={MONO_LEFT}>mono left</option>
+                                <option value={MONO_RIGHT}>mono right</option>
                             </SelectNum>
                             <SelectNum
                                 value={priority}

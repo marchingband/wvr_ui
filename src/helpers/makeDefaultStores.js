@@ -1,5 +1,5 @@
 import {observable} from 'mobx'
-import {IGNORE, NOTE_ON, ONE_SHOT, RETRIGGER, EDGE_FALLING, EDGE_NONE, ROOT_SQUARE} from '../modules/constants'
+import {IGNORE, NOTE_ON, ONE_SHOT, RETRIGGER, EDGE_FALLING, EDGE_NONE, ROOT_SQUARE, STEREO} from '../modules/constants'
 import { store } from '../modules/store'
 
 export const defaultVoices = () => {
@@ -15,6 +15,7 @@ export const defaultVoices = () => {
                 retrigger:RETRIGGER,
                 noteOff:IGNORE,
                 responseCurve:ROOT_SQUARE,
+                stereoMode: STEREO,
                 loopStart:1,
                 loopEnd:2,
                 samples:0,
@@ -53,6 +54,7 @@ export const fillVoices = () => {
             retrigger:RETRIGGER,
             noteOff:IGNORE,
             responseCurve:ROOT_SQUARE,
+            stereoMode: STEREO,
             priority:0,
             empty:0,
             isRack:i,
