@@ -35,10 +35,12 @@ export const FIXED           = 3
 
 // stereo modes
 export const STEREO          = 0
-export const SUM_LEFT        = 1
-export const SUM_RIGHT       = 2
-export const MONO_LEFT       = 3
-export const MONO_RIGHT      = 4
+export const MONO_LEFT       = 1
+export const MONO_RIGHT      = 2
+
+// velocity modes
+export const VELOCITY_MODE_FIXED    = 0
+export const VELOCITY_MODE_VELOCITY = 1
 
 
 /////////////////

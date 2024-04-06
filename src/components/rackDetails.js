@@ -4,13 +4,13 @@ import {observer} from 'mobx-react-lite'
 import {noteToName} from '../helpers/noteToName'
 import {Stack} from './stack'
 import {Button} from './button'
-import {NOTE_OFF,ONE_SHOT,LOOP,PAUSE,RETRIGGER,RESTART,NONE,HALT,IGNORE,PRIORITIES,
-    NUM_LAYERS,LINEAR,FIXED,SQUARE_ROOT,INV_SQUARE_ROOT,STEREO,SUM_LEFT,SUM_RIGHT,MONO_LEFT,MONO_RIGHT} from '../modules/constants'
+import {NOTE_OFF,ONE_SHOT,LOOP,PAUSE,RETRIGGER,RESTART,NONE,HALT,IGNORE,PRIORITIES,VELOCITY_MODE_FIXED,VELOCITY_MODE_VELOCITY,
+    NUM_LAYERS,LINEAR,FIXED,SQUARE_ROOT,INV_SQUARE_ROOT,STEREO,MONO_LEFT,MONO_RIGHT} from '../modules/constants'
 import {SelectNum} from '../components/select'
 import {Slider} from './slider'
 
 export const RackDetails = observer(() => {
-    const {mode,retrigger,noteOff,responseCurve,stereoMode,priority,muteGroup,rack,dist,verb,pitch,vol,pan} = store.getCurrentNote()
+    const {mode,retrigger,noteOff,responseCurve,stereoMode,velocityMode,priority,muteGroup,rack,dist,verb,pitch,vol,pan} = store.getCurrentNote()
     const {name,num_layers} = rack
     const [showSettings, setShowSettings] = useState(true)
     const allowMultiple = store.wavBoardRange.length > 1 && store.wavBoardInterpolationTarget == undefined
@@ -69,10 +69,16 @@ export const RackDetails = observer(() => {
                                 onChange={e=>store.setCurrentNoteProp('stereoMode',e)}
                             >
                                 <option value={STEREO}>stereo</option>
-                                <option value={SUM_LEFT}>sum left</option>
-                                <option value={SUM_RIGHT}>sum right</option>
                                 <option value={MONO_LEFT}>mono left</option>
                                 <option value={MONO_RIGHT}>mono right</option>
+                            </SelectNum>
+                            <SelectNum
+                                value={velocityMode}
+                                label='velocity mode'
+                                onChange={e=>store.setCurrentNoteProp('velocityMode',e)}
+                            >
+                                <option value={VELOCITY_MODE_FIXED}>fixed</option>
+                                <option value={VELOCITY_MODE_VELOCITY}>velocity</option>
                             </SelectNum>
                             <SelectNum
                                 label='priority'
@@ -170,11 +176,11 @@ export const RackDetails = observer(() => {
                     <Button
                         warn
                         title="delete"
-                        onClick={()=>{
-                            if(window.confirm("clear this note?")){
-                                store.clearCurrentNote()
-                            }
-                        }}
+                        // onClick={()=>{
+                        //     if(window.confirm("clear this note?")){
+                        //         store.clearCurrentNote()
+                        //     }
+                        // }}
                         onClick={()=>{
                             if(allowMultiple ? window.confirm(`clear ${store.wavBoardRange.length} selected notes?`) : window.confirm("clear this note?")){
                                 if(allowMultiple){

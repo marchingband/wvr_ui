@@ -9,7 +9,7 @@ import {Button} from './button'
 import {Slider} from './slider'
 import {auditionLocal, auditionDisk} from '../audio/audition'
 import {NOTE_OFF,ONE_SHOT,LOOP,PAUSE,ASR_LOOP,RETRIGGER,RESTART,NONE,HALT,IGNORE,RELEASE,
-    PRIORITIES,LINEAR,FIXED,SQUARE_ROOT,INV_SQUARE_ROOT,PAUSE_LOOP,PAUSE_ASR,STEREO,SUM_LEFT,SUM_RIGHT,MONO_LEFT,MONO_RIGHT} from '../modules/constants'
+    PRIORITIES,LINEAR,FIXED,SQUARE_ROOT,INV_SQUARE_ROOT,PAUSE_LOOP,PAUSE_ASR,STEREO,MONO_LEFT,MONO_RIGHT} from '../modules/constants'
 import {SelectNum} from '../components/select'
 import {NumberInput} from '../components/numberInput'
 import { Checkbox } from './checkbox.js';
@@ -157,8 +157,6 @@ export const WavDetails = observer(() => {
                                 style={{width:270}}
                             >
                                 <option value={STEREO}>stereo</option>
-                                <option value={SUM_LEFT}>sum left</option>
-                                <option value={SUM_RIGHT}>sum right</option>
                                 <option value={MONO_LEFT}>mono left</option>
                                 <option value={MONO_RIGHT}>mono right</option>
                             </SelectNum>
